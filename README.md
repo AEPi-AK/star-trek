@@ -13,7 +13,8 @@ tools, and an explanation and rationale for our heavy use of Socket.io.
 3. [Setting up TypeScript](#setting-up-typescript)
 4. [Developing for the Pi](#developing-for-the-pi)
 5. [Socket.io](#socketio)
-6. [Misc tidbits and tips](#misc-tips)
+6. [Type Safety](#type-safety)
+7. [Misc tidbits and tips](#misc-tips)
 
 ## Components
 
@@ -87,7 +88,7 @@ These instructions were written specifically for Mac.
        -> Go -> Connect to Server
        * (This should also work [for windows](https://raspberrypihq.com/how-to-share-a-folder-with-a-windows-computer-from-a-raspberry-pi/))
        * (And Linux)[https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!]
-    7. Set the server to `smb://<piname>.local`
+    7. Set the server to `smb://<pi name>.local`
        * By default, piname is raspberrypi
 
 You now have a linux machine on which you may begin developing.
@@ -98,7 +99,8 @@ TypeScript is a type-safe superset of JavaScript with a badass community and dev
 can be done locally using Samba, so you should follow these instructions on your local machine.
 
 [Getting VS Code](https://code.visualstudio.com/)
-[Setting up TypeScript](https://code.visualstudio.com/docs/languages/typescript)
+
+[Getting TypeScript](https://code.visualstudio.com/docs/languages/typescript)
 
 ## Developing for the Pi
 
@@ -205,6 +207,21 @@ game state while a bunch of Rasperry Pis control several mini-games throughout t
 of design is extremely well-modeled by socket.io -- just listen for a `gamestate changed` message and react accordingly; no need to
 poll periodically! Similarly, to update the gamestate the server can just listen for updates and propagate those updates by broadcasting
 a `gamestate changed` message.
+
+## Type Safety
+
+Sure, TypeScript is unsound by design (I'm more of a [Flow](flow.org) guy myself), but that doesn't mean we can't use its
+type system to ease our development process. TypeScript allows us to do some real black magic: type
+safe messages between different machines. Process that for a second. Think about how ridiculously robust that would
+make an application.
+
+Take a look at [messages.ts](/common/messages.ts). This file specifies all of the ways we use socket.io to send and receive messages.
+All of these functions are just simple wrappers around the `socket.on` function, which specifies the type of the message being sent
+or received. As long as everyone only uses the type safe methods to communicate between machines, we can statically guarantee that
+all of the different programs are sending messages whose types are expected. If you ever want to create a new message, you MUST add it
+to [messages.ts](/common/messages.ts). Since it's in [common](/common), every sub-project can reference it, meaning all of the types are
+synchronized across all of the sub-projects.
+
 
 ## Misc Tips
 
