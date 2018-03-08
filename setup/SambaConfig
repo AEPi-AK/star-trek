@@ -1,0 +1,12 @@
+workgroup = WORKGROUP
+wins support = yes
+
+[pihome]
+   comment = Pi Home
+   path = /home/pi
+   browseable = Yes
+   writeable = Yes
+   only guest = no
+   create mask = 0777
+   directory mask = 0777
+   public = yes
