@@ -10,8 +10,10 @@ tools, and an explanation and rationale for our heavy use of Socket.io.
 
 1. [Components](#components)
 2. [Setting up your Pi](#setting-up-your-pi)
-3. [Socket.io](#socketio)
-4. [Misc tidbits and tips](#misc-tips)
+3. [Setting up TypeScript](#setting-up-typescript)
+4. [Developing for the Pi](#developing-for-the-pi)
+5. [Socket.io](#socketio)
+6. [Misc tidbits and tips](#misc-tips)
 
 ## Components
 
@@ -83,10 +85,38 @@ These instructions were written specifically for Mac.
     5. `service smbd restart`
     6. Now, you may access the Pi's file system from your mac. Open finder
        -> Go -> Connect to Server
+       * (This should also work [for windows](https://raspberrypihq.com/how-to-share-a-folder-with-a-windows-computer-from-a-raspberry-pi/))
+       * (And Linux)[https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!]
     7. Set the server to `smb://<piname>.local`
        * By default, piname is raspberrypi
 
 You now have a linux machine on which you may begin developing.
+
+## Setting up TypeScript
+
+TypeScript is a type-safe superset of JavaScript with a badass community and development environment. All of the booth programming
+can be done locally using Samba, so you should follow these instructions on your local machine.
+
+[Getting VS Code](https://code.visualstudio.com/)
+[Setting up TypeScript](https://code.visualstudio.com/docs/languages/typescript)
+
+## Developing for the Pi
+
+We use Samba to ease the development process. I recommend connecting to the pi via ethernet, but you can also access it using
+its IP address. Your pi should also be connected to wifi so it can download external dependencies.
+
+You'll want to use VS Code to edit TypeScript files. I know I know, you really wanted to use `EDITORNAMEHERE` to work on booth,
+but trust me, VC Code is great.
+
+Since we set up Samba, you should be able to open up the project on your pi inside VS Code. Any changes you make to these
+files will be reflected via Samba to your pi.
+
+Within VS Code, open up a terminal window and ssh onto your pi (`ssh pi@<pi name>.local`).
+`cd` into your project folder. You'll want to make sure that you install dependencies while on the Pi, just in case
+there are system specific compilation processes. You should also run the program while SSH'd onto the pi, since Samba will use
+your local version of node instead of the version on the pi.
+
+With this setup, you'll be able to use your local environment to develop while still getting to run your code on the pi!
 
 ## Socket.io
 
