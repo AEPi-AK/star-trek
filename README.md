@@ -10,7 +10,7 @@ tools, and an explanation and rationale for our heavy use of Socket.io.
 
 1. [Components](#components)
 2. [Setting up your Pi](#setting-up-your-pi)
-3. [Socket io](#socket.io)
+3. [Socket.io](#socketio)
 4. [Misc tidbits and tips](#misc-tips)
 
 ## Components
@@ -83,14 +83,98 @@ These instructions were written specifically for Mac.
     5. `service smbd restart`
     6. Now, you may access the Pi's file system from your mac. Open finder
        -> Go -> Connect to Server
-    7. Set the server to smb://<piname>.local
-       * By default, <piname> is raspberrypi
+    7. Set the server to `smb://<piname>.local`
+       * By default, piname is raspberrypi
 
 You now have a linux machine on which you may begin developing.
 
 ## Socket.io
 
+Socket IO is essentially a distributed implementation of the observer design pattern.
+The basic premise is that instead of being responsible for repeatedly checking the state of a server,
+you can just set up "listeners" (which are just functions) that react to certain messages. An example of
+a message is the message that comes in when a user connects to the server. Something listening to that message
+may add that user to a list of active users, send the user a message, or continue listening to messages from that user.
 
+Let's take a look at an example:
+
+
+```typescript
+server.ts
+
+import Express = require('express');
+import Http = require('http');
+import IO = require('socket.io');
+
+var app = Express();
+var http = new Http.Server(app);
+var io = IO(http);
+
+// When a user connects, wait for them to identify themselves. Print
+// to the console when they disconnect.
+// Note: 'connect' and 'disconnect' are built in messages that are automatically
+// sent when a connection is created and disconnected, respectively
+io.on('connect', function(socket: SocketIO.Socket){
+  var name: null | string = null;
+  console.log('a user connected: ' + socket.id);
+
+  socket.on('disconnect', function () {
+    if (name) console.log(name + ' disconnected');
+    else console.log(socket.id + ' disconnected');
+  });
+
+  // 'identification' is our own custom message. We expect a string to be supplied.
+  socket.on('identification', function (data: string) {
+    if (name === null) {
+     console.log('user ' + socket.id + ' identified as ' + data);
+     name = data;
+    }
+  });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+```
+
+This code doesn't just execute top down like you may expect. This code tells the server to continually listen
+for these messages. Specifically, always listen for a user to connect. When they do, always listen for them to identify
+themselves, and note when they disconnect. We do not need to put our code in a loop -- this code says to start listening
+and then proceeds on asynchronously.
+
+The client to a server may look something like this:
+
+```typescript
+client.ts
+
+import Socket = require('socket.io-client');
+import Readline = require('readline');
+
+var socket = Socket('http://localhost:3000');
+
+const rl = Readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+rl.question('What is your name? ', (answer) => {
+  // Sends an identification message to the server.
+  socket.emit('identification', answer);
+  rl.close();
+});
+```
+
+This client connects to the server, takes a name as input from STDIN, and tells the server the name. On the server side,
+it received a `'connect'` message, since the client made a connection to the server, and an `'identification'` message that
+the client explicitly sends.
+
+### Why do you care?
+
+Traditionally (by this, I of course mean the 2017 & 2018 golden years of booth game), the master server in the booth keeps track of
+game state while a bunch of Rasperry Pis control several mini-games throughout the booth react to changes in the game state. Some Raspberry Pis will also send messages to the server, and are the driving force behind many of these game state changes. This kind
+of design is extremely well-modeled by socket.io -- just listen for a `gamestate changed` message and react accordingly; no need to
+poll periodically! Similarly, to update the gamestate the server can just listen for updates and propagate those updates by broadcasting
+a `gamestate changed` message.
 
 ## Misc Tips
 
