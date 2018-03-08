@@ -74,7 +74,7 @@ These instructions were written specifically for Mac.
        `https://www.raspberrypi.org/documentation/remote-access/vnc/README.md`
        for more information.
 13. Set up typescript + node on the Pi
-    1. curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    1. `curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -`
     2. Install node, `sudo apt-get install node`
     3. Install TypeScript, `sudo npm install -g typescript`
     4. Install nodemon, `sudo npm install -g nodemon`
@@ -87,7 +87,7 @@ These instructions were written specifically for Mac.
     6. Now, you may access the Pi's file system from your mac. Open finder
        -> Go -> Connect to Server
        * (This should also work [for windows](https://raspberrypihq.com/how-to-share-a-folder-with-a-windows-computer-from-a-raspberry-pi/))
-       * (And Linux)[https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!]
+       * ([And Linux](https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!))
     7. Set the server to `smb://<pi name>.local`
        * By default, piname is raspberrypi
 
@@ -210,7 +210,7 @@ a `gamestate changed` message.
 
 ## Type Safety
 
-Sure, TypeScript is unsound by design (I'm more of a [Flow](flow.org) guy myself), but that doesn't mean we can't use its
+Sure, TypeScript is unsound by design (I'm more of a [Flow](http://flow.org) guy myself), but that doesn't mean we can't use its
 type system to ease our development process. TypeScript allows us to do some real black magic: type
 safe messages between different machines. Process that for a second. Think about how ridiculously robust that would
 make an application.
