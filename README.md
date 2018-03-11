@@ -219,7 +219,7 @@ Take a look at [messages.ts](/common/messages.ts). This file specifies all of th
 All of these functions are just simple wrappers around the `socket.on` function, which specifies the type of the message being sent
 or received. As long as everyone only uses the type safe methods to communicate between machines, we can statically guarantee that
 all of the different programs are sending messages whose types are expected. If you ever want to create a new message, you MUST add it
-to [messages.ts](/common/messages.ts). Since it's in [common](/common), every sub-project can reference it, meaning all of the types are
+to [messages.ts](/common/serverMessages.ts). Since it's in [common](/common), every sub-project can reference it, meaning all of the types are
 synchronized across all of the sub-projects.
 
 
