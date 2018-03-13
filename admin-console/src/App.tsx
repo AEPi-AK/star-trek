@@ -2,33 +2,17 @@ import * as React from 'react';
 import './App.css';
 import * as Socket from 'socket.io-client';
 
-export function emitIdentification(sock: SocketIOClient.Socket, ident: string) {
-  sock.emit('identification', ident);
-}
-
-export function onConnect(sock: SocketIOClient.Socket, fn: () => void) {
-  sock.on('connect', () => fn());
-}
-
-export function onDisconnect(sock: SocketIOClient.Socket, fn: () => void) {
-  sock.on('disconnect', () => fn());
-}
-
-export function onClientsUpdated(sock: SocketIOClient.Socket, fn: (data: string[]) => void) {
-  sock.on('clients-updated', (data: string[]) => fn(data));
-}
-
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 const logo = require('./logo.svg');
 
 function subscribeToTimer(cb: (data: string[]) => void, connectCb: (up: boolean) => void) {
-  onClientsUpdated(socket, (data: string[]) => cb(data));
-  onConnect(socket, () => {
+  socket.on('clients-updated', cb);
+  socket.on('connect', () => {
     connectCb(true);
-    emitIdentification(socket, 'admin-console');
+    socket.emit('identification', 'admin-console');
   });
-  onDisconnect(socket, () => connectCb(false));
+  socket.on('disconnect', () => connectCb(false));
 }
 
 interface AdminConsoleState {

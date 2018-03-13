@@ -4,6 +4,8 @@
     "module": "commonjs",
     "strict": true,
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "typeRoots": ["node_modules/@types", "../typings"]
   }
 }
