@@ -18,6 +18,10 @@
     "baseUrl": ".",
     "typeRoots": ["node_modules/@types", "../typings"]
   },
+  "include": [
+    "./src/**/*",
+    "../common/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
