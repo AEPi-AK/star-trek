@@ -4,7 +4,7 @@ import IO = require('socket.io');
 
 var app = Express();
 var http = new Http.Server(app);
-var io = IO(http);
+var io = IO(http, {'pingInterval': 2000, 'pingTimeout': 5000});
 var clients: string[] = new Array<string>();
 
 io.on('connect', function(socket: SocketIO.Socket){
