@@ -78,25 +78,21 @@ These instructions were written specifically for Mac.
     2. Install node, `sudo apt-get install node`
     3. Install TypeScript, `sudo npm install -g typescript`
     4. Install nodemon, `sudo npm install -g nodemon`
-14. Set up Samba on the pi
-    1. `sudo apt-get install samba samba-common-bin`
-    2. `sudo smbpasswd -a pi`
-    3. `nano /etc/samba/smb.conf`
-    4. Edit the file to read as [SambaConfig](/setup/SambaConfig)
-    5. `service smbd restart`
-    6. Now, you may access the Pi's file system from your mac. Open finder
-       -> Go -> Connect to Server
-       * (This should also work [for windows](https://raspberrypihq.com/how-to-share-a-folder-with-a-windows-computer-from-a-raspberry-pi/))
-       * ([And Linux](https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!))
-    7. Set the server to `smb://<pi name>.local`
-       * By default, piname is raspberrypi
+14. Set rcode on the Pi
+    1. On the pi, run `sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate`
+    2. On the pi, run `sudo chmod a+x /usr/local/bin/rmate`
+15. Set up remote VSCode on your machine
+    1. Open VSCode (see next section)
+    2. Click the extensions icon (it looks like a square with a square inside it)
+    3. Search Remote VSCode
+    4. Click install
 
 You now have a linux machine on which you may begin developing.
 
 ## Setting up TypeScript
 
 TypeScript is a type-safe superset of JavaScript with a badass community and development environment. All of the booth programming
-can be done locally using Samba, so you should follow these instructions on your local machine.
+can be done via ssh with remote VSCode, so you should follow these instructions on your local machine.
 
 [Getting VS Code](https://code.visualstudio.com/)
 
@@ -104,19 +100,17 @@ can be done locally using Samba, so you should follow these instructions on your
 
 ## Developing for the Pi
 
-We use Samba to ease the development process. I recommend connecting to the pi via ethernet, but you can also access it using
+We use remote VSCode to ease the development process. I recommend connecting to the pi via ethernet, but you can also access it using
 its IP address. Your pi should also be connected to wifi so it can download external dependencies.
 
 You'll want to use VS Code to edit TypeScript files. I know I know, you really wanted to use `EDITORNAMEHERE` to work on booth,
-but trust me, VC Code is great.
+but trust me, VS Code is great.
 
-Since we set up Samba, you should be able to open up the project on your pi inside VS Code. Any changes you make to these
-files will be reflected via Samba to your pi.
+Since we set up remote VSCode, you should be able to open up the project on your pi inside VS Code. Any changes you make to these
+files will be reflected via ssh to your pi.
 
 Within VS Code, open up a terminal window and ssh onto your pi (`ssh pi@<pi name>.local`).
-`cd` into your project folder. You'll want to make sure that you install dependencies while on the Pi, just in case
-there are system specific compilation processes. You should also run the program while SSH'd onto the pi, since Samba will use
-your local version of node instead of the version on the pi.
+`cd` into your project folder. You'll want to make sure that you install dependencies while on the Pi.
 
 With this setup, you'll be able to use your local environment to develop while still getting to run your code on the pi!
 
