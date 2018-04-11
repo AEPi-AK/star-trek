@@ -1,6 +1,7 @@
 import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
+import readline = require('readline');
 
 var app = Express();
 var http = new Http.Server(app);
@@ -33,3 +34,22 @@ io.on('connect', function(socket: SocketIO.Socket){
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function sendMessage() {
+  rl.question('Send message on channel: ', (chan) => {
+    // TODO: Log the answer in a database
+    rl.question('With data: ', (dat) => {
+      //@ts-ignore
+      io.sockets.emit(chan, dat);
+      console.log("Sending data: " + dat + " on channel " + chan);
+      sendMessage();
+    });
+  });
+}
+
+sendMessage();
