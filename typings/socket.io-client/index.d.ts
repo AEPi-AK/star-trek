@@ -175,6 +175,7 @@ declare namespace SocketIOClient {
 		on( event: 'connect', fn: () => void):Socket;
 		on( event: 'disconnect', fn: () => void):Socket;
 		on( event: 'clients-updated', fn: (clients: string[]) => void):Socket;
+		on( event: 'update-countdown', fn: (time: number) => void):Socket;
 
 		/**
 		 * The Manager that's controller this socket
