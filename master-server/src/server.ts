@@ -2,11 +2,24 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
+import { ButtonState } from '../../common/HardwareTypes';
 
 var app = Express();
 var http = new Http.Server(app);
 var io = IO(http, {'pingInterval': 2000, 'pingTimeout': 5000});
 var clients: string[] = new Array<string>();
+
+declare module 'socket.io' {
+  interface Namespace extends NodeJS.EventEmitter {
+      emit(event: 'clients-updated', data: string[]): boolean;
+  }
+
+  interface Socket extends NodeJS.EventEmitter {
+    on(event: 'identification', fn: (data: string) => void): this;
+		on(event: 'disconnect', fn: () => void): this;
+		on(event: 'button-pressed', fn : (obj : ButtonState) => void): this;
+  }
+}
 
 io.on('connect', function(socket: SocketIO.Socket){
   var name: null | string = null;
