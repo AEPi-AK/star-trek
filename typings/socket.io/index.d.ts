@@ -373,6 +373,7 @@ declare namespace SocketIO {
 		// Add custom emitters here.
 		emit( event: 'clients-updated', data: string[]):boolean;
 
+
 		/**
 		 * The name of the NameSpace
 		 */
@@ -671,6 +672,8 @@ declare namespace SocketIO {
 		// Add custom emitters and listeners here
 		on( event: 'identification', fn: (data: string) => void):this;
 		on( event: 'disconnect', fn: () => void):this;
+		on( event: 'button-pressed', fn : (obj : {pressed: boolean, label: string, lit : boolean}) => void):this;
+
 	}
 
 	/**
