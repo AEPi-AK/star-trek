@@ -28,6 +28,13 @@ io.on('connect', function(socket: SocketIO.Socket){
       clients.push(name);
       io.sockets.emit('clients-updated', clients);
     }
+    if (data === 'button-1') {
+      console.log("connecting...");
+      socket.emit('button-listen', 'button3');
+      socket.on('button-pressed', (obj : {pressed: boolean, label: string, lit : boolean}) => {
+        console.log("button %s now %s", obj.label, obj.pressed ? "pressed" : "unpressed");
+      });
+    }
   });
 
   //@ts-ignore
