@@ -3,6 +3,7 @@
 // Definitions by: PROGRE <https://github.com/progre>, Damian Connolly <https://github.com/divillysausages>, Florent Poujol <https://github.com/florentpoujol>, KentarouTakeda <https://github.com/KentarouTakeda>, Alexey Snigirev <https://github.com/gigi>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+import { ButtonState } from '../../common/HardwareTypes';
 ///<reference types="node" />
 
 declare module 'socket.io' {
@@ -672,7 +673,7 @@ declare namespace SocketIO {
 		// Add custom emitters and listeners here
 		on( event: 'identification', fn: (data: string) => void):this;
 		on( event: 'disconnect', fn: () => void):this;
-		on( event: 'button-pressed', fn : (obj : {pressed: boolean, label: string, lit : boolean}) => void):this;
+		on( event: 'button-pressed', fn : (obj : ButtonState) => void):this;
 
 	}
 
