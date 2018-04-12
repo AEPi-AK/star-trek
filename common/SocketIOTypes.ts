@@ -1,14 +1,22 @@
-import 'socket.io';
-import { ButtonState } from './HardwareTypes';
+import StrictEventEmitter, { StrictBroadcast } from 'strict-event-emitter-types';
+import * as HardwareTypes from './HardwareTypes';
 
-declare module 'socket.io' {
-    interface Namespace extends NodeJS.EventEmitter {
-        emit(event: 'clients-updated', data: string[]): boolean;
-    }
-  
-    interface Socket extends NodeJS.EventEmitter {
-        on(event: 'identification', fn: (data: string) => void): this;
-        on(event: 'disconnect', fn: () => void): this;
-        on(event: 'button-pressed', fn: (obj: ButtonState) => void): this;
-    }
+interface ServerEvents {
+  disconnect: void,
+  identification: string,
+  "button-pressed": HardwareTypes.ButtonState,
+  players: number,
+  "rfid-match": boolean,
 }
+
+interface ClientEvents {
+  disconnect: void,
+  "button-listen": string,
+  connect: void,
+  players: void,
+  rfid: string,
+}
+
+export type ServerSocket = StrictEventEmitter<SocketIO.Socket, ServerEvents, ClientEvents>;
+export type ClientSocket = StrictEventEmitter<SocketIOClient.Socket, ClientEvents, ServerEvents>;
+export type ClientBroadcast = StrictBroadcast<ClientSocket>;
