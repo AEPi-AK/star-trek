@@ -29,6 +29,11 @@ io.on('connect', function(socket: SocketIO.Socket){
       io.sockets.emit('clients-updated', clients);
     }
   });
+
+  //@ts-ignore
+  socket.on('players', things => { console.log(things)});
+  //@ts-ignore
+  socket.on('rfid-match', event => { console.log("matched"); });
 });
 
 http.listen(3000, function(){
