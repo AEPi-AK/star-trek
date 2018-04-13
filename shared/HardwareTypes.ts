@@ -24,7 +24,33 @@ export interface HardwareState {
     captainsChair: CaptainsChairState;
     keypad: KeypadState;
     touchSensor: TouchSensorState;
-    enabledMapping: {[key:string]: boolean};
+    enabledMapping: {
+      switch0: boolean;
+      switch1: boolean;
+      switch2: boolean;
+      switch3: boolean;
+      smallButtonWhite0: boolean;
+      smallButtonWhite1: boolean;
+      smallButtonRed0 : boolean;
+      smallButtonRed1 : boolean;
+      smallButtonBlue0: boolean;
+      smallButtonBlue1: boolean;
+      smallButtonYellow0: boolean;
+      smallButtonYellow1: boolean;
+      smallButtonGreen0: boolean;
+      smallButtonGreen1: boolean;
+      mediumButtonWhite: boolean;
+      mediumButtonRed : boolean;
+      mediumButtonBlue: boolean;
+      mediumButtonYello: boolean;
+      mediumButtonGreen: boolean;
+      bigButtonRed: boolean;
+      rfidScanner: boolean;
+      plugboard: boolean;
+      captainsChair: boolean;
+      keypad: boolean;
+      touchSens: boolean;
+    };
 }
 
 export interface ButtonState {
