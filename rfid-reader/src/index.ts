@@ -4,11 +4,8 @@ import readline = require('readline');
 
 console.log("rfid started.");
 
-  
+readline.emitKeypressEvents(process.stdin);
 
-function keyPress(event : KeyboardEvent){
-    console.log(event);
-};
 
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
