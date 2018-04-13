@@ -7,6 +7,14 @@ var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 const logo = require('./logo.svg');
 
+const stateList = ['switch0', 'switch1', 'switch2', 'switch3', 'smallButtonWhite0', 'smallButtonWhite1', 
+'smallButtonRed0', 'smallButtonRed1', 'smallButtonBlue0', 'smallButtonBlue1', 'smallButtonYellow0', 
+'smallButtonYellow1', 'smallButtonGreen0', 'smallButtonGreen1', 'mediumButtonWhite', 'mediumButtonRed', 
+'mediumButtonBlue', 'mediumButtonYellow', 'mediumButtonGreen', 'bigButtonRed', 'rfidScanner', 'plugboard', 
+'captainsChair', 'keypad', 'touchSensor'];
+
+var connectedClients: string[] = [];
+
 var button: HardwareTypes.ButtonState = {lit: false, label: 'test', pressed: false};
 button.lit = true;
 
@@ -26,6 +34,11 @@ interface AdminConsoleState {
 
 class App extends React.Component<{}, AdminConsoleState> {
   updateClientList (data: string[]) {
+    for (var client of data) {
+      if (connectedClients.indexOf(client) === -1) {
+        connectedClients.push(client);
+      }
+    }
     this.setState({clients: data, serverUp: this.state.serverUp});
   }
 
@@ -44,19 +57,37 @@ class App extends React.Component<{}, AdminConsoleState> {
 
   render() {
     if (this.state.serverUp) {
-      var component;
-      if (this.state.clients.length) {
-        component = <ul>{this.state.clients.map(e => <li key={e}>{e}</li>)}</ul>;
+      var clientComponent;
+      if (connectedClients.length) {
+        clientComponent = (
+          <ul>
+            {
+              connectedClients.map(e => {
+                if (this.state.clients.indexOf(e) !== -1) {
+                  return <li className="client-on" key={e}>{e}</li>;
+                } else {
+                  return <li className="client-off" key={e}>{e}</li>;
+                }
+              })
+            }
+          </ul>
+        );
       } else {
-        component = <p>There's no clients</p>;
+        clientComponent = <p>There's no clients</p>;
       }
+      var stateComponent = (
+      <ul>
+        {stateList.map(e => <li className="state" key={e}><input type="checkbox" name={e + '-checkbox'} />{e}</li>)}
+      </ul>
+      );
       return (
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
             <h1 className="App-title">Welcome to React</h1>
           </header>
-          {component}
+          {clientComponent}
+          {stateComponent}
         </div>
       );
     } else {

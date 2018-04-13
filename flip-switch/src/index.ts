@@ -26,9 +26,9 @@ class ButtonListener {
             var new_state : number = rpio.read(pin);
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
-                console.log("button has been pressed, new state %d", new_state);
+                console.log("switch has been flipped , new state %d", new_state);
                 if (this.listening) {
-                    socket.emit('button-pressed', 
+                    socket.emit('button-pressed',
                         {label : this.label, pressed: this.old_state ? false : true, lit : false});
                 }
             }
@@ -38,8 +38,13 @@ class ButtonListener {
             if (label === this.label) {
                 this.listening = true;
                 console.log("now being listened to as label %s", label);
-            } 
+            }
         });
+
+        socket.on('request-state',() =>{
+          socket.emit('state-response',this.old_state)
+        });
+
     }
 }
 
@@ -52,4 +57,3 @@ button.init();
 socket.on('connect', () => {
     socket.emit('identification', 'button-1');
 });
-
