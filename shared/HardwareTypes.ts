@@ -24,6 +24,7 @@ export interface HardwareState {
     captainsChair: CaptainsChairState;
     keypad: KeypadState;
     touchSensor: TouchSensorState;
+    enabledMapping: {[key:string]: boolean};
 }
 
 export interface ButtonState {
