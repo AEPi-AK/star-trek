@@ -42,7 +42,7 @@ export interface HardwareState {
       mediumButtonWhite: boolean;
       mediumButtonRed : boolean;
       mediumButtonBlue: boolean;
-      mediumButtonYello: boolean;
+      mediumButtonYellow: boolean;
       mediumButtonGreen: boolean;
       bigButtonRed: boolean;
       rfidScanner: boolean;
