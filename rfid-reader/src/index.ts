@@ -7,22 +7,9 @@ console.log("rfid started.");
 readline.emitKeypressEvents(process.stdin);
 
 
-var socket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
-var translations = {
-    71: 7,
-    72: 8,
-    73: 9,
-    75: 4,
-    76: 5,
-    77: 6,
-    79: 1,
-    80: 2,
-    81: 3,
-};
-
-//@ts-ignore
-socket.on('rfid', (target) => {
+socket.on('rfid', (target: string) => {
     console.log("matching " + target);
     const rl = readline.createInterface({
         input: process.stdin,
@@ -32,8 +19,7 @@ socket.on('rfid', (target) => {
     rl.on('line', (input) => {
         if(input == target){
             console.log("matched!");
-            //@ts-ignore
-            socket.emit('rfid-match',{});
+            socket.emit('rfid-match', true);
             rl.close();
         }
 

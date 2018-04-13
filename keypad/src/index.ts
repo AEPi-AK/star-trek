@@ -4,6 +4,7 @@ import readline = require('readline');
 
 
 //import iohook = require('iohook');
+
 console.log("Keypad started.");
 
 readline.emitKeypressEvents(process.stdin);
@@ -23,7 +24,7 @@ process.stdin.on('keypress', (str, key) => {
 
 //process.stdin.on('keypress', (ch, key) => {console.log("keypress found", ch);});
 
-var socket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 
 /*
@@ -39,15 +40,12 @@ var translations = {
     81: 3,
 };
 
-//@ts-ignore
-socket.on('PLAYERS', () => {
+socket.on('players', () => {
     iohook.start(false);
     console.log("How many players are there?");
     iohook.on('keydown', event => {
         console.log(event.keycode);
-        //@ts-ignore
-        if(translations[event.keycode]!=null){
-            //@ts-ignore
+        if(translations[event.keycode] != null){
             socket.emit('players', translations[event.keycode])
             iohook.stop();
         }

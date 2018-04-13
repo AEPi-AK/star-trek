@@ -6,6 +6,6 @@
     "outDir": "dist",
     "sourceMap": true,
     "baseUrl": ".",
-    "typeRoots": ["node_modules/@types", "../typings"]
+    "typeRoots": ["node_modules/@types"]
   }
 }

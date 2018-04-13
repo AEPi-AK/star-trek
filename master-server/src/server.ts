@@ -2,6 +2,7 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
+import { ButtonState } from '../../shared/HardwareTypes';
 
 var app = Express();
 var http = new Http.Server(app);
