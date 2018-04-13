@@ -26,7 +26,7 @@ class ButtonListener {
             var new_state : number = rpio.read(pin);
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
-                console.log("button has been pressed, new state %d", new_state);
+                console.log("switch has been flipped , new state %d", new_state);
                 if (this.listening) {
                     socket.emit('button-pressed',
                         {label : this.label, pressed: this.old_state ? false : true, lit : false});
