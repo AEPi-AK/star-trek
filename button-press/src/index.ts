@@ -1,6 +1,5 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client')
-import * as Types from '../../shared/SocketIOTypes';
 
 console.log("starting");
 
@@ -44,7 +43,7 @@ class ButtonListener {
     }
 }
 
-var socket: Types.ClientSocket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 
 let button = new ButtonListener(3, "button3");
