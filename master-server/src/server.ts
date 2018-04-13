@@ -38,7 +38,7 @@ io.on('connect', function(socket: SocketIO.Socket){
   });
 
   //@ts-ignore
-  socket.on('players', things => { console.log(things)});
+  socket.on('players', numberOfPlayers => { console.log('number of players:', numberOfPlayers)});
   //@ts-ignore
   socket.on('rfid-match', event => { console.log("matched"); });
 });
