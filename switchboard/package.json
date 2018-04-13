@@ -1,0 +1,24 @@
+{
+  "name": "sample-subproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^9.4.7",
+    "@types/rpio": "0.0.2",
+    "@types/socket.io": "^1.4.33",
+    "@types/socket.io-client": "^1.4.32",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
+    "strict-event-emitter-types": "^1.2.0"
+  },
+  "dependencies": {
+    "rpio": "^0.9.21"
+  }
+}

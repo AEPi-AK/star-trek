@@ -41,11 +41,10 @@ class ButtonListener {
             }
         });
 
-        socket.on('request-state',(label : string) =>{
-          if (label === this.label) {
+        socket.on('request-state',() =>{
           socket.emit('state-response',this.old_state)
-        }
         });
+
     }
 }
 
