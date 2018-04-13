@@ -78,9 +78,11 @@ These instructions were written specifically for Mac.
     2. Install node, `sudo apt-get install node`
     3. Install TypeScript, `sudo npm install -g typescript`
     4. Install nodemon, `sudo npm install -g nodemon`
-14. Set rcode on the Pi
-    1. On the pi, run `sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate`
-    2. On the pi, run `sudo chmod a+x /usr/local/bin/rmate`
+14. Set sshfs for editing code
+    1. On your laptop run sudo apt-get install sshfs
+    2. On your laptop run mkdir pi
+    3. log in with "sshfs pi@HOSTNAME:/home/pi pi" and type in the password
+    4. When you enter the pi directory you will be able to see and edit the pi's files with whatever text editors you have installed on your laptop. 
 15. Set up remote VSCode on your machine
     1. Open VSCode (see next section)
     2. Click the extensions icon (it looks like a square with a square inside it)
