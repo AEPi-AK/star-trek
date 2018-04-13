@@ -1,10 +1,14 @@
 import * as React from 'react';
 import './App.css';
 import * as Socket from 'socket.io-client';
+import * as HardwareTypes from '../../shared/HardwareTypes';
 
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 const logo = require('./logo.svg');
+
+var button: HardwareTypes.ButtonState = {lit: false, label: 'test', pressed: false};
+button.lit = true;
 
 function subscribeToTimer(cb: (data: string[]) => void, connectCb: (up: boolean) => void) {
   socket.on('clients-updated', cb);
