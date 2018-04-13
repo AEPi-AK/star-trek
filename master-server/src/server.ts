@@ -2,6 +2,7 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
+import { ButtonState } from '../../shared/HardwareTypes';
 
 var app = Express();
 var http = new Http.Server(app);
@@ -28,7 +29,19 @@ io.on('connect', function(socket: SocketIO.Socket){
       clients.push(name);
       io.sockets.emit('clients-updated', clients);
     }
+    if (data === 'button-1') {
+      console.log("connecting...");
+      socket.emit('button-listen', 'button3');
+      socket.on('button-pressed', (obj : {pressed: boolean, label: string, lit : boolean}) => {
+        console.log("button %s now %s", obj.label, obj.pressed ? "pressed" : "unpressed");
+      });
+    }
   });
+
+  //@ts-ignore
+  socket.on('players', numberOfPlayers => { console.log('number of players:', numberOfPlayers)});
+  //@ts-ignore
+  socket.on('rfid-match', event => { console.log("matched"); });
 });
 
 http.listen(3000, function(){
