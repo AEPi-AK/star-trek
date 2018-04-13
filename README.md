@@ -86,6 +86,16 @@ These instructions were written specifically for Mac.
     2. Click the extensions icon (it looks like a square with a square inside it)
     3. Search Remote VSCode
     4. Click install
+    5. On the installation page, it will have suggested user settings.  Add these to your VSCode user settings.
+    6. Add the following to your ~/.ssh/config:
+    ```Host <pi_name>
+    HostName <pi_address>
+    User pi
+    ForwardAgent yes
+    RemoteForward 52698 127.0.0.1:52698```
+    7. Restart VSCode
+    8. `ssh` into your pi, navigate to the file you'd like to edit, and `rcode <filename>`.  The file should open in VSCode.
+    
 
 You now have a linux machine on which you may begin developing.
 
