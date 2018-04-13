@@ -1,7 +1,6 @@
 import Socket = require('socket.io-client');
 import rpio = require('rpio');
 import iohook = require('iohook');
-import * as Types from '../../common/SocketIOTypes';
 
 console.log("Keypad started.");
 
@@ -9,7 +8,7 @@ function keyPress(event : KeyboardEvent){
     console.log(event);
 };
 
-var socket: Types.ClientSocket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 var translations: {[index:number]: number} = {
     71: 7,

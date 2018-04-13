@@ -1,7 +1,6 @@
 import Socket = require('socket.io-client');
 import rpio = require('rpio');
 import readline = require('readline');
-import * as Types from '../../common/SocketIOTypes';
 
 console.log("rfid started.");
 
@@ -11,9 +10,9 @@ function keyPress(event : KeyboardEvent){
     console.log(event);
 };
 
-var socket: Types.ClientSocket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
-socket.on('rfid', (target) => {
+socket.on('rfid', (target: string) => {
     console.log("matching " + target);
     const rl = readline.createInterface({
         input: process.stdin,

@@ -1,6 +1,6 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client')
-import * as Types from '../../common/SocketIOTypes';
+import * as Types from '../../shared/SocketIOTypes';
 
 console.log("starting");
 

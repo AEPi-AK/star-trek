@@ -2,15 +2,14 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
-import * as Types from '../../common/SocketIOTypes';
-import { ButtonState } from '../../common/HardwareTypes';
+import { ButtonState } from '../../shared/HardwareTypes';
 
 var app = Express();
 var http = new Http.Server(app);
 var io = IO(http, {'pingInterval': 2000, 'pingTimeout': 5000});
 var clients: string[] = new Array<string>();
 
-io.on('connect', function(socket: Types.ServerSocket){
+io.on('connect', function(socket: SocketIO.Socket){
   var name: null | string = null;
   console.log('a user connected: ' + socket.id);
 

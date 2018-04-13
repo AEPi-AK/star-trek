@@ -16,7 +16,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "baseUrl": ".",
-    "typeRoots": ["node_modules/@types", "../typings"]
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "./src/**/*",
