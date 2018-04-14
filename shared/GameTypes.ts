@@ -7,6 +7,7 @@ export interface GameState {
     weights: TaskWeights;
     durations: TaskDurations;
     task_frequency: number; // Number of seconds before attempting to create a new task
+    max_tasks: number;
 }
 
 export enum TaskType {

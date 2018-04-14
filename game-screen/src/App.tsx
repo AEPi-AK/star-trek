@@ -15,6 +15,7 @@ var defaultGameState: GameTypes.GameState = {
   weights: {},
   durations: {},
   task_frequency: 0,
+  max_tasks: 0,
 };
 
 // const logo = require('./logo.svg');
@@ -74,6 +75,14 @@ class App extends React.Component<{}, GameTypes.GameState> {
 
   decrementFrequency() {
     socket.emit('decrement-frequency');
+  }
+
+  incrementMaxTasks() {
+    socket.emit('increment-max-tasks');
+  }
+
+  decrementMaxTasks() {
+    socket.emit('decrement-max-tasks');
   }
 
   render() {
@@ -335,6 +344,11 @@ class App extends React.Component<{}, GameTypes.GameState> {
             {'Time between tasks: ' + this.state.task_frequency}
             <button onClick={e => this.incrementFrequency()}>+</button>
             <button onClick={e => this.decrementFrequency()}>-</button>
+            <div>
+              {'Max Tasks: ' + this.state.max_tasks}
+              <button onClick={e => this.incrementMaxTasks()}>+</button>
+              <button onClick={e => this.decrementMaxTasks()}>-</button>
+            </div>
             {probabilityControls}
           </div>
         </div>
@@ -358,6 +372,11 @@ class App extends React.Component<{}, GameTypes.GameState> {
           {'Time between tasks: ' + this.state.task_frequency}
           <button onClick={e => this.incrementFrequency()}>+</button>
           <button onClick={e => this.decrementFrequency()}>-</button>
+        </div>
+        <div>
+          {'Max Tasks: ' + this.state.max_tasks}
+          <button onClick={e => this.incrementMaxTasks()}>+</button>
+          <button onClick={e => this.decrementMaxTasks()}>-</button>
         </div>
         {probabilityControls}
       </div>

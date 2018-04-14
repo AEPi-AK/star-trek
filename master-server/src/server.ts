@@ -48,7 +48,7 @@ var task_templates : TaskTemplate[] = [
   substitute2('Flip the %s colored switches to the %s position', 
     ['Yellow and Green', 'Yellow and Blue', 'Yellow and Red', 'Green and Blue', 'Green and Red', 'Blue and Red'], ['up', 'down'], TaskType.FlipSwitches),
   substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
-  substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["3220", "5807", "0419", "4032", "9627"], TaskType.ReadCode),
+  substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["", "", "", "", ""], TaskType.ReadCode),
   [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
   [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
   [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
@@ -85,6 +85,7 @@ var game_state : GameState = {
   weights : INITIAL_WEIGHTS,
   durations: INITIAL_DURATIONS,
   task_frequency: 5,
+  max_tasks: 5,
 };
 var number_of_players = 0;
 function resetGameState () {
@@ -96,6 +97,7 @@ function resetGameState () {
     weights: game_state.weights,
     durations: game_state.durations,
     task_frequency: game_state.task_frequency,
+    max_tasks: game_state.max_tasks,
    };
 }
 
@@ -143,7 +145,7 @@ function startGame() {
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
     if (time_since_last_made >= game_state.task_frequency) {
-      if (game_state.tasks.length < number_of_players) {
+      if (game_state.tasks.length < game_state.max_tasks) {
         time_since_last_made = 0;
         var task = createNewTask();
         game_state.tasks.push(task);
@@ -266,6 +268,16 @@ io.on('connect', function(socket: SocketIO.Socket){
 
   socket.on('decrement-frequency', () => {
     game_state.task_frequency = Math.max(1, game_state.task_frequency - 1);
+    updatedGameState();
+  });
+
+  socket.on('increment-max-tasks', () => {
+    game_state.max_tasks = game_state.max_tasks + 1;
+    updatedGameState();
+  });
+
+  socket.on('decrement-max-tasks', () => {
+    game_state.max_tasks = Math.max(1, game_state.max_tasks - 1);
     updatedGameState();
   });
 });
