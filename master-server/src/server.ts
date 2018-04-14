@@ -21,21 +21,6 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-function sendMessage() {
-  rl.question('Send message on channel: ', (chan) => {
-    // TODO: Log the answer in a database
-    rl.question('With data: ', (dat) => {
-      //@ts-ignore
-      io.sockets.emit(chan, dat);
-      console.log("Sending data: " + dat + " on channel " + chan);
-      sendMessage();
-    });
-  });
-}
-
-sendMessage();
-
-
 function template(str : string, args : string[]) {
   var i = 0;
   return str.replace(/%s/g, () => { return args[i++]; });
