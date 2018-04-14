@@ -144,7 +144,7 @@ function startGame() {
   var time_since_last_made = 0;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
-    if (time_since_last_made >= game_state.task_frequency) {
+    if (time_since_last_made >= game_state.task_frequency || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
       if (game_state.tasks.length < game_state.max_tasks) {
         time_since_last_made = 0;
         var task = createNewTask();
