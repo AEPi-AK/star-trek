@@ -22,7 +22,6 @@ export interface TaskWeights {
     [t: number]: number;
 }
 
-
 export interface TaskTemplate {
     description: string;
     type: TaskType;

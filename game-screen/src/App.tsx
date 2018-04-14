@@ -12,6 +12,7 @@ var defaultGameState: GameTypes.GameState = {
   failures: 0,
   time: 0,
   phase: GameTypes.GamePhase.NotConnected,
+  weights: {}, 
 };
 
 // const logo = require('./logo.svg');
