@@ -210,6 +210,9 @@ io.on('connect', function(socket: SocketIO.Socket){
         console.log("button %s now %s", obj.label, obj.pressed ? "pressed" : "unpressed");
       });
     }
+    if (data == 'game-screen') {
+      updatedGameState();
+    }
   });
 
 
