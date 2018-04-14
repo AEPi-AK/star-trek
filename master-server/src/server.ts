@@ -80,12 +80,22 @@ var INITIAL_WEIGHTS = {
   [TaskType.PressBigButton] : 1
 }
 
+var INITIAL_DURATIONS = {
+  [TaskType.PressButton] : 10,
+  [TaskType.ScanHand] : 10,
+  [TaskType.FlipSwitches] : 10,
+  [TaskType.Plugboard] : 10,
+  [TaskType.ReadCode] : 10,
+  [TaskType.ScanCard] : 10,
+  [TaskType.PressBigButton] : 10
+}
+
 var task_id = 0;
 
-var game_state : GameState = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+var game_state : GameState = {tasks : [], failures : 0, time : 150, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS, durations: INITIAL_DURATIONS};
 var number_of_players = 0;
 function resetGameState () {
-  game_state = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+  game_state = {tasks : [], failures : 0, time : 150, phase : GamePhase.EnterPlayers, weights : game_state.weights, durations: game_state.durations };
 }
 
 function pickRandomTaskTemplate () : TaskTemplate {
@@ -116,9 +126,9 @@ function pickRandomTaskTemplate () : TaskTemplate {
 function createTaskFromTemplate (template : TaskTemplate) : Task {
   var time = new Date();
   var end_time = new Date();
-  end_time.setSeconds(time.getSeconds() + 10);
+  end_time.setSeconds(time.getSeconds() + game_state.durations[template.type]);
   var id = task_id++;
-  return {description : template.description, time_created: time.getTime(), time_expires : end_time.getTime(), id : id};
+  return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id};
 }
 
 function createNewTask () {
@@ -126,14 +136,14 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
-
-
 var game_timer_ids : NodeJS.Timer[] = [];
 function startGame() {
   game_timer_ids.push(setInterval(() => {
-    var task = createNewTask();
-    game_state.tasks.push(task);
-    updatedGameState();
+    if (game_state.tasks.length < number_of_players) {
+      var task = createNewTask();
+      game_state.tasks.push(task);
+      updatedGameState();
+    }
   }, 10000 / number_of_players));
   
   game_timer_ids.push(setInterval(() => {
@@ -148,7 +158,6 @@ function startGame() {
   }, 500));
   
   game_timer_ids.push(setInterval(() => {
-    console.log("called");
     game_state.time -= 1;
     if (game_state.time == 0) {
       endGame();
@@ -172,9 +181,6 @@ function updatedGameState () {
   io.sockets.emit('game-state-updated', game_state);
   console.log(game_state);
 }
-
-
-
 
 io.on('connect', function(socket: SocketIO.Socket){
   var name: null | string = null;
@@ -223,13 +229,27 @@ io.on('connect', function(socket: SocketIO.Socket){
     }
   });
 
+  socket.on('reset-game', () => {
+    endGame();
+  });
 
+  socket.on('increment-probability', (x: TaskType) => {
+    game_state.weights[x] = Math.min(game_state.weights[x] + 1, 10);
+    updatedGameState();
+  });
 
+  socket.on('decrement-probability', (x: TaskType) => {
+    game_state.weights[x] = Math.max(game_state.weights[x] - 1, 0);
+    updatedGameState();
+  });
 
-  //@ts-ignore
-  socket.on('players', numberOfPlayers => { console.log('number of players:', numberOfPlayers)});
-  //@ts-ignore
-  socket.on('rfid-match', event => { console.log("matched"); });
+  socket.on('increment-duration', (x: TaskType) => {
+    game_state.durations[x] = game_state.durations[x] + 1;
+    updatedGameState();
+  });
 
-
+  socket.on('decrement-duration', (x: TaskType) => {
+    game_state.durations[x] = Math.max(game_state.durations[x] - 1, 0);
+    updatedGameState();
+  });
 });

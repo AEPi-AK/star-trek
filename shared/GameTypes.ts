@@ -5,6 +5,7 @@ export interface GameState {
     time: number;
     phase: GamePhase;
     weights: TaskWeights;
+    durations: TaskDurations;
 }
 
 export enum TaskType {
@@ -18,6 +19,11 @@ export enum TaskType {
 }
 
 export interface TaskWeights {
+    // Should be [t: TaskType]: number
+    [t: number]: number;
+}
+
+export interface TaskDurations {
     // Should be [t: TaskType]: number
     [t: number]: number;
 }
