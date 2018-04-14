@@ -181,16 +181,18 @@ class App extends React.Component<{}, GameTypes.GameState> {
         <div id="tasks">
           <ul>{tasks}</ul>
         </div>
-        <p>{'Strikes: ' + this.state.failures}</p>
+        <div white-space="pre">
+          <pre>
+            {'Strikes: ' + this.state.failures + '     ' +
+              'Time between tasks: ' + this.state.task_frequency}
+          </pre>
+          <button onClick={e => this.incrementFrequency()}>+</button>
+          <button onClick={e => this.decrementFrequency()}>-</button>
+        </div>
         <Line percent={Math.max(0, (this.state.time / 150) * 100)} strokeWidth="3" strokeColor="#008000" />
         <p>{'Time remaining: ' + Math.max(0, this.state.time)}</p>
         <button onClick={this.resetGame}>Reset Game</button>
         {probabilityControls}
-        <div>
-          {'Time between tasks: ' + this.state.task_frequency}
-          <button onClick={e => this.incrementFrequency()}>+</button>
-          <button onClick={e => this.decrementFrequency()}>-</button>
-        </div>
       </div>
     );
   }
