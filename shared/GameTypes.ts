@@ -1,8 +1,10 @@
+
 export interface GameState {
     tasks: Task[];
     failures: number;
     time: number;
     phase: GamePhase;
+    weights: TaskWeights;
 }
 
 export enum TaskType {
@@ -14,6 +16,12 @@ export enum TaskType {
     ScanCard,
     PressBigButton
 }
+
+export interface TaskWeights {
+    // Should be [t: TaskType]: number
+    [t: number]: number;
+}
+
 
 export interface TaskTemplate {
     description: string;

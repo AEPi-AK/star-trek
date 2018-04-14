@@ -70,7 +70,7 @@ var task_templates : TaskTemplate[] = [
   [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
 ].reduce((acc, cur) => acc.concat(cur));
 
-var weights = {
+var INITIAL_WEIGHTS = {
   [TaskType.PressButton] : 1,
   [TaskType.ScanHand] : 1,
   [TaskType.FlipSwitches] : 1,
@@ -81,6 +81,12 @@ var weights = {
 }
 
 var task_id = 0;
+
+var game_state : GameState = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+var number_of_players = 0;
+function resetGameState () {
+  game_state = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+}
 
 function pickRandomTaskTemplate () : TaskTemplate {
   //@ts-ignore
@@ -101,7 +107,7 @@ function pickRandomTaskTemplate () : TaskTemplate {
   var accum = 0;
   var rand = Math.random();
   for (var i = 0; i < task_templates.length; i++) {
-    accum += 1/total * weights[task_templates[i].type];
+    accum += 1/total * game_state.weights[task_templates[i].type];
     if (accum > rand) return task_templates[i];
   }
   return task_templates[task_templates.length - 1];
@@ -118,12 +124,6 @@ function createTaskFromTemplate (template : TaskTemplate) : Task {
 function createNewTask () {
   var template = pickRandomTaskTemplate();
   return createTaskFromTemplate(template);
-}
-
-var game_state : GameState = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers};
-var number_of_players = 0;
-function resetGameState () {
-  game_state = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers};
 }
 
 io.sockets.on('number-players', (num : number) => {
@@ -209,6 +209,9 @@ io.on('connect', function(socket: SocketIO.Socket){
       socket.on('button-pressed', (obj : {pressed: boolean, label: string, lit : boolean}) => {
         console.log("button %s now %s", obj.label, obj.pressed ? "pressed" : "unpressed");
       });
+    }
+    if (data == 'game-screen') {
+      updatedGameState();
     }
   });
 
