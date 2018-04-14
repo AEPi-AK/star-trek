@@ -29,6 +29,7 @@ export interface Task {
 }
 
 export enum GamePhase {
+    NotConnected, // This should only be set in the game-screen module.
     EnterPlayers,
     PlayGame,
 }
