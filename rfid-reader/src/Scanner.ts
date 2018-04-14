@@ -1,6 +1,4 @@
 import { Device, getDeviceList, on as onUsb, InEndpoint } from 'usb';
-import { ScanPacket } from '../../common/types';
-import manifest from '../../common/manifest';
 
 const VENDOR_ID = 65535; // 2^16 - 1. Lol. Very lazy of them.
 function deviceIsCardScanner(device: Device): boolean {
@@ -68,8 +66,8 @@ function watchDevice(device: Device, sendPacket: (p: ScanPacket) => any): void {
 export default class Scanner {
   constructor(sendPacket: (p: ScanPacket) => any) {
     getDeviceList()
-      .filter(deviceIsCardScanner)
-      .forEach(device => watchDevice(device, sendPacket.bind(this)));
+      .find(deviceIsCardScanner)
+      .then(device => watchDevice(device, sendPacket.bind(this)));
 
     onUsb('attach', device => watchDevice(device, sendPacket.bind(this)));
   }
