@@ -94,6 +94,40 @@ var game_state : GameState = {tasks : [], failures : 0, time : 200};
 // task-completed : console -> server
 
 
+function updatedGameState () {
+  io.sockets.emit('game-state-updated', game_state);
+  console.log(game_state);
+}
+
+io.sockets.on('task-completed', (id : number) => {
+  game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id != id);
+  updatedGameState();
+})
+
+setInterval(() => {
+  var task = createNewTask();
+  game_state.tasks.push(task);
+  updatedGameState();
+}, 5000);
+
+setInterval(() => {
+  var now = new Date();
+  var old_length = game_state.tasks.length;
+  game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
+  var new_failures = old_length - game_state.tasks.length;
+  if (new_failures > 0) {
+    game_state.failures += new_failures;
+    updatedGameState();
+  }
+}, 500);
+
+setInterval(() => {
+  console.log("called");
+  game_state.time -= 1;
+  updatedGameState();
+}, 1000);
+
+
 
 io.on('connect', function(socket: SocketIO.Socket){
   var name: null | string = null;
@@ -130,35 +164,5 @@ io.on('connect', function(socket: SocketIO.Socket){
   //@ts-ignore
   socket.on('rfid-match', event => { console.log("matched"); });
 
-  function updatedGameState () {
-    socket.emit('game-state-updated', game_state);
-    console.log(game_state);
-  }
 
-  socket.on('task-completed', (id) => {
-    game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id != id);
-    updatedGameState();
-  })
-  
-  setInterval(() => {
-    var task = createNewTask();
-    game_state.tasks.push(task);
-    updatedGameState();
-  }, 5000);
-
-  setInterval(() => {
-    var now = new Date();
-    var old_length = game_state.tasks.length;
-    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
-    var new_failures = old_length - game_state.tasks.length;
-    if (new_failures > 0) {
-      game_state.failures += new_failures;
-      updatedGameState();
-    }
-  }, 500);
-
-  setInterval(() => {
-    game_state.time -= 1;
-    updatedGameState();
-  }, 1000);
 });
