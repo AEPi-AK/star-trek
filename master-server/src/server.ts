@@ -149,7 +149,7 @@ io.on('connect', function(socket: SocketIO.Socket){
   setInterval(() => {
     var now = new Date();
     var old_length = game_state.tasks.length;
-    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getDate());
+    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
     var new_failures = old_length - game_state.tasks.length;
     if (new_failures > 0) {
       game_state.failures += new_failures;
