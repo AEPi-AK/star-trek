@@ -126,12 +126,7 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
-io.sockets.on('number-players', (num : number) => {
-  number_of_players = num;
-  game_state.phase = GamePhase.PlayGame;
-  startGame();
-  updatedGameState();
-})
+
 
 var game_timer_ids : NodeJS.Timer[] = [];
 function startGame() {
@@ -171,15 +166,13 @@ function endGame () {
   updatedGameState();
 }
 
-io.sockets.on('task-completed', (id : number) => {
-  game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id != id);
-  updatedGameState();
-})
+
 
 function updatedGameState () {
   io.sockets.emit('game-state-updated', game_state);
   console.log(game_state);
 }
+
 
 
 
@@ -195,6 +188,21 @@ io.on('connect', function(socket: SocketIO.Socket){
     }
     else console.log(socket.id + ' disconnected');
   }); 
+
+  socket.on('number-players', (num : number) => {
+    console.log("num-players-called");
+    number_of_players = num;
+    if (game_state.phase != GamePhase.PlayGame) {
+      game_state.phase = GamePhase.PlayGame;
+      startGame();
+      updatedGameState();
+    }
+  })
+
+  socket.on('task-completed', (id : number) => {
+    game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id != id);
+    updatedGameState();
+  })
 
   socket.on('identification', function (data: string) {
     if (name === null) {
@@ -214,6 +222,8 @@ io.on('connect', function(socket: SocketIO.Socket){
       updatedGameState();
     }
   });
+
+
 
 
   //@ts-ignore
