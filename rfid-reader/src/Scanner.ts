@@ -5,7 +5,8 @@ function deviceIsCardScanner(device: Device): boolean {
   return device.deviceDescriptor.idVendor === VENDOR_ID;
 }
 
-function watchDevice(device: Device, sendPacket: (p: ScanPacket) => any): void {
+
+function watchDevice(device: Device, sendPacket: (p: any) => any): void {
   if (!deviceIsCardScanner(device)) {
     return;
   }
@@ -33,7 +34,7 @@ function watchDevice(device: Device, sendPacket: (p: ScanPacket) => any): void {
   let scanCodes: number[] = [];
 
   endpoint.on('data', (data: Buffer) => {
-    const scanCode = Number.parseInt(data.toString('hex', 2, 3), 16);
+    const scanCode = parseInt(data.toString('hex', 2, 3), 16);
     // Every other scan code is blank padding
     if (scanCode === 0) {
       return;
@@ -45,14 +46,14 @@ function watchDevice(device: Device, sendPacket: (p: ScanPacket) => any): void {
       // If the enter key was pressed
       const sequence = Number(scanCodes.join(''));
       console.log(`Read card with sequence: ${sequence}`);
-      const entry = manifest.find(m => m.sequence === sequence);
+      /*const entry = manifest.find(m => m.sequence === sequence);
       if (entry) {
         console.log(`Identified ${entry.name} (id ${entry.cardID})`);
         sendPacket({
           kind: 'scan',
           cardID: entry.cardID,
         });
-      }
+      }*/
 
       scanCodes = [];
     }
@@ -64,10 +65,10 @@ function watchDevice(device: Device, sendPacket: (p: ScanPacket) => any): void {
 }
 
 export default class Scanner {
-  constructor(sendPacket: (p: ScanPacket) => any) {
+  constructor(sendPacket: (p: any) => any) {
     getDeviceList()
-      .find(deviceIsCardScanner)
-      .then(device => watchDevice(device, sendPacket.bind(this)));
+      .filter(deviceIsCardScanner)
+      .forEach(device => watchDevice(device, sendPacket.bind(this)));
 
     onUsb('attach', device => watchDevice(device, sendPacket.bind(this)));
   }
