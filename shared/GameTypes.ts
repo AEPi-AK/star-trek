@@ -1,17 +1,28 @@
 export interface GameState {
-    tasks : Task[];
-    failures : number;
-    time : number;
+    tasks: Task[];
+    failures: number;
+    time: number;
+}
+
+export enum TaskType {
+    PressButton,
+    ScanHand,
+    FlipSwitches,
+    Plugboard,
+    ReadCode,
+    ScanCard,
+    PressBigButton
 }
 
 export interface TaskTemplate {
-    description : string;
+    description: string;
+    type: TaskType;
     // completed : HardwareState;
 }
 
 export interface Task {
-    description : string;
-    id : number;
-    time_created : number;
-    time_expires : number;
+    description: string;
+    id: number;
+    time_created: number;
+    time_expires: number;
 }

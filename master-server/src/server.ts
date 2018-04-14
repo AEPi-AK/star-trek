@@ -3,7 +3,8 @@ import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
 import { ButtonState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task } from '../../shared/GameTypes';
+import { GameState, TaskTemplate, Task, TaskType } from '../../shared/GameTypes';
+import { isNumber } from 'util';
 
 var app = Express();
 var http = new Http.Server(app);
@@ -40,38 +41,71 @@ function template(str : string, args : string[]) {
   return str.replace(/%s/g, () => { return args[i++]; });
 }
 
-function substitute1 (str : string, p1 : string[]) {
-  return p1.map((arg) => template(str, [arg]));
+function substitute1 (str : string, p1 : string[], type : TaskType) {
+  return p1.map((arg) => ({description : template(str, [arg]), type : type}));
 }
 
-function substitute2 (str : string, p1 : string[], p2 : string[]) {
-  var returns : string[] = [];
+function substitute2 (str : string, p1 : string[], p2 : string[], type : TaskType) {
+  var returns : TaskTemplate[] = [];
   for (var poss1 of p1) {
     for (var poss2 of p2) {
-      returns.push(template(str, [poss1, poss2]));
+      returns.push({description : template(str, [poss1, poss2]), type : type});
     }
   }
   return returns;
 }
 
-var task_descriptions = [
-  substitute1('Press the %s colored button at Tactical', ['Y', 'G', 'B']),
-  substitute1('Press the button labelled %s at Tactical', ['Y', 'G', 'B']),
-  substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation']),
-  ['Scan hand at Security'],
+var task_templates : TaskTemplate[] = [
+  substitute1('Press the %s colored button at Tactical', ['Y', 'G', 'B'], TaskType.PressButton),
+  substitute1('Press the button labelled %s at Tactical', ['Y', 'G', 'B'], TaskType.PressButton),
+  substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation'], TaskType.PressButton),
+  [{description : 'Scan hand at Security', type : TaskType.ScanHand}],
   substitute2('Flip the %s colored switches to the %s position', 
-    ['Y and G', 'Y and B', 'Y and R', 'G and B', 'G and R', 'B and R'], ['up', 'down']),
-  substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10']),
-  ["Read the code on the captain's chair.  Enter it on the keypad."],
-  ["Scan Montgomery Scott's ID card at Security"],
-  ["Scan the Engineer's ID card at Security"],
-  ["Scan an ID card with access level IV at Security"],
-  ["Press the Big Red Button"]
+    ['Y and G', 'Y and B', 'Y and R', 'G and B', 'G and R', 'B and R'], ['up', 'down'], TaskType.FlipSwitches),
+  substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
+  [{description : "Read the code on the captain's chair.  Enter it on the keypad.", type : TaskType.ReadCode}],
+  [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
+  [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
+  [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
+  [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
 ].reduce((acc, cur) => acc.concat(cur));
 
-var task_templates : TaskTemplate [] = task_descriptions.map((desc) => { return {description : desc}; });
+var weights = {
+  [TaskType.PressButton] : 1,
+  [TaskType.ScanHand] : 1,
+  [TaskType.FlipSwitches] : 1,
+  [TaskType.Plugboard] : 1,
+  [TaskType.ReadCode] : 1,
+  [TaskType.ScanCard] : 1,
+  [TaskType.PressBigButton] : 1
+}
+
 var task_id = 0;
 
+function pickRandomTaskTemplate () : TaskTemplate {
+  //@ts-ignore
+  var type_keys : number[] = Object.keys(TaskType).filter(k => typeof TaskType[k as any] === "number").map(k => TaskType[k as any]);
+  var counts : {[t : number] : number} = {};
+  for (var template of task_templates) {
+    if (counts[template.type]) {
+      counts[template.type] += 1;
+    } 
+    else {
+      counts[template.type] = 1;
+    }
+  }
+  var total = 0;
+  for (var type of type_keys) {
+    total += counts[type] || 0;
+  }
+  var accum = 0;
+  var rand = Math.random();
+  for (var i = 0; i < task_templates.length; i++) {
+    accum += 1/total * weights[task_templates[i].type];
+    if (accum > rand) return task_templates[i];
+  }
+  return task_templates[task_templates.length - 1];
+}
 
 function createTaskFromTemplate (template : TaskTemplate) : Task {
   var time = new Date();
@@ -82,7 +116,7 @@ function createTaskFromTemplate (template : TaskTemplate) : Task {
 }
 
 function createNewTask () {
-  var template = task_templates[Math.floor(Math.random() * task_templates.length)];
+  var template = pickRandomTaskTemplate();
   return createTaskFromTemplate(template);
 }
 
