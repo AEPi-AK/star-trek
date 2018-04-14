@@ -58,8 +58,15 @@ var task_descriptions = [
   substitute1('Press the %s colored button at Tactical', ['Y', 'G', 'B']),
   substitute1('Press the button labelled %s at Tactical', ['Y', 'G', 'B']),
   substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation']),
-  ['Scan hand at Security']
-  // add more
+  ['Scan hand at Security'],
+  substitute2('Flip the %s colored switches to the %s position', 
+    ['Y and G', 'Y and B', 'Y and R', 'G and B', 'G and R', 'B and R'], ['up', 'down']),
+  substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10']),
+  ["Read the code on the captain's chair.  Enter it on the keypad."],
+  ["Scan Montgomery Scott's ID card at Security"],
+  ["Scan the Engineer's ID card at Security"],
+  ["Scan an ID card with access level IV at Security"],
+  ["Press the Big Red Button"]
 ].reduce((acc, cur) => acc.concat(cur));
 
 var task_templates : TaskTemplate [] = task_descriptions.map((desc) => { return {description : desc}; });
@@ -71,7 +78,7 @@ function createTaskFromTemplate (template : TaskTemplate) : Task {
   var end_time = new Date();
   end_time.setSeconds(time.getSeconds() + 10);
   var id = task_id++;
-  return {description : template.description, time_created: time, time_expires : end_time, id : id};
+  return {description : template.description, time_created: time.getTime(), time_expires : end_time.getTime(), id : id};
 }
 
 function createNewTask () {
@@ -142,7 +149,7 @@ io.on('connect', function(socket: SocketIO.Socket){
   setInterval(() => {
     var now = new Date();
     var old_length = game_state.tasks.length;
-    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now);
+    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getDate());
     var new_failures = old_length - game_state.tasks.length;
     if (new_failures > 0) {
       game_state.failures += new_failures;
