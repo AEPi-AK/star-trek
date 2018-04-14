@@ -2,6 +2,7 @@ export interface GameState {
     tasks: Task[];
     failures: number;
     time: number;
+    phase: GamePhase;
 }
 
 export interface TaskTemplate {
@@ -14,4 +15,9 @@ export interface Task {
     id: number;
     time_created: number;
     time_expires: number;
+}
+
+export enum GamePhase {
+    EnterPlayers,
+    PlayGame,
 }
