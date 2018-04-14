@@ -58,7 +58,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
       scanCodes = [];
     }
   });
-
+  //@ts-ignore
   endpoint.on('error', error => {
     console.log(`Scanner disconnected`);
   });
@@ -68,8 +68,9 @@ export default class Scanner {
   constructor(sendPacket: (p: any) => any) {
     getDeviceList()
       .filter(deviceIsCardScanner)
+      //@ts-ignore
       .forEach(device => watchDevice(device, sendPacket.bind(this)));
-
+    //@ts-ignore
     onUsb('attach', device => watchDevice(device, sendPacket.bind(this)));
   }
 }
