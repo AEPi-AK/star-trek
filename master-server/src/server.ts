@@ -120,6 +120,7 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
+//@ts-ignore
 var game_state : GameState = {tasks : [], failures : 0, time : 200};
 
 
