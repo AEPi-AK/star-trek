@@ -29,23 +29,20 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
     throw Error('invalid endpoint for interface');
   }
 
-  (endpoint as InEndpoint).startPoll(1, 1);
+  (endpoint as InEndpoint).startPoll(1, 4);
 
   let scanCodes: number[] = [];
 
   endpoint.on('data', (data: Buffer) => {
-    const scanCode = parseInt(data.toString('hex', 2, 3), 16);
+    console.log("Buffer: ", (data.toString('hex', 2, 4)));
+    const scanCode = parseInt(data.toString('hex', 2, 4), 16);
     // Every other scan code is blank padding
     if (scanCode === 0) {
       return;
-    } else if (scanCode >= 0x1e && scanCode <= 0x27) {
+    } else if (scanCode >= 0x59 && scanCode <= 0x62) {
       // Only push numbers 0-9
       // https://github.com/abcminiuser/lufa/blob/master/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h#L113
-      scanCodes.push(scanCode - 0x1d);
-    } else if (scanCode === 0x28) {
-      // If the enter key was pressed
-      const sequence = Number(scanCodes.join(''));
-      console.log(`Read card with sequence: ${sequence}`);
+      console.log(`Read keypress with value: ${scanCode}`);
       /*const entry = manifest.find(m => m.sequence === sequence);
       if (entry) {
         console.log(`Identified ${entry.name} (id ${entry.cardID})`);
@@ -54,9 +51,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
           cardID: entry.cardID,
         });
       }*/
-
-      scanCodes = [];
-    }
+      }
   });
 
   endpoint.on('error', error => {
