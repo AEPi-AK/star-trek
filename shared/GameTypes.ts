@@ -12,6 +12,6 @@ export interface TaskTemplate {
 export interface Task {
     description : string;
     id : number;
-    time_created : Date;
-    time_expires : Date;
+    time_created : number;
+    time_expires : number;
 }
