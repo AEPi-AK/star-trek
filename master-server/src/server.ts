@@ -120,17 +120,55 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
-var game_state : GameState = {tasks : [], failures : 0, time : 200, phase: GamePhase.EnterPlayers};
+var game_state : GameState = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers};
+var number_of_players = 0;
+function resetGameState () {
+  game_state = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers};
+}
 
+io.sockets.on('number-players', (num : number) => {
+  number_of_players = num;
+  game_state.phase = GamePhase.PlayGame;
+  startGame();
+  updatedGameState();
+})
 
+var game_timer_ids : NodeJS.Timer[] = [];
+function startGame() {
+  game_timer_ids.push(setInterval(() => {
+    var task = createNewTask();
+    game_state.tasks.push(task);
+    updatedGameState();
+  }, 10000 / number_of_players));
+  
+  game_timer_ids.push(setInterval(() => {
+    var now = new Date();
+    var old_length = game_state.tasks.length;
+    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
+    var new_failures = old_length - game_state.tasks.length;
+    if (new_failures > 0) {
+      game_state.failures += new_failures;
+      updatedGameState();
+    }
+  }, 500));
+  
+  game_timer_ids.push(setInterval(() => {
+    console.log("called");
+    game_state.time -= 1;
+    if (game_state.time == 0) {
+      endGame();
+    } else {
+      updatedGameState();
+    }
+  }, 1000));
+}
 
-// game-state-updated: server -> console
-// task-completed : console -> server
-
-
-function updatedGameState () {
-  io.sockets.emit('game-state-updated', game_state);
-  console.log(game_state);
+function endGame () {
+  for (var timer of game_timer_ids) {
+    clearInterval(timer);
+  }
+  resetGameState();
+  updatedGameState();
 }
 
 io.sockets.on('task-completed', (id : number) => {
@@ -138,28 +176,10 @@ io.sockets.on('task-completed', (id : number) => {
   updatedGameState();
 })
 
-setInterval(() => {
-  var task = createNewTask();
-  game_state.tasks.push(task);
-  updatedGameState();
-}, 5000);
-
-setInterval(() => {
-  var now = new Date();
-  var old_length = game_state.tasks.length;
-  game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
-  var new_failures = old_length - game_state.tasks.length;
-  if (new_failures > 0) {
-    game_state.failures += new_failures;
-    updatedGameState();
-  }
-}, 500);
-
-setInterval(() => {
-  console.log("called");
-  game_state.time -= 1;
-  updatedGameState();
-}, 1000);
+function updatedGameState () {
+  io.sockets.emit('game-state-updated', game_state);
+  console.log(game_state);
+}
 
 
 
