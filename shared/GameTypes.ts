@@ -1,8 +1,10 @@
+
 export interface GameState {
     tasks: Task[];
     failures: number;
     time: number;
     phase: GamePhase;
+    weights: TaskWeights;
 }
 
 export enum TaskType {
@@ -13,6 +15,11 @@ export enum TaskType {
     ReadCode,
     ScanCard,
     PressBigButton
+}
+
+export interface TaskWeights {
+    // Should be [t: TaskType]: number
+    [t: number]: number;
 }
 
 export interface TaskTemplate {
@@ -29,6 +36,7 @@ export interface Task {
 }
 
 export enum GamePhase {
+    NotConnected, // This should only be set in the game-screen module.
     EnterPlayers,
     PlayGame,
 }

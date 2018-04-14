@@ -3,7 +3,7 @@ import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
 import { ButtonState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task, TaskType } from '../../shared/GameTypes';
+import { GameState, TaskTemplate, Task, TaskType, GamePhase } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
 var app = Express();
@@ -70,7 +70,7 @@ var task_templates : TaskTemplate[] = [
   [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
 ].reduce((acc, cur) => acc.concat(cur));
 
-var weights = {
+var INITIAL_WEIGHTS = {
   [TaskType.PressButton] : 1,
   [TaskType.ScanHand] : 1,
   [TaskType.FlipSwitches] : 1,
@@ -81,6 +81,12 @@ var weights = {
 }
 
 var task_id = 0;
+
+var game_state : GameState = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+var number_of_players = 0;
+function resetGameState () {
+  game_state = {tasks : [], failures : 0, time : 200, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS};
+}
 
 function pickRandomTaskTemplate () : TaskTemplate {
   //@ts-ignore
@@ -101,7 +107,7 @@ function pickRandomTaskTemplate () : TaskTemplate {
   var accum = 0;
   var rand = Math.random();
   for (var i = 0; i < task_templates.length; i++) {
-    accum += 1/total * weights[task_templates[i].type];
+    accum += 1/total * game_state.weights[task_templates[i].type];
     if (accum > rand) return task_templates[i];
   }
   return task_templates[task_templates.length - 1];
@@ -120,18 +126,49 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
-//@ts-ignore
-var game_state : GameState = {tasks : [], failures : 0, time : 200};
+io.sockets.on('number-players', (num : number) => {
+  number_of_players = num;
+  game_state.phase = GamePhase.PlayGame;
+  startGame();
+  updatedGameState();
+})
 
+var game_timer_ids : NodeJS.Timer[] = [];
+function startGame() {
+  game_timer_ids.push(setInterval(() => {
+    var task = createNewTask();
+    game_state.tasks.push(task);
+    updatedGameState();
+  }, 10000 / number_of_players));
+  
+  game_timer_ids.push(setInterval(() => {
+    var now = new Date();
+    var old_length = game_state.tasks.length;
+    game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
+    var new_failures = old_length - game_state.tasks.length;
+    if (new_failures > 0) {
+      game_state.failures += new_failures;
+      updatedGameState();
+    }
+  }, 500));
+  
+  game_timer_ids.push(setInterval(() => {
+    console.log("called");
+    game_state.time -= 1;
+    if (game_state.time == 0) {
+      endGame();
+    } else {
+      updatedGameState();
+    }
+  }, 1000));
+}
 
-
-// game-state-updated: server -> console
-// task-completed : console -> server
-
-
-function updatedGameState () {
-  io.sockets.emit('game-state-updated', game_state);
-  console.log(game_state);
+function endGame () {
+  for (var timer of game_timer_ids) {
+    clearInterval(timer);
+  }
+  resetGameState();
+  updatedGameState();
 }
 
 io.sockets.on('task-completed', (id : number) => {
@@ -139,28 +176,10 @@ io.sockets.on('task-completed', (id : number) => {
   updatedGameState();
 })
 
-setInterval(() => {
-  var task = createNewTask();
-  game_state.tasks.push(task);
-  updatedGameState();
-}, 5000);
-
-setInterval(() => {
-  var now = new Date();
-  var old_length = game_state.tasks.length;
-  game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
-  var new_failures = old_length - game_state.tasks.length;
-  if (new_failures > 0) {
-    game_state.failures += new_failures;
-    updatedGameState();
-  }
-}, 500);
-
-setInterval(() => {
-  console.log("called");
-  game_state.time -= 1;
-  updatedGameState();
-}, 1000);
+function updatedGameState () {
+  io.sockets.emit('game-state-updated', game_state);
+  console.log(game_state);
+}
 
 
 
@@ -190,6 +209,9 @@ io.on('connect', function(socket: SocketIO.Socket){
       socket.on('button-pressed', (obj : {pressed: boolean, label: string, lit : boolean}) => {
         console.log("button %s now %s", obj.label, obj.pressed ? "pressed" : "unpressed");
       });
+    }
+    if (data == 'game-screen') {
+      updatedGameState();
     }
   });
 
