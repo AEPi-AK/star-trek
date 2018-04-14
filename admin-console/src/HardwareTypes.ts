@@ -31,8 +31,8 @@ export interface HardwareState {
       switch3: boolean;
       smallButtonWhite0: boolean;
       smallButtonWhite1: boolean;
-      smallButtonRed0 : boolean;
-      smallButtonRed1 : boolean;
+      smallButtonRed0: boolean;
+      smallButtonRed1: boolean;
       smallButtonBlue0: boolean;
       smallButtonBlue1: boolean;
       smallButtonYellow0: boolean;
@@ -40,7 +40,7 @@ export interface HardwareState {
       smallButtonGreen0: boolean;
       smallButtonGreen1: boolean;
       mediumButtonWhite: boolean;
-      mediumButtonRed : boolean;
+      mediumButtonRed: boolean;
       mediumButtonBlue: boolean;
       mediumButtonYellow: boolean;
       mediumButtonGreen: boolean;
@@ -49,7 +49,7 @@ export interface HardwareState {
       plugboard: boolean;
       captainsChair: boolean;
       keypad: boolean;
-      touchSens: boolean;
+      touchSensor: boolean;
     };
 }
 
