@@ -3,7 +3,7 @@ import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
 import { ButtonState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task, TaskType } from '../../shared/GameTypes';
+import { GameState, TaskTemplate, Task, TaskType, GamePhase } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
 var app = Express();
@@ -120,7 +120,7 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
-var game_state : GameState = {tasks : [], failures : 0, time : 200};
+var game_state : GameState = {tasks : [], failures : 0, time : 200, phase: GamePhase.EnterPlayers};
 
 
 
