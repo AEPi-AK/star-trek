@@ -162,17 +162,25 @@ class App extends React.Component<{}, GameTypes.GameState> {
     } else if (this.state.phase === GameTypes.GamePhase.EnterPlayers) {
       return (
         <div>
-          Enter Players:
+          <div>
+            Enter Players:
           <button onClick={event => this.addPlayers(1)}>1</button>
-          <button onClick={event => this.addPlayers(2)}>2</button>
-          <button onClick={event => this.addPlayers(3)}>3</button>
-          <button onClick={event => this.addPlayers(4)}>4</button>
-          <button onClick={event => this.addPlayers(5)}>5</button>
-          <button onClick={event => this.addPlayers(6)}>6</button>
-          <button onClick={event => this.addPlayers(7)}>7</button>
-          <button onClick={event => this.addPlayers(8)}>8</button>
-          <button onClick={event => this.addPlayers(9)}>9</button>
-          <button onClick={event => this.addPlayers(10)}>10</button>
+            <button onClick={event => this.addPlayers(2)}>2</button>
+            <button onClick={event => this.addPlayers(3)}>3</button>
+            <button onClick={event => this.addPlayers(4)}>4</button>
+            <button onClick={event => this.addPlayers(5)}>5</button>
+            <button onClick={event => this.addPlayers(6)}>6</button>
+            <button onClick={event => this.addPlayers(7)}>7</button>
+            <button onClick={event => this.addPlayers(8)}>8</button>
+            <button onClick={event => this.addPlayers(9)}>9</button>
+            <button onClick={event => this.addPlayers(10)}>10</button>
+          </div>
+          <div>
+            {'Time between tasks: ' + this.state.task_frequency}
+            <button onClick={e => this.incrementFrequency()}>+</button>
+            <button onClick={e => this.decrementFrequency()}>-</button>
+            {probabilityControls}
+          </div>
         </div>
       );
     }

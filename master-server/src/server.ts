@@ -41,14 +41,14 @@ function substitute2 (str : string, p1 : string[], p2 : string[], type : TaskTyp
 }
 
 var task_templates : TaskTemplate[] = [
-  substitute1('Press the %s colored button at Tactical', ['Y', 'G', 'B'], TaskType.PressButton),
-  substitute1('Press the button labelled %s at Tactical', ['Y', 'G', 'B'], TaskType.PressButton),
+  substitute1('Press the %s colored button at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
+  substitute1('Press the button labelled %s at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
   substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation'], TaskType.PressButton),
   [{description : 'Scan hand at Security', type : TaskType.ScanHand}],
   substitute2('Flip the %s colored switches to the %s position', 
-    ['Y and G', 'Y and B', 'Y and R', 'G and B', 'G and R', 'B and R'], ['up', 'down'], TaskType.FlipSwitches),
+    ['Yellow and Green', 'Yellow and Blue', 'Yellow and Red', 'Green and Blue', 'Green and Red', 'Blue and Red'], ['up', 'down'], TaskType.FlipSwitches),
   substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
-  [{description : "Read the code on the captain's chair.  Enter it on the keypad.", type : TaskType.ReadCode}],
+  substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["3220", "5807", "0419", "4032", "9627"], TaskType.ReadCode),
   [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
   [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
   [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
