@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.css';
 import './bootstrap.min.css';
 import * as Socket from 'socket.io-client';
-import * as HardwareTypes from '../../shared/HardwareTypes';
+import * as HardwareTypes from './HardwareTypes';
 
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
@@ -48,8 +48,8 @@ const defaultHardwareState: HardwareTypes.HardwareState = {
       switch3: true,
       smallButtonWhite0: true,
       smallButtonWhite1: true,
-      smallButtonRed0 : true,
-      smallButtonRed1 : true,
+      smallButtonRed0: true,
+      smallButtonRed1: true,
       smallButtonBlue0: true,
       smallButtonBlue1: true,
       smallButtonYellow0: true,
@@ -57,7 +57,7 @@ const defaultHardwareState: HardwareTypes.HardwareState = {
       smallButtonGreen0: true,
       smallButtonGreen1: true,
       mediumButtonWhite: true,
-      mediumButtonRed : true,
+      mediumButtonRed: true,
       mediumButtonBlue: true,
       mediumButtonYellow: true,
       mediumButtonGreen: true,
@@ -66,7 +66,7 @@ const defaultHardwareState: HardwareTypes.HardwareState = {
       plugboard: true,
       captainsChair: true,
       keypad: true,
-      touchSens: true
+      touchSensor: true
     },
 };
 
@@ -75,13 +75,23 @@ var connectedClients: string[] = [];
 var button: HardwareTypes.ButtonState = {lit: false, label: 'test', pressed: false};
 button.lit = true;
 
-function subscribeToTimer(cb: (data: string[]) => void, connectCb: (up: boolean) => void) {
+function subscribeToTimer(cb: (data: string[]) => void, connectCb: (up: boolean) => void, 
+                          setHS: (hardwareState: HardwareTypes.HardwareState) => void) {
   socket.on('clients-updated', cb);
   socket.on('connect', () => {
     connectCb(true);
     socket.emit('identification', 'admin-console');
   });
+  socket.on('update-hardware-state', setHS);
   socket.on('disconnect', () => connectCb(false));
+}
+
+function toggleHardware() {
+  // @ts-ignore
+  var info: {name: string, enabled: boolean, updateHS: (name: string, enabled: boolean) => void} = this;
+  
+  socket.emit('toggle-hardware', {name: info.name, enabled: !info.enabled});
+  info.updateHS(info.name, !info.enabled);
 }
 
 interface AdminConsoleState {
@@ -105,7 +115,13 @@ class App extends React.Component<{}, AdminConsoleState> {
   }
 
   setHardwareState (hardwareState: HardwareTypes.HardwareState) {
-    this.setState({clients: this.state.clients, serverUp: this.state.serverUp, hardware: hardwareState})
+    this.setState({clients: this.state.clients, serverUp: this.state.serverUp, hardware: hardwareState});
+  }
+
+  updateHardwareState (name: string, enabled: boolean) {
+    var hardwareState = this.state.hardware;
+    hardwareState.enabledMapping[name] = enabled;
+    this.setState({clients: this.state.clients, serverUp: this.state.serverUp, hardware: hardwareState});
   }
 
   constructor(props: {}) {
@@ -113,8 +129,9 @@ class App extends React.Component<{}, AdminConsoleState> {
     this.state = {clients: [], serverUp: false, hardware: defaultHardwareState};
     this.updateClientList = this.updateClientList.bind(this);
     this.setServerUp = this.setServerUp.bind(this);
+    this.setHardwareState = this.setHardwareState.bind(this);
 
-    subscribeToTimer(this.updateClientList, this.setServerUp);
+    subscribeToTimer(this.updateClientList, this.setServerUp, this.setHardwareState);
   }
 
   render() {
@@ -142,8 +159,19 @@ class App extends React.Component<{}, AdminConsoleState> {
       var stateComponent = (
       <table className="table">
         <tbody>
-          {stateList.map(e => 
-            <tr className="state" key={e}><td><input type="checkbox" name={e + '-checkbox'} />{e}</td></tr>
+          {stateList.map(e => {
+              var enabled: boolean = this.state.hardware.enabledMapping[e];
+              var info = {name: e, enabled: enabled, updateHS: this.updateHardwareState.bind(this)};
+              var onCheckboxChange = toggleHardware.bind(info);
+              return (
+              <tr className="state" key={e}>
+                <td>
+                  <input type="checkbox" name={e + '-checkbox'} defaultChecked={enabled} onChange={onCheckboxChange} />
+                    {e}
+                  </td>
+              </tr>
+              );
+            }
           )}
         </tbody>
       </table>
