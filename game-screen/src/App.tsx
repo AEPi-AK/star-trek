@@ -14,6 +14,7 @@ var defaultGameState: GameTypes.GameState = {
   phase: GameTypes.GamePhase.NotConnected,
   weights: {}, 
   durations: {},
+  task_frequency: 0,
 };
 
 // const logo = require('./logo.svg');
@@ -67,6 +68,14 @@ class App extends React.Component<{}, GameTypes.GameState> {
 
   decrementDuration(x: GameTypes.TaskType) {
     socket.emit('decrement-duration', x);
+  }
+
+  incrementFrequency() {
+    socket.emit('increment-frequency');
+  }
+
+  decrementFrequency() {
+    socket.emit('decrement-frequency');
   }
 
   render() {
@@ -177,6 +186,11 @@ class App extends React.Component<{}, GameTypes.GameState> {
         <p>{'Time remaining: ' + Math.max(0, this.state.time)}</p>
         <button onClick={this.resetGame}>Reset Game</button>
         {probabilityControls}
+        <div>
+          {'Time between tasks: ' + this.state.task_frequency}
+          <button onClick={e => this.incrementFrequency()}>+</button>
+          <button onClick={e => this.decrementFrequency()}>-</button>
+        </div>
       </div>
     );
   }

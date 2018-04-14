@@ -77,10 +77,26 @@ var INITIAL_DURATIONS = {
 
 var task_id = 0;
 
-var game_state : GameState = {tasks : [], failures : 0, time : 150, phase : GamePhase.EnterPlayers, weights : INITIAL_WEIGHTS, durations: INITIAL_DURATIONS};
+var game_state : GameState = {
+  tasks: [],
+  failures: 0,
+  time: 150,
+  phase: GamePhase.EnterPlayers,
+  weights : INITIAL_WEIGHTS,
+  durations: INITIAL_DURATIONS,
+  task_frequency: 5,
+};
 var number_of_players = 0;
 function resetGameState () {
-  game_state = {tasks : [], failures : 0, time : 150, phase : GamePhase.EnterPlayers, weights : game_state.weights, durations: game_state.durations };
+  game_state = {
+    tasks: [],
+    failures: 0,
+    time: 150,
+    phase: GamePhase.EnterPlayers,
+    weights: game_state.weights,
+    durations: game_state.durations,
+    task_frequency: game_state.task_frequency,
+   };
 }
 
 function pickRandomTaskTemplate () : TaskTemplate {
@@ -123,13 +139,18 @@ function createNewTask () {
 
 var game_timer_ids : NodeJS.Timer[] = [];
 function startGame() {
+  var time_since_last_made = 0;
   game_timer_ids.push(setInterval(() => {
-    if (game_state.tasks.length < number_of_players) {
-      var task = createNewTask();
-      game_state.tasks.push(task);
-      updatedGameState();
+    time_since_last_made++;
+    if (time_since_last_made >= game_state.task_frequency) {
+      if (game_state.tasks.length < number_of_players) {
+        time_since_last_made = 0;
+        var task = createNewTask();
+        game_state.tasks.push(task);
+        updatedGameState();
+      }
     }
-  }, 10000 / number_of_players));
+  }, 1000));
   
   game_timer_ids.push(setInterval(() => {
     var now = new Date();
@@ -235,6 +256,16 @@ io.on('connect', function(socket: SocketIO.Socket){
 
   socket.on('decrement-duration', (x: TaskType) => {
     game_state.durations[x] = Math.max(game_state.durations[x] - 1, 0);
+    updatedGameState();
+  });
+
+  socket.on('increment-frequency', () => {
+    game_state.task_frequency = game_state.task_frequency + 1;
+    updatedGameState();
+  });
+
+  socket.on('decrement-frequency', () => {
+    game_state.task_frequency = Math.max(1, game_state.task_frequency - 1);
     updatedGameState();
   });
 });
