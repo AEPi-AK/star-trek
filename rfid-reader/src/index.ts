@@ -10,6 +10,10 @@ readline.emitKeypressEvents(process.stdin);
 
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
+socket.on('connect', () => {
+    socket.emit('identification', 'keypad');
+});
+
 socket.on('rfid', (target: string) => {
     console.log("matching " + target);
     const rl = readline.createInterface({
