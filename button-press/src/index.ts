@@ -50,7 +50,7 @@ let greenButton = new PullUpListener(10, "station1-green-button");
 greenButton.init();
 let whiteButton = new PullUpListener(13, "station1-white-button");
 whiteButton.init();
-let blueButton = new PullUpListener(13, "station1-blue-button");
+let blueButton = new PullUpListener(19, "station1-blue-button");
 blueButton.init();
 
 socket.on('connect', () => {
