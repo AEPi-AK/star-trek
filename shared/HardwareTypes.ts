@@ -54,18 +54,17 @@
 // }
 
 export interface HardwareState {
-    station1: {
+    stationA: {
+        redSwitch: SwitchState;
+        blueButton: ButtonState; 
+        greenButton: ButtonState; 
+        yellowButton: ButtonState;
+    };
+    stationD: {
         orangeSwitch: SwitchState;
         blueButton: ButtonState;
         whiteButton: ButtonState;
         greenButton: ButtonState;
-    };
-    operations: {
-        plugboard: PlugboardState;
-        keypad: KeypadState;
-        yellowSwitch: SwitchState;
-        whiteButton: ButtonState;
-        redButton: ButtonState;
     };
     security: {
         touchpad: TouchSensorState;
@@ -156,18 +155,11 @@ export interface TouchSensorState {
 var createButton = (s: string) => ({pressed: false, label: s, lit: false});
 var createSwitch = (s: string) => ({up: false, label: s, lit: false});
 export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
-    station1: {
-        orangeSwitch: createSwitch('station1-orange-switch'),
-        whiteButton: createButton('station1-white-button'),
-        blueButton: createButton('station1-blue-button'),
-        greenButton: createButton('station1-green-button'),
-    },
-    operations: {
-        plugboard: {slotTo: Color.None, slotToo: Color.None, slotTwo: Color.None, slot10: Color.None},
-        keypad: {correct: false},
-        yellowSwitch: createSwitch('operations-yellow-switch'),
-        whiteButton: createButton('operations-white-button'),
-        redButton: createButton('operations-red-button')
+    stationA : {
+        redSwitch: createSwitch('stationA-red-switch'),
+        blueButton: createButton('stationA-blue-button'),
+        greenButton: createButton('stationA-green-button'),
+        yellowButton: createButton('stationA-yellow-button')
     },
     security: {
         touchpad: {pressedThreeSeconds: false},
@@ -182,6 +174,12 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         redSwitch: createSwitch('tactical-red-switch'),
         whiteButton: createButton('tactical-white-button'),
         redButton: createButton('tactical-red-button')
+    },
+    stationD: {
+        orangeSwitch: createSwitch('stationD-orange-switch'),
+        whiteButton: createButton('stationD-white-button'),
+        blueButton: createButton('stationD-blue-button'),
+        greenButton: createButton('stationD-green-button'),
     },
     enabled: {
         navigation: {

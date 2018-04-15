@@ -50,16 +50,30 @@ class PullUpListener {
 // @ts-ignore
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
-
-let orangeSwitch = new PullUpListener(5, "station1-orange-switch", 'switch-pressed', 'up');
-orangeSwitch.init();
-let greenButton = new PullUpListener(10, "station1-green-button", 'button-pressed', 'pressed');
-greenButton.init();
-let whiteButton = new PullUpListener(13, "station1-white-button", 'button-pressed', 'pressed');
-whiteButton.init();
-let blueButton = new PullUpListener(19, "station1-blue-button", 'button-pressed', 'pressed');
-blueButton.init();
+// @ts-ignore
+if (process.argv[3] === 'stationA') {
+    let redSwitch = new PullUpListener(5, "stationA-red-switch", 'switch-pressed', 'up');
+    redSwitch.init();
+    let blueButton = new PullUpListener(10, "stationA-blue-button", 'button-pressed', 'pressed');
+    blueButton.init();
+    let greenButton = new PullUpListener(13, "stationA-green-button", 'button-pressed', 'pressed');
+    greenButton.init();
+    let yellowButton = new PullUpListener(19, "stationA-yellow-button", 'button-pressed', 'pressed');
+    yellowButton.init();
+}
+// @ts-ignore
+else if (process.argv[3] === 'stationD') {
+    let orangeSwitch = new PullUpListener(5, "stationD-orange-switch", 'switch-pressed', 'up');
+    orangeSwitch.init();
+    let greenButton = new PullUpListener(10, "stationD-green-button", 'button-pressed', 'pressed');
+    greenButton.init();
+    let whiteButton = new PullUpListener(13, "stationD-white-button", 'button-pressed', 'pressed');
+    whiteButton.init();
+    let blueButton = new PullUpListener(19, "stationD-blue-button", 'button-pressed', 'pressed');
+    blueButton.init();
+}
 
 socket.on('connect', () => {
-    socket.emit('identification', 'stationA');
+    // @ts-ignore
+    socket.emit('identification', process.argv[3]);
 });

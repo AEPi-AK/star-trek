@@ -28,22 +28,24 @@ function template(str : string, args : string[]) {
 
 var hardware_state = DEFAULT_HARDWARE_STATE();
 
+
 var task_templates : TaskTemplate[] = [
+  /*
   {description: 'Press the Yellow colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.yellowButton, completed: s => s.tactical.yellowButton.pressed},
   {description: 'Press the Green colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.greenButton, completed: s => s.tactical.greenButton.pressed},
   {description: 'Press the Blue colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.blueButton, completed: s => s.tactical.blueButton.pressed},
 
   {description: 'Press the Red colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.redButton, completed: (s) => s.tactical.redButton.pressed},
-  {description: 'Press the Red colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.redButton, completed: (s) => s.operations.redButton.pressed},
-  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.redButton, completed: (s) => s.station1.greenButton.pressed},
+  {description: 'Press the Red colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.redButton, completed: (s) => s.stationA.redButton.pressed},
+  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.redButton, completed: (s) => s.stationD.greenButton.pressed},
   {description: 'Press the White colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.whiteButton, completed: (s) => s.tactical.whiteButton.pressed},
   {description: 'Press the White colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.whiteButton, completed: (s) => s.operations.whiteButton.pressed},
-  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.whiteButton, completed: (s) => s.station1.whiteButton.pressed},
+  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.whiteButton, completed: (s) => s.stationD.whiteButton.pressed},
 
   {description: 'Scan hand at Security', type: TaskType.ScanHand, enabled: s => s.enabled.security.touchpad, completed: (s) => s.security.touchpad.pressedThreeSeconds},
 
-  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => s.operations.yellowSwitch.up && s.station1.orangeSwitch.up},
-  {description: 'Flip the yellow and green colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.station1.orangeSwitch.up},
+  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => s.operations.yellowSwitch.up && s.stationD.orangeSwitch.up},
+  {description: 'Flip the yellow and green colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.stationD.orangeSwitch.up},
   {description: 'Flip the yellow and blue colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => s.operations.yellowSwitch.up && s.security.blueSwitch.up},
   {description: 'Flip the yellow and blue colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.security.blueSwitch.up},
 
@@ -68,6 +70,7 @@ var task_templates : TaskTemplate[] = [
   {description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard, enabled: s => s.enabled.security.rfidScanner, completed: (s) => true},
   {description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard, enabled: s => s.enabled.security.rfidScanner, completed: (s) => true},
   {description : "Press the Big Red Button", type : TaskType.PressBigButton, enabled: s => s.enabled.tactical.bigRedButton, completed: (s) => s.tactical.bigRedButton.pressed}
+  */
 ]
 
 // var task_templates : TaskTemplate[] = [
@@ -346,13 +349,15 @@ io.on('connect', function(socket: SocketIO.Socket){
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
-  'station1-white-button': s => s.station1.whiteButton,
-  'station1-blue-button': s => s.station1.blueButton,
-  'station1-green-button': s => s.station1.greenButton,
-  'operations-white-button': s => s.operations.whiteButton,
-  'operations-red-button': s => s.operations.redButton
+  'stationD-white-button': s => s.stationD.whiteButton,
+  'stationD-blue-button': s => s.stationD.blueButton,
+  'stationD-green-button': s => s.stationD.greenButton,
+  'stationA-blue-button': s => s.stationA.blueButton,
+  'stationA-green-button': s => s.stationA.greenButton,
+  'stationA-yellow-button': s => s.stationA.yellowButton,
 }
 
 var switch_mapping : {[s: string]: (p: HardwareState) => SwitchState} = {
-  'station1-orange-switch': s => s.station1.orangeSwitch,
+  'stationD-orange-switch': s => s.stationD.orangeSwitch,
+  'stationA-red-switch': s => s.stationA.redSwitch,
 }
