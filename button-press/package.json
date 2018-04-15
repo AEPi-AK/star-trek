@@ -6,11 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/index.js \"http://localhost:3000\"",
-    "deployStationA": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationA\"",
-    "deployStationB": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationB\"",
-    "deployStationC": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationC\"",
-    "deployStationD": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationD\"",
-    "deployCaptainsChair": "tsc && node dist/index.js \"http://master-server.local:3000\" \"captains-chair\""
+    "deployStationA": "tsc && node dist/button-press/src/index.js \"http://master-server.local:3000\" \"stationA\"",
+    "deployStationB": "tsc && node dist/button-press/src/index.js \"http://master-server.local:3000\" \"stationB\"",
+    "deployStationC": "tsc && node dist/button-press/src/index.js \"http://master-server.local:3000\" \"stationC\"",
+    "deployStationD": "tsc && node dist/button-press/src/index.js \"http://master-server.local:3000\" \"stationD\"",
+    "deployCaptainsChair": "tsc && sudo node dist/button-press/src/index.js \"http://master-server.local:3000\" \"captains-chair\""
   },
   "author": "",
   "license": "ISC",
@@ -19,12 +19,14 @@
     "@types/rpio": "0.0.2",
     "@types/socket.io": "^1.4.33",
     "@types/socket.io-client": "^1.4.32",
+    "@types/usb": "^1.1.5",
+    "install": "^0.11.0",
+    "npm": "^5.8.0",
+    "rpio": "^0.9.21",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "strict-event-emitter-types": "^1.2.0",
-    "rpio": "^0.9.21",
     "usb": "^1.3.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

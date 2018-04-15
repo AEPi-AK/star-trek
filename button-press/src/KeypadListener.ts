@@ -2,11 +2,6 @@ import Keypad from "./Keypad";
 import Socket = require('socket.io-client');
 import * as HardwareTypes from "../../shared/HardwareTypes";
 
-console.log("Keypad started.");
-
-
-
-
 export class KeypadListener {
     keypad: Keypad;
     socket: SocketIOClient.Socket;
@@ -23,6 +18,8 @@ export class KeypadListener {
         console.log("Currently, the sequence is", this.sequence)
     }
     constructor(socket: SocketIOClient.Socket) {
+        console.log("Keypad started.");
+	this.sendPacket = this.sendPacket.bind(this);
         this.keypad = new Keypad(this.sendPacket)
         this.socket = socket;
         this.sequence = [];
