@@ -24,7 +24,16 @@ export enum FrequencyTaskType {
 }
 
 export enum ExclusionTaskType {
-    None
+    PressWhiteButton,
+    PressBlueButton,
+    PressYellowButton,
+    PressGreenButton,
+    ScanHand,
+    FlipSwitches,
+    Plugboard,
+    ReadCode,
+    ScanCard,
+    PressBigButton
 }
 
 export interface TaskWeights {
@@ -40,7 +49,7 @@ export interface TaskDurations {
 export interface TaskTemplate {
     description: string;
     frequencyType: FrequencyTaskType;
-    exclusionType: ExclusionTaskType | null;
+    exclusionType: ExclusionTaskType;
     start: (() => void) | null;
     end: (() => void) | null;
     enabled: HardwareCheck;
@@ -50,6 +59,7 @@ export interface TaskTemplate {
 export interface Task {
     description: string;
     id: number;
+    exclusionType: ExclusionTaskType;
     time_created: number;
     time_expires: number;
     start: (() => void) | null;
