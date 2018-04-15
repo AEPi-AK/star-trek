@@ -9,7 +9,8 @@
     "deployStationA": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationA\"",
     "deployStationB": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationB\"",
     "deployStationC": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationC\"",
-    "deployStationD": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationD\""
+    "deployStationD": "tsc && node dist/index.js \"http://master-server.local:3000\" \"stationD\"",
+    "deployCaptainsChair": "tsc && node dist/index.js \"http://master-server.local:3000\" \"captains-chair\""
   },
   "author": "",
   "license": "ISC",
