@@ -13,6 +13,10 @@ var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 const sequence:number[] = [];
 
+socket.on('connect', () => {
+    socket.emit('identification', 'keypad');
+});
+
 socket.on('code', (target : string) => {
         function sendPacket (packet : any) {
             console.log(packet);
@@ -20,6 +24,7 @@ socket.on('code', (target : string) => {
             sequence.push(packet.key);
             if(sequence.join("") == target){
                 socket.emit('task-completed', 98);
+                keypad.stopWatching();
             } else {
                 console.log("Not yet. Currently, the sequence is", sequence)
             }
