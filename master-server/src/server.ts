@@ -35,15 +35,15 @@ var task_templates : TaskTemplate[] = [
 
   {description: 'Press the Red colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.redButton, completed: (s) => s.tactical.redButton.pressed},
   {description: 'Press the Red colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.redButton, completed: (s) => s.operations.redButton.pressed},
-  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.redButton, completed: (s) => s.navigation.redButton.pressed},
+  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.redButton, completed: (s) => s.station1.greenButton.pressed},
   {description: 'Press the White colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.whiteButton, completed: (s) => s.tactical.whiteButton.pressed},
   {description: 'Press the White colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.whiteButton, completed: (s) => s.operations.whiteButton.pressed},
-  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.whiteButton, completed: (s) => s.navigation.whiteButton.pressed},
+  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.whiteButton, completed: (s) => s.station1.whiteButton.pressed},
 
   {description: 'Scan hand at Security', type: TaskType.ScanHand, enabled: s => s.enabled.security.touchpad, completed: (s) => s.security.touchpad.pressedThreeSeconds},
 
-  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => s.operations.yellowSwitch.up && s.navigation.greenSwitch.up},
-  {description: 'Flip the yellow and green colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.navigation.greenSwitch.up},
+  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => s.operations.yellowSwitch.up && s.station1.orangeSwitch.up},
+  {description: 'Flip the yellow and green colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.station1.orangeSwitch.up},
   {description: 'Flip the yellow and blue colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => s.operations.yellowSwitch.up && s.security.blueSwitch.up},
   {description: 'Flip the yellow and blue colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.security.blueSwitch.up},
 
@@ -233,6 +233,7 @@ function updatedGameState () {
 
 function updatedHardwareState () {
   let old_length = game_state.tasks.length;
+  console.log(hardware_state);
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
   if (old_length != game_state.tasks.length) {
     updatedGameState();
@@ -345,10 +346,13 @@ io.on('connect', function(socket: SocketIO.Socket){
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
-  'navigation-white-button': s => s.navigation.whiteButton,
-  'navigation-red-button': s => s.navigation.redButton,
+  'station1-white-button': s => s.station1.whiteButton,
+  'station1-blue-button': s => s.station1.blueButton,
+  'station1-green-button': s => s.station1.greenButton,
   'operations-white-button': s => s.operations.whiteButton,
   'operations-red-button': s => s.operations.redButton
 }
 
-var switch_mapping : {[s: string]: (p: HardwareState) => SwitchState} = {}
+var switch_mapping : {[s: string]: (p: HardwareState) => SwitchState} = {
+  'station1-orange-switch': s => s.station1.orangeSwitch,
+}

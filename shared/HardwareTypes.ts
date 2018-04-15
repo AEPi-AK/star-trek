@@ -54,10 +54,11 @@
 // }
 
 export interface HardwareState {
-    navigation: {
-        greenSwitch: SwitchState;
+    station1: {
+        orangeSwitch: SwitchState;
+        blueButton: ButtonState;
         whiteButton: ButtonState;
-        redButton: ButtonState
+        greenButton: ButtonState;
     };
     operations: {
         plugboard: PlugboardState;
@@ -154,11 +155,12 @@ export interface TouchSensorState {
 
 var createButton = (s: string) => ({pressed: false, label: s, lit: false});
 var createSwitch = (s: string) => ({up: false, label: s, lit: false});
-export var DEFAULT_HARDWARE_STATE = () => ({
-    navigation: {
-        greenSwitch: createSwitch('navigation-green-switch'),
-        whiteButton: createButton('navigation-white-button'),
-        redButton: createButton('navigation-red-button')
+export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
+    station1: {
+        orangeSwitch: createSwitch('station1-orange-switch'),
+        whiteButton: createButton('station1-white-button'),
+        blueButton: createButton('station1-blue-button'),
+        greenButton: createButton('station1-green-button'),
     },
     operations: {
         plugboard: {slotTo: Color.None, slotToo: Color.None, slotTwo: Color.None, slot10: Color.None},

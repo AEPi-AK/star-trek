@@ -1,10 +1,10 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client')
 
-console.log("starting");
+console.log("starting station");
 
 
-class ButtonListener {
+class PullUpListener {
     port : number;
     label : string;
     old_state : number;
@@ -18,7 +18,7 @@ class ButtonListener {
     }
 
     init () {
-        rpio.open(this.port, rpio.INPUT, rpio.PULL_DOWN);
+        rpio.open(this.port, rpio.INPUT, rpio.PULL_UP);
         this.old_state = rpio.read(this.port);
 
         rpio.poll(this.port, (pin : number) => {
@@ -26,7 +26,7 @@ class ButtonListener {
             var new_state : number = rpio.read(pin);
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
-                console.log("button has been pressed, new state %d", new_state);
+                console.log(this.label + "has been pressed, new state %d", new_state);
                 socket.emit('button-pressed',
                     {label : this.label, pressed: this.old_state ? false : true, lit : false});
             }
@@ -44,8 +44,14 @@ class ButtonListener {
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 
-let button = new ButtonListener(3, "button3");
-button.init();
+let orangeSwitch = new PullUpListener(3, "station1-orange-switch");
+orangeSwitch.init();
+let greenButton = new PullUpListener(10, "station1-green-button");
+greenButton.init();
+let whiteButton = new PullUpListener(13, "station1-white-button");
+whiteButton.init();
+let blueButton = new PullUpListener(13, "station1-blue-button");
+blueButton.init();
 
 socket.on('connect', () => {
     socket.emit('identification', 'button-1');
