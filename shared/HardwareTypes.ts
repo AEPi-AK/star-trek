@@ -60,16 +60,17 @@ export interface HardwareState {
         greenButton: ButtonState; 
         yellowButton: ButtonState;
     };
+    stationB: {
+        greenSwitch: SwitchState;
+        whiteButton: ButtonState; 
+        blueButton: ButtonState; 
+        yellowButton: ButtonState;
+    };
     stationD: {
         orangeSwitch: SwitchState;
         blueButton: ButtonState;
         whiteButton: ButtonState;
         greenButton: ButtonState;
-    };
-    security: {
-        touchpad: TouchSensorState;
-        rfidScanner: RFIDScannerState;
-        blueSwitch: SwitchState;
     };
     tactical: {
         yellowButton: ButtonState;
@@ -161,10 +162,11 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         greenButton: createButton('stationA-green-button'),
         yellowButton: createButton('stationA-yellow-button')
     },
-    security: {
-        touchpad: {pressedThreeSeconds: false},
-        rfidScanner: {},
-        blueSwitch: createSwitch('security-blue-switch')
+    stationB: {
+        greenSwitch: createSwitch('stationB-red-switch'),
+        whiteButton: createButton('stationB-blue-button'),
+        blueButton: createButton('stationB-green-button'),
+        yellowButton: createButton('stationB-yellow-button')
     },
     tactical: {
         yellowButton: createButton('tactical-yellow-button'),

@@ -349,15 +349,19 @@ io.on('connect', function(socket: SocketIO.Socket){
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
-  'stationD-white-button': s => s.stationD.whiteButton,
-  'stationD-blue-button': s => s.stationD.blueButton,
-  'stationD-green-button': s => s.stationD.greenButton,
   'stationA-blue-button': s => s.stationA.blueButton,
   'stationA-green-button': s => s.stationA.greenButton,
   'stationA-yellow-button': s => s.stationA.yellowButton,
+  'stationB-white-button': s => s.stationB.whiteButton,
+  'stationB-blue-button': s => s.stationB.blueButton,
+  'stationB-yellow-button': s => s.stationB.yellowButton,
+  'stationD-white-button': s => s.stationD.whiteButton,
+  'stationD-blue-button': s => s.stationD.blueButton,
+  'stationD-green-button': s => s.stationD.greenButton,
 }
 
 var switch_mapping : {[s: string]: (p: HardwareState) => SwitchState} = {
-  'stationD-orange-switch': s => s.stationD.orangeSwitch,
   'stationA-red-switch': s => s.stationA.redSwitch,
+  'stationB-green-switch' : s => s.stationB.greenSwitch,
+  'stationD-orange-switch': s => s.stationD.orangeSwitch,
 }
