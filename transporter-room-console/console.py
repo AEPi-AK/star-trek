@@ -4,12 +4,17 @@ import io
 
 # Init pygame 
 pygame.init()
-screen = pygame.display.set_mode((0,0))
+screen = pygame.display.set_mode((0,0), pygame.fullscreen)
 
 # Init camera
 camera = picamera.PiCamera()
 camera.resolution = (1280, 720)
 camera.crop = (0.0, 0.0, 1.0, 1.0)
+
+camera.start_preview()
+sleep(5)
+camera.stop_preview()
+
 
 x = (screen.get_width() - camera.resolution[0]) / 2
 y = (screen.get_height() - camera.resolution[1]) / 2
@@ -22,7 +27,8 @@ exitFlag = True
 while(exitFlag):
     for event in pygame.event.get():
         if(event.type is pygame.MOUSEBUTTONDOWN or 
-           event.type is pygame.QUIT):
+           event.type is pygame.QUIT or
+           event.type is pygame.KEYDOWN):
             exitFlag = False
 
     stream = io.BytesIO()
@@ -35,6 +41,13 @@ while(exitFlag):
            camera.resolution, 'RGB')
 
     screen.fill(0)
+    if img:
+        screen.blit(img, (x,y))
+
+    pygame.display.update()
+
+camera.close()
+pygame.display.quit()
 
 
 """from picamera import PiCamera
