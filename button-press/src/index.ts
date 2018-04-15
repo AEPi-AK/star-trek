@@ -21,29 +21,20 @@ class ButtonListener {
         rpio.open(this.port, rpio.INPUT, rpio.PULL_DOWN);
         this.old_state = rpio.read(this.port);
 
-        rpio.poll(3, (pin : number) => {
+        rpio.poll(this.port, (pin : number) => {
             rpio.msleep(10);
             var new_state : number = rpio.read(pin);
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
                 console.log("button has been pressed, new state %d", new_state);
-                if (this.listening) {
-                    socket.emit('button-pressed',
-                        {label : this.label, pressed: this.old_state ? false : true, lit : false});
-                }
-            }
-        });
-
-        socket.on('button-listen', (label : string) => {
-            if (label === this.label) {
-                this.listening = true;
-                console.log("now being listened to as label %s", label);
+                socket.emit('button-pressed',
+                    {label : this.label, pressed: this.old_state ? false : true, lit : false});
             }
         });
 
         socket.on('request-state',(label : string) =>{
           if (label === this.label) {
-          socket.emit('state-response',this.old_state)
+          socket.emit('state-response', this.old_state)
         }
         });
     }

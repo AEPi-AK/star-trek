@@ -1,6 +1,6 @@
-import { HardwareState2 } from './HardwareTypes';
+import { HardwareState } from './HardwareTypes';
 
-export type HardwareCheck = (state: HardwareState2) => boolean;
+export type HardwareCheck = (state: HardwareState) => boolean;
 
 export interface GameState {
     tasks: Task[];
@@ -46,6 +46,8 @@ export interface Task {
     id: number;
     time_created: number;
     time_expires: number;
+    enabled: HardwareCheck;
+    completed: HardwareCheck;
 }
 
 export enum GamePhase {

@@ -4,7 +4,7 @@ import Socket = require('socket.io-client')
 console.log("starting");
 
 
-class ButtonListener {
+class SwitchListener {
     port : number;
     label : string;
     old_state : number;
@@ -27,21 +27,12 @@ class ButtonListener {
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
                 console.log("switch has been flipped , new state %d", new_state);
-                if (this.listening) {
-                    socket.emit('button-pressed',
-                        {label : this.label, pressed: this.old_state ? false : true, lit : false});
-                }
+                socket.emit('switch-flipped',
+                    {label : this.label, up: this.old_state ? false : true, lit : false});
             }
         });
 
-        socket.on('button-listen', (label : string) => {
-            if (label === this.label) {
-                this.listening = true;
-                console.log("now being listened to as label %s", label);
-            }
-        });
-
-        socket.on('request-state',() =>{
+        socket.on('request-state', () =>{
           socket.emit('state-response',this.old_state)
         });
 
@@ -51,7 +42,7 @@ class ButtonListener {
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
 
-let button = new ButtonListener(3, "button3");
+let button = new SwitchListener(3, "button3");
 button.init();
 
 socket.on('connect', () => {
