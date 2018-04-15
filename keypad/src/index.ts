@@ -1,6 +1,6 @@
 import Keypad from "./Keypad";
-import * from "socket.io-client";
-import * from "../../shared/HardwareTypes";
+import Socket = require('socket.io-client');
+import * as HardwareTypes from "../../shared/HardwareTypes";
 
 console.log("Keypad started.");
 
