@@ -23,6 +23,22 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.Task {
+  font-size: 40px;
+}
+
+.RoundInfo {
+  font-size: 40px;
+}
+
+.LineLabel {
+  font-size: 40px;
 }

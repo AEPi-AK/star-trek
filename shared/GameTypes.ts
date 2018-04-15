@@ -1,3 +1,6 @@
+import { HardwareState } from './HardwareTypes';
+
+export type HardwareCheck = (state: HardwareState) => boolean;
 
 export interface GameState {
     tasks: Task[];
@@ -5,10 +8,26 @@ export interface GameState {
     time: number;
     phase: GamePhase;
     weights: TaskWeights;
+    durations: TaskDurations;
+    task_frequency: number; // Number of seconds before attempting to create a new task
+    max_tasks: number;
 }
 
-export enum TaskType {
+export enum FrequencyTaskType {
     PressButton,
+    ScanHand,
+    FlipSwitches,
+    Plugboard,
+    ReadCode,
+    ScanCard,
+    PressBigButton
+}
+
+export enum ExclusionTaskType {
+    PressWhiteButton,
+    PressBlueButton,
+    PressYellowButton,
+    PressGreenButton,
     ScanHand,
     FlipSwitches,
     Plugboard,
@@ -22,17 +41,31 @@ export interface TaskWeights {
     [t: number]: number;
 }
 
+export interface TaskDurations {
+    // Should be [t: TaskType]: number
+    [t: number]: number;
+}
+
 export interface TaskTemplate {
     description: string;
-    type: TaskType;
-    // completed : HardwareState;
+    frequencyType: FrequencyTaskType;
+    exclusionType: ExclusionTaskType;
+    start: (() => void) | null;
+    end: (() => void) | null;
+    enabled: HardwareCheck;
+    completed: HardwareCheck;
 }
 
 export interface Task {
     description: string;
     id: number;
+    exclusionType: ExclusionTaskType;
     time_created: number;
     time_expires: number;
+    start: (() => void) | null;
+    end: (() => void) | null;
+    enabled: HardwareCheck;
+    completed: HardwareCheck;
 }
 
 export enum GamePhase {
