@@ -90,82 +90,82 @@ var task_templates : TaskTemplate[] = [
 
 
 var task_templates : TaskTemplate[] = [
-  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.None,
+  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-white-button'); }, 
     enabled: s => s.enabled.stationB.whiteButton, completed: s => s.stationB.whiteButton.pressed},
-  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.None,
+  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationC-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-white-button'); }, 
     enabled: s => s.enabled.stationC.whiteButton, completed: s => s.stationC.whiteButton.pressed},
     
-  {description: 'Scan hand at Security', frequencyType: FrequencyTaskType.ScanHand, exclusionType: null,
+  {description: 'Scan hand at Security', frequencyType: FrequencyTaskType.ScanHand, exclusionType: ExclusionTaskType.ScanHand,
     start: null, end: null,
     enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressedThreeSeconds},
 
-  {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+  {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
     enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
-  {description: 'Flip the yellow and green colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+  {description: 'Flip the yellow and green colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
     enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
-  {description: 'Flip the yellow and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+  {description: 'Flip the yellow and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
     enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
-  {description: 'Flip the yellow and blue colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+  {description: 'Flip the yellow and blue colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
     enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationC.blueSwitch.pressed},
   // more
 
-  {description: 'Plug the Red wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Red wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Blue wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Yellow wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Red wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Blue wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Yellow wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Red wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Blue wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Yellow wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Red wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Blue wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+  {description: 'Plug the Yellow wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
 
-  {description: "Read the code on the captain's chair.  Enter it on the keypad.", frequencyType: FrequencyTaskType.ReadCode, exclusionType: null,
+  {description: "Read the code on the captain's chair.  Enter it on the keypad.", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.correct},
 
-  {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+  {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
-  {description : "Scan the Engineer's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+  {description : "Scan the Engineer's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
-  {description : "Scan an ID card with access level IV at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+  {description : "Scan an ID card with access level IV at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
-  {description : "Press the Big Red Button", frequencyType : FrequencyTaskType.PressBigButton, exclusionType: null,
+  {description : "Press the Big Red Button", frequencyType : FrequencyTaskType.PressBigButton, exclusionType: ExclusionTaskType.PressBigButton,
     start: null, end: null,
     enabled: s => s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
 ]
@@ -217,7 +217,7 @@ function resetGameState () {
 }
 
 function taskTemplateValid(task : TaskTemplate) {
-  return task.enabled(hardware_state) && !task.completed(hardware_state);;
+  return task.enabled(hardware_state) && !task.completed(hardware_state) && game_state.tasks.filter(({exclusionType: t}) => t === task.exclusionType).length === 0;
 }
 
 function pickRandomTaskTemplate () : TaskTemplate {
@@ -240,7 +240,6 @@ function pickRandomTaskTemplate () : TaskTemplate {
   }
   var accum = 0;
   var rand = Math.random();
-  console.log(total, game_state.weights, counts);
   for (var i = 0; i < valid_tasks.length; i++) {
     accum += 1/total * 1/counts[valid_tasks[i].frequencyType] * game_state.weights[valid_tasks[i].frequencyType];
     if (accum > rand) {
@@ -261,7 +260,7 @@ function createTaskFromTemplate (template : TaskTemplate) : Task {
   var end_time = new Date();
   end_time.setSeconds(time.getSeconds() + game_state.durations[template.frequencyType]);
   var id = task_id++;
-  return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id, start: template.start, end: template.end, enabled: template.enabled, completed: template.completed};
+  return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id, exclusionType: template.exclusionType, start: template.start, end: template.end, enabled: template.enabled, completed: template.completed};
 }
 
 function createNewTask () {
