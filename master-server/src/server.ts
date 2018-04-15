@@ -3,7 +3,7 @@ import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
 import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task, TaskType, GamePhase, HardwareCheck } from '../../shared/GameTypes';
+import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
 var app = Express();
@@ -88,24 +88,106 @@ var task_templates : TaskTemplate[] = [
 //   [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
 // ].reduce((acc, cur) => acc.concat(cur));
 
+
+var task_templates : TaskTemplate[] = [
+  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.None,
+    start: () => { io.sockets.emit('button-flash', 'stationB-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-white-button'); }, 
+    enabled: s => s.enabled.stationB.whiteButton, completed: s => s.stationB.whiteButton.pressed},
+  {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.None,
+    start: () => { io.sockets.emit('button-flash', 'stationC-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-white-button'); }, 
+    enabled: s => s.enabled.stationC.whiteButton, completed: s => s.stationC.whiteButton.pressed},
+    
+  {description: 'Scan hand at Security', frequencyType: FrequencyTaskType.ScanHand, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressedThreeSeconds},
+
+  {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
+  {description: 'Flip the yellow and green colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
+  {description: 'Flip the yellow and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
+  {description: 'Flip the yellow and blue colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: null,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationC.blueSwitch.pressed},
+  // more
+
+  {description: 'Plug the Red wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled Too at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled Two at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled 10 at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
+
+  {description: "Read the code on the captain's chair.  Enter it on the keypad.", frequencyType: FrequencyTaskType.ReadCode, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.correct},
+
+  {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+  {description : "Scan the Engineer's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+  {description : "Scan an ID card with access level IV at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+  {description : "Press the Big Red Button", frequencyType : FrequencyTaskType.PressBigButton, exclusionType: null,
+    start: null, end: null,
+    enabled: s => s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
+]
+
 var INITIAL_WEIGHTS = {
-  [TaskType.PressButton] : 1,
-  [TaskType.ScanHand] : 1,
-  [TaskType.FlipSwitches] : 1,
-  [TaskType.Plugboard] : 1,
-  [TaskType.ReadCode] : 1,
-  [TaskType.ScanCard] : 1,
-  [TaskType.PressBigButton] : 1
+  [FrequencyTaskType.PressButton] : 1,
+  [FrequencyTaskType.ScanHand] : 1,
+  [FrequencyTaskType.FlipSwitches] : 1,
+  [FrequencyTaskType.Plugboard] : 1,
+  [FrequencyTaskType.ReadCode] : 1,
+  [FrequencyTaskType.ScanCard] : 1,
+  [FrequencyTaskType.PressBigButton] : 1
 }
 
 var INITIAL_DURATIONS = {
-  [TaskType.PressButton] : 10,
-  [TaskType.ScanHand] : 10,
-  [TaskType.FlipSwitches] : 10,
-  [TaskType.Plugboard] : 10,
-  [TaskType.ReadCode] : 10,
-  [TaskType.ScanCard] : 10,
-  [TaskType.PressBigButton] : 10
+  [FrequencyTaskType.PressButton] : 10,
+  [FrequencyTaskType.ScanHand] : 10,
+  [FrequencyTaskType.FlipSwitches] : 10,
+  [FrequencyTaskType.Plugboard] : 10,
+  [FrequencyTaskType.ReadCode] : 10,
+  [FrequencyTaskType.ScanCard] : 10,
+  [FrequencyTaskType.PressBigButton] : 10
 }
 
 var task_id = 0;
@@ -135,33 +217,34 @@ function resetGameState () {
 }
 
 function taskTemplateValid(task : TaskTemplate) {
-  return task.enabled(hardware_state) && !task.completed(hardware_state);
+  return task.enabled(hardware_state) && !task.completed(hardware_state);;
 }
 
 function pickRandomTaskTemplate () : TaskTemplate {
   var valid_tasks = task_templates.filter(taskTemplateValid);
 
   //@ts-ignore
-  var type_keys : number[] = Object.keys(TaskType).filter(k => typeof TaskType[k as any] === "number").map(k => TaskType[k as any]);
+  var type_keys : number[] = Object.keys(FrequencyTaskType).filter(k => typeof FrequencyTaskType[k as any] === "number").map(k => FrequencyTaskType[k as any]);
   var counts : {[t : number] : number} = {};
   for (var template of valid_tasks) {
-    if (counts[template.type]) {
-      counts[template.type] += 1;
+    if (counts[template.frequencyType]) {
+      counts[template.frequencyType] += 1;
     } 
     else {
-      counts[template.type] = 1;
+      counts[template.frequencyType] = 1;
     }
   }
   var total = 0;
-  for (var type of type_keys) {
-    total += counts[type] || 0;
+  for (let k of Object.keys(counts)) {
+    total += game_state.weights[Number(k)]
   }
   var accum = 0;
   var rand = Math.random();
+  console.log(total, game_state.weights, counts);
   for (var i = 0; i < valid_tasks.length; i++) {
-    accum += 1/total * 1/counts[valid_tasks[i].type] * game_state.weights[valid_tasks[i].type];
+    accum += 1/total * 1/counts[valid_tasks[i].frequencyType] * game_state.weights[valid_tasks[i].frequencyType];
     if (accum > rand) {
-      for (var j = 0; j < task_templates.length; j++) {
+      for (var j = 0; j < type_keys.length; j++) {
         if (i !== j) {
           game_state.weights[j] += 1;
         }
@@ -176,9 +259,9 @@ function pickRandomTaskTemplate () : TaskTemplate {
 function createTaskFromTemplate (template : TaskTemplate) : Task {
   var time = new Date();
   var end_time = new Date();
-  end_time.setSeconds(time.getSeconds() + game_state.durations[template.type]);
+  end_time.setSeconds(time.getSeconds() + game_state.durations[template.frequencyType]);
   var id = task_id++;
-  return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id, enabled: template.enabled, completed: template.completed};
+  return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id, start: template.start, end: template.end, enabled: template.enabled, completed: template.completed};
 }
 
 function createNewTask () {
@@ -195,6 +278,9 @@ function startGame() {
       if (game_state.tasks.length < game_state.max_tasks) {
         time_since_last_made = 0;
         var task = createNewTask();
+        if (task.start) {
+          task.start();
+        }
         game_state.tasks.push(task);
         updatedGameState();
       }
@@ -204,8 +290,14 @@ function startGame() {
   game_timer_ids.push(setInterval(() => {
     var now = new Date();
     var old_length = game_state.tasks.length;
+    var ended_tasks = game_state.tasks.filter(({time_expires : end}) => end < now.getTime());
+    for (let task of ended_tasks) {
+      if (task.end) {
+        task.end();
+      }
+    }
     game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
-    var new_failures = old_length - game_state.tasks.length;
+    var new_failures = ended_tasks.length;
     if (new_failures > 0) {
       game_state.failures += new_failures;
       updatedGameState();
@@ -236,7 +328,6 @@ function updatedGameState () {
 
 function updatedHardwareState () {
   let old_length = game_state.tasks.length;
-  console.log(hardware_state);
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
   if (old_length != game_state.tasks.length) {
     updatedGameState();
@@ -293,22 +384,22 @@ io.on('connect', function(socket: SocketIO.Socket){
     endGame();
   });
 
-  socket.on('increment-probability', (x: TaskType) => {
+  socket.on('increment-probability', (x: FrequencyTaskType) => {
     game_state.weights[x] = Math.min(game_state.weights[x] + 1, 10);
     updatedGameState();
   });
 
-  socket.on('decrement-probability', (x: TaskType) => {
+  socket.on('decrement-probability', (x: FrequencyTaskType) => {
     game_state.weights[x] = Math.max(game_state.weights[x] - 1, 0);
     updatedGameState();
   });
 
-  socket.on('increment-duration', (x: TaskType) => {
+  socket.on('increment-duration', (x: FrequencyTaskType) => {
     game_state.durations[x] = game_state.durations[x] + 1;
     updatedGameState();
   });
 
-  socket.on('decrement-duration', (x: TaskType) => {
+  socket.on('decrement-duration', (x: FrequencyTaskType) => {
     game_state.durations[x] = Math.max(game_state.durations[x] - 1, 0);
     updatedGameState();
   });
@@ -339,29 +430,23 @@ io.on('connect', function(socket: SocketIO.Socket){
     old_state.lit = s.lit;
     updatedHardwareState();
   });
-
-  socket.on('switch-pressed', (s: SwitchState) => {
-    var old_state = switch_mapping[s.label](hardware_state);
-    old_state.up = s.up;
-    old_state.lit = s.lit;
-    updatedHardwareState();
-  })
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
+  'stationA-red-switch': s => s.stationA.redSwitch,
   'stationA-blue-button': s => s.stationA.blueButton,
   'stationA-green-button': s => s.stationA.greenButton,
   'stationA-yellow-button': s => s.stationA.yellowButton,
   'stationB-white-button': s => s.stationB.whiteButton,
   'stationB-blue-button': s => s.stationB.blueButton,
   'stationB-yellow-button': s => s.stationB.yellowButton,
+  'stationB-green-switch' : s => s.stationB.greenSwitch,
+  'stationC-blue-switch': s => s.stationC.blueSwitch,
+  'stationC-yellow-button': s => s.stationC.yellowButton,
+  'stationC-white-button': s => s.stationC.whiteButton,
+  'stationC-green-button': s => s.stationC.greenButton,
   'stationD-white-button': s => s.stationD.whiteButton,
   'stationD-blue-button': s => s.stationD.blueButton,
   'stationD-green-button': s => s.stationD.greenButton,
-}
-
-var switch_mapping : {[s: string]: (p: HardwareState) => SwitchState} = {
-  'stationA-red-switch': s => s.stationA.redSwitch,
-  'stationB-green-switch' : s => s.stationB.greenSwitch,
-  'stationD-orange-switch': s => s.stationD.orangeSwitch,
+  'stationD-yellow-switch': s => s.stationD.yellowSwitch,
 }

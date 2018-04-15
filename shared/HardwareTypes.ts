@@ -82,6 +82,7 @@ export interface HardwareState {
         blueButton: ButtonState;
         rfidScanner: RFIDScannerState;
     };
+    bigRedButton: ButtonState;
     enabled: {
         stationA: {
             redSwitch: boolean;
@@ -111,6 +112,7 @@ export interface HardwareState {
             blueButton: boolean;
             rfidScanner: boolean;
         };
+        bigRedButton: boolean;
     };
 }
 
@@ -163,7 +165,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         blueButton: createButton('stationA-blue-button'),
         greenButton: createButton('stationA-green-button'),
         yellowButton: createButton('stationA-yellow-button'),
-        keypad: { correct: true }
+        keypad: { correct: false }
     },
     stationB: {
         greenSwitch: createButton('stationB-green-switch'),
@@ -177,7 +179,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         yellowButton: createButton('stationC-yellow-button'),
         whiteButton: createButton('stationC-white-button'),
         greenButton: createButton('stationC-green-button'),
-        touchpad: { pressedThreeSeconds: true }
+        touchpad: { pressedThreeSeconds: false }
     },
     stationD: {
         yellowSwitch: createButton('stationD-yellow-switch'),
@@ -186,6 +188,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         blueButton: createButton('stationD-blue-button'),
         rfidScanner: { }
     },
+    bigRedButton: createButton('big-red-button'),
     enabled: {
         stationA: {
             redSwitch: true,
@@ -214,6 +217,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
             whiteButton: true,
             blueButton: true,
             rfidScanner: true
-        }
+        },
+        bigRedButton: true
     }
 });

@@ -13,7 +13,7 @@ export interface GameState {
     max_tasks: number;
 }
 
-export enum TaskType {
+export enum FrequencyTaskType {
     PressButton,
     ScanHand,
     FlipSwitches,
@@ -21,6 +21,10 @@ export enum TaskType {
     ReadCode,
     ScanCard,
     PressBigButton
+}
+
+export enum ExclusionTaskType {
+    None
 }
 
 export interface TaskWeights {
@@ -35,11 +39,12 @@ export interface TaskDurations {
 
 export interface TaskTemplate {
     description: string;
-    type: TaskType;
+    frequencyType: FrequencyTaskType;
+    exclusionType: ExclusionTaskType | null;
     start: (() => void) | null;
+    end: (() => void) | null;
     enabled: HardwareCheck;
     completed: HardwareCheck;
-    // completed : HardwareState;
 }
 
 export interface Task {
@@ -48,6 +53,7 @@ export interface Task {
     time_created: number;
     time_expires: number;
     start: (() => void) | null;
+    end: (() => void) | null;
     enabled: HardwareCheck;
     completed: HardwareCheck;
 }

@@ -9,7 +9,7 @@ import { Line } from 'rc-progress';
 var socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER);
 
 var defaultGameState: GameTypes.GameState = {
-  tasks: [{ description: 'test', id: 0, time_created: 0, time_expires: 0 }],
+  tasks: [],
   failures: 0,
   time: 0,
   phase: GameTypes.GamePhase.NotConnected,
@@ -54,19 +54,19 @@ class App extends React.Component<{}, GameTypes.GameState> {
     socket.emit('reset-game');
   }
 
-  incrementProbability(x: GameTypes.TaskType) {
+  incrementProbability(x: GameTypes.FrequencyTaskType) {
     socket.emit('increment-probability', x);
   }
 
-  decrementProbability(x: GameTypes.TaskType) {
+  decrementProbability(x: GameTypes.FrequencyTaskType) {
     socket.emit('decrement-probability', x);
   }
 
-  incrementDuration(x: GameTypes.TaskType) {
+  incrementDuration(x: GameTypes.FrequencyTaskType) {
     socket.emit('increment-duration', x);
   }
 
-  decrementDuration(x: GameTypes.TaskType) {
+  decrementDuration(x: GameTypes.FrequencyTaskType) {
     socket.emit('decrement-duration', x);
   }
 
@@ -92,211 +92,211 @@ class App extends React.Component<{}, GameTypes.GameState> {
         Probability Controls and Duration Controls:
         <div>
           {'Press Button: ' +
-            this.state.weights[GameTypes.TaskType.PressButton]}
+            this.state.weights[GameTypes.FrequencyTaskType.PressButton]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.PressButton)
+              this.incrementProbability(GameTypes.FrequencyTaskType.PressButton)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.PressButton)
+              this.decrementProbability(GameTypes.FrequencyTaskType.PressButton)
             }
           >
             -
           </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.PressButton]}
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.PressButton]}
           <button
             onClick={e =>
-              this.incrementDuration(GameTypes.TaskType.PressButton)
+              this.incrementDuration(GameTypes.FrequencyTaskType.PressButton)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementDuration(GameTypes.TaskType.PressButton)
+              this.decrementDuration(GameTypes.FrequencyTaskType.PressButton)
             }
           >
             -
           </button>
         </div>
         <div>
-          {'Scan Hand: ' + this.state.weights[GameTypes.TaskType.ScanHand]}
+          {'Scan Hand: ' + this.state.weights[GameTypes.FrequencyTaskType.ScanHand]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.ScanHand)
+              this.incrementProbability(GameTypes.FrequencyTaskType.ScanHand)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.ScanHand)
+              this.decrementProbability(GameTypes.FrequencyTaskType.ScanHand)
             }
           >
             -
           </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.ScanHand]}
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.ScanHand]}
           <button
-            onClick={e => this.incrementDuration(GameTypes.TaskType.ScanHand)}
+            onClick={e => this.incrementDuration(GameTypes.FrequencyTaskType.ScanHand)}
           >
             +
           </button>
           <button
-            onClick={e => this.decrementDuration(GameTypes.TaskType.ScanHand)}
+            onClick={e => this.decrementDuration(GameTypes.FrequencyTaskType.ScanHand)}
           >
             -
           </button>
         </div>
         <div>
           {'Flip Switches: ' +
-            this.state.weights[GameTypes.TaskType.FlipSwitches]}
+            this.state.weights[GameTypes.FrequencyTaskType.FlipSwitches]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.FlipSwitches)
+              this.incrementProbability(GameTypes.FrequencyTaskType.FlipSwitches)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.FlipSwitches)
+              this.decrementProbability(GameTypes.FrequencyTaskType.FlipSwitches)
             }
           >
             -
           </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.FlipSwitches]}
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.FlipSwitches]}
           <button
             onClick={e =>
-              this.incrementDuration(GameTypes.TaskType.FlipSwitches)
+              this.incrementDuration(GameTypes.FrequencyTaskType.FlipSwitches)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementDuration(GameTypes.TaskType.FlipSwitches)
+              this.decrementDuration(GameTypes.FrequencyTaskType.FlipSwitches)
             }
-          >
-            -
-          </button>
-        </div>
-        <div>
-          {'Plugboard: ' + this.state.weights[GameTypes.TaskType.Plugboard]}
-          <button
-            onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.Plugboard)
-            }
-          >
-            +
-          </button>
-          <button
-            onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.Plugboard)
-            }
-          >
-            -
-          </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.Plugboard]}
-          <button
-            onClick={e => this.incrementDuration(GameTypes.TaskType.Plugboard)}
-          >
-            +
-          </button>
-          <button
-            onClick={e => this.decrementDuration(GameTypes.TaskType.Plugboard)}
           >
             -
           </button>
         </div>
         <div>
-          {'Read Code: ' + this.state.weights[GameTypes.TaskType.ReadCode]}
+          {'Plugboard: ' + this.state.weights[GameTypes.FrequencyTaskType.Plugboard]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.ReadCode)
+              this.incrementProbability(GameTypes.FrequencyTaskType.Plugboard)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.ReadCode)
+              this.decrementProbability(GameTypes.FrequencyTaskType.Plugboard)
             }
           >
             -
           </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.ReadCode]}
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.Plugboard]}
           <button
-            onClick={e => this.incrementDuration(GameTypes.TaskType.ReadCode)}
+            onClick={e => this.incrementDuration(GameTypes.FrequencyTaskType.Plugboard)}
           >
             +
           </button>
           <button
-            onClick={e => this.decrementDuration(GameTypes.TaskType.ReadCode)}
+            onClick={e => this.decrementDuration(GameTypes.FrequencyTaskType.Plugboard)}
           >
             -
           </button>
         </div>
         <div>
-          {'Scan Card: ' + this.state.weights[GameTypes.TaskType.ScanCard]}
+          {'Read Code: ' + this.state.weights[GameTypes.FrequencyTaskType.ReadCode]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.ScanCard)
+              this.incrementProbability(GameTypes.FrequencyTaskType.ReadCode)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.ScanCard)
+              this.decrementProbability(GameTypes.FrequencyTaskType.ReadCode)
             }
           >
             -
           </button>
-          {'Duration: ' + this.state.durations[GameTypes.TaskType.ScanCard]}
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.ReadCode]}
           <button
-            onClick={e => this.incrementDuration(GameTypes.TaskType.ScanCard)}
+            onClick={e => this.incrementDuration(GameTypes.FrequencyTaskType.ReadCode)}
           >
             +
           </button>
           <button
-            onClick={e => this.decrementDuration(GameTypes.TaskType.ScanCard)}
+            onClick={e => this.decrementDuration(GameTypes.FrequencyTaskType.ReadCode)}
+          >
+            -
+          </button>
+        </div>
+        <div>
+          {'Scan Card: ' + this.state.weights[GameTypes.FrequencyTaskType.ScanCard]}
+          <button
+            onClick={e =>
+              this.incrementProbability(GameTypes.FrequencyTaskType.ScanCard)
+            }
+          >
+            +
+          </button>
+          <button
+            onClick={e =>
+              this.decrementProbability(GameTypes.FrequencyTaskType.ScanCard)
+            }
+          >
+            -
+          </button>
+          {'Duration: ' + this.state.durations[GameTypes.FrequencyTaskType.ScanCard]}
+          <button
+            onClick={e => this.incrementDuration(GameTypes.FrequencyTaskType.ScanCard)}
+          >
+            +
+          </button>
+          <button
+            onClick={e => this.decrementDuration(GameTypes.FrequencyTaskType.ScanCard)}
           >
             -
           </button>
         </div>
         <div>
           {'Press Big Red Button: ' +
-            this.state.weights[GameTypes.TaskType.PressBigButton]}
+            this.state.weights[GameTypes.FrequencyTaskType.PressBigButton]}
           <button
             onClick={e =>
-              this.incrementProbability(GameTypes.TaskType.PressBigButton)
+              this.incrementProbability(GameTypes.FrequencyTaskType.PressBigButton)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementProbability(GameTypes.TaskType.PressBigButton)
+              this.decrementProbability(GameTypes.FrequencyTaskType.PressBigButton)
             }
           >
             -
           </button>
           {'Duration: ' +
-            this.state.durations[GameTypes.TaskType.PressBigButton]}
+            this.state.durations[GameTypes.FrequencyTaskType.PressBigButton]}
           <button
             onClick={e =>
-              this.incrementDuration(GameTypes.TaskType.PressBigButton)
+              this.incrementDuration(GameTypes.FrequencyTaskType.PressBigButton)
             }
           >
             +
           </button>
           <button
             onClick={e =>
-              this.decrementDuration(GameTypes.TaskType.PressBigButton)
+              this.decrementDuration(GameTypes.FrequencyTaskType.PressBigButton)
             }
           >
             -
