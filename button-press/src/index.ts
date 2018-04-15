@@ -49,7 +49,8 @@ class ButtonListener {
     }
 }
 
-var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
+// @ts-ignore
+var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 
 let button = new ButtonListener(3, "button3");

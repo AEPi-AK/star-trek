@@ -121,8 +121,16 @@ function pickRandomTaskTemplate () : TaskTemplate {
   var rand = Math.random();
   for (var i = 0; i < task_templates.length; i++) {
     accum += 1/total * game_state.weights[task_templates[i].type];
-    if (accum > rand) return task_templates[i];
+    if (accum > rand) {
+      for (var j = 0; j < task_templates.length; j++) {
+        if (i !== j) {
+          game_state.weights[j] += 1;
+        }
+      }
+      return task_templates[i];
+    }
   }
+  console.log('Defaulting');
   return task_templates[task_templates.length - 1];
 }
 
@@ -187,7 +195,6 @@ function endGame () {
 
 function updatedGameState () {
   io.sockets.emit('game-state-updated', game_state);
-  console.log(game_state);
 }
 
 io.on('connect', function(socket: SocketIO.Socket){
@@ -204,7 +211,6 @@ io.on('connect', function(socket: SocketIO.Socket){
   }); 
 
   socket.on('number-players', (num : number) => {
-    console.log("num-players-called");
     number_of_players = num;
     if (game_state.phase != GamePhase.PlayGame) {
       game_state.phase = GamePhase.PlayGame;

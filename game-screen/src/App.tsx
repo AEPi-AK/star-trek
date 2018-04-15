@@ -5,7 +5,8 @@ import * as GameTypes from './shared/GameTypes';
 // @ts-ignore
 import { Line } from 'rc-progress';
 
-var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
+// @ts-ignore
+var socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER);
 
 var defaultGameState: GameTypes.GameState = {
   tasks: [{ description: 'test', id: 0, time_created: 0, time_expires: 0 }],
