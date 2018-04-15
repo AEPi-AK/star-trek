@@ -49,7 +49,7 @@ export interface HardwareState {
       plugboard: boolean;
       captainsChair: boolean;
       keypad: boolean;
-      touchSens: boolean;
+      touchSensor: boolean;
     };
 }
 

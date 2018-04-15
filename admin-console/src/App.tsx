@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.css';
 import './bootstrap.min.css';
 import * as Socket from 'socket.io-client';
-import * as HardwareTypes from './HardwareTypes';
+import * as HardwareTypes from './shared/HardwareTypes';
 
 var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
 
