@@ -1,6 +1,6 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client')
-import { KeypadListener } from '../../keypad/src/index'; 
+import { KeypadListener } from './KeypadListener'; 
 
 console.log("starting station");
 
