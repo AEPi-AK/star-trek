@@ -8,15 +8,11 @@ class PullUpListener {
     port: number;
     label: string;
     old_state: number;
-    channel: string;
-    propName: string;
 
-    constructor(port: number, label: string, channel: string, propName: string) {
+    constructor(port: number, label: string) {
         this.port = port;
         this.label = label;
         this.old_state = 0;
-	this.channel = channel;
-	this.propName = propName;
     }
 
     init () {
@@ -29,13 +25,12 @@ class PullUpListener {
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
                 console.log(this.label + "has been pressed, new state %d", new_state);
-		var state = {
-		  label: this.label,
-		  lit: false
-		};
-		// @ts-ignore
-		state[this.propName] = this.old_state ? false : true;
-                socket.emit(this.channel, state);
+                var state = {
+                    label: this.label,
+                    lit: false,
+                    pressed: this.old_state ? false : true,
+                };
+                socket.emit('button-pressed', state);
             }
         });
 
@@ -52,35 +47,45 @@ var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 // @ts-ignore
 if (process.argv[3] === 'stationA') {
-    let redSwitch = new PullUpListener(5, "stationA-red-switch", 'switch-pressed', 'up');
+    let redSwitch = new PullUpListener(5, "stationA-red-switch");
     redSwitch.init();
-    let blueButton = new PullUpListener(10, "stationA-blue-button", 'button-pressed', 'pressed');
+    let blueButton = new PullUpListener(10, "stationA-blue-button");
     blueButton.init();
-    let greenButton = new PullUpListener(13, "stationA-green-button", 'button-pressed', 'pressed');
+    let greenButton = new PullUpListener(13, "stationA-green-button");
     greenButton.init();
-    let yellowButton = new PullUpListener(19, "stationA-yellow-button", 'button-pressed', 'pressed');
+    let yellowButton = new PullUpListener(19, "stationA-yellow-button");
     yellowButton.init();
 }
 // @ts-ignore
 else if (process.argv[3] === 'stationB') {
-    let greenSwitch = new PullUpListener(5, "stationB-green-switch", 'switch-pressed', 'up');
-    greenSwitch.init();
-    let whiteButton = new PullUpListener(10, "stationB-white-button", 'button-pressed', 'pressed');
+    let blueSwitch = new PullUpListener(5, "stationC-blue-switch");
+    blueSwitch.init();
+    let whiteButton = new PullUpListener(10, "stationB-white-button");
     whiteButton.init();
-    let blueButton = new PullUpListener(13, "stationB-blue-button", 'button-pressed', 'pressed');
+    let blueButton = new PullUpListener(13, "stationB-blue-button");
     blueButton.init();
-    let yellowButton = new PullUpListener(19, "stationB-yellow-button", 'button-pressed', 'pressed');
+    let yellowButton = new PullUpListener(19, "stationB-yellow-button");
     yellowButton.init();
+}
+else if (process.argv[3] === 'stationC') {
+    let greenSwitch = new PullUpListener(5, "stationC-green-switch");
+    greenSwitch.init();
+    let yellowButton = new PullUpListener(10, "stationC-yellow-button");
+    yellowButton.init();
+    let whiteButton = new PullUpListener(13, "stationC-white-button");
+    whiteButton.init();
+    let greenButton = new PullUpListener(19, "stationC-green-button");
+    greenButton.init();
 }
 // @ts-ignore
 else if (process.argv[3] === 'stationD') {
-    let orangeSwitch = new PullUpListener(5, "stationD-orange-switch", 'switch-pressed', 'up');
-    orangeSwitch.init();
-    let greenButton = new PullUpListener(10, "stationD-green-button", 'button-pressed', 'pressed');
+    let yellowSwitch = new PullUpListener(5, "stationD-yellow-switch");
+    yellowSwitch.init();
+    let greenButton = new PullUpListener(10, "stationD-green-button");
     greenButton.init();
-    let whiteButton = new PullUpListener(13, "stationD-white-button", 'button-pressed', 'pressed');
+    let whiteButton = new PullUpListener(13, "stationD-white-button");
     whiteButton.init();
-    let blueButton = new PullUpListener(19, "stationD-blue-button", 'button-pressed', 'pressed');
+    let blueButton = new PullUpListener(19, "stationD-blue-button");
     blueButton.init();
 }
 
