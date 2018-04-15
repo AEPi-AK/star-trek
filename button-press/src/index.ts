@@ -62,6 +62,17 @@ if (process.argv[3] === 'stationA') {
     yellowButton.init();
 }
 // @ts-ignore
+else if (process.argv[3] === 'stationB') {
+    let greenSwitch = new PullUpListener(5, "stationB-green-switch", 'switch-pressed', 'up');
+    greenSwitch.init();
+    let whiteButton = new PullUpListener(10, "stationB-white-button", 'button-pressed', 'pressed');
+    whiteButton.init();
+    let blueButton = new PullUpListener(13, "stationB-blue-button", 'button-pressed', 'pressed');
+    blueButton.init();
+    let yellowButton = new PullUpListener(19, "stationB-yellow-button", 'button-pressed', 'pressed');
+    yellowButton.init();
+}
+// @ts-ignore
 else if (process.argv[3] === 'stationD') {
     let orangeSwitch = new PullUpListener(5, "stationD-orange-switch", 'switch-pressed', 'up');
     orangeSwitch.init();
