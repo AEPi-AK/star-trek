@@ -1,3 +1,6 @@
+import { HardwareState2 } from './HardwareTypes';
+
+export type HardwareCheck = (state: HardwareState2) => boolean;
 
 export interface GameState {
     tasks: Task[];
@@ -33,6 +36,8 @@ export interface TaskDurations {
 export interface TaskTemplate {
     description: string;
     type: TaskType;
+    enabled: HardwareCheck;
+    completed: HardwareCheck;
     // completed : HardwareState;
 }
 

@@ -53,6 +53,41 @@ export interface HardwareState {
     };
 }
 
+export interface HardwareState2 {
+    navigation: {
+        greenSwitch: SwitchState;
+        whiteButton: ButtonState;
+        redButton: ButtonState
+    };
+    operations: {
+        plugboard: PlugboardState;
+        keypad: KeypadState;
+        yellowSwitch: SwitchState;
+        whiteButton: ButtonState;
+        redButton: ButtonState;
+    };
+    security: {
+        touchpad: TouchSensorState;
+        rfidScanner: RFIDScannerState;
+        blueSwitch: SwitchState;
+    };
+    tactical: {
+        yellowButton: ButtonState;
+        blueButton: ButtonState;
+        greenButton: ButtonState;
+        bigRedButton: ButtonState;
+        redSwitch: SwitchState;
+        whiteButton: ButtonState;
+        redButton: ButtonState;
+    }
+    enabled: {
+        navigation: boolean;
+        operations: boolean;
+        security: boolean;
+        tactical: boolean;
+    }
+}
+
 export interface ButtonState {
     pressed: boolean;
     label: string;
@@ -78,17 +113,19 @@ export enum Color {
 }
 
 export interface PlugboardState {
-    slot0: Color;
-    slot1: Color;
-    slot2: Color;
-    slot3: Color;
+    slotTo: Color;
+    slotToo: Color;
+    slotTwo: Color;
+    slot10: Color;
 }
 
 export interface CaptainsChairState {
 }
 
 export interface KeypadState {
+    correct: boolean;
 }
 
 export interface TouchSensorState {
+    pressedThreeSeconds: boolean;
 }

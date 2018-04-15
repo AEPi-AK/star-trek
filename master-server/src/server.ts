@@ -2,8 +2,8 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
-import { ButtonState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task, TaskType, GamePhase } from '../../shared/GameTypes';
+import { ButtonState, HardwareState2, Color } from '../../shared/HardwareTypes';
+import { GameState, TaskTemplate, Task, TaskType, GamePhase, HardwareCheck } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
 var app = Express();
@@ -26,34 +26,77 @@ function template(str : string, args : string[]) {
   return str.replace(/%s/g, () => { return args[i++]; });
 }
 
-function substitute1 (str : string, p1 : string[], type : TaskType) {
-  return p1.map((arg) => ({description : template(str, [arg]), type : type}));
-}
+// function substitute1 (str : string, p1 : string[], type : TaskType) {//, enabled: (p:string) => HardwareCheck, completed: (p:string) => HardwareCheck) {
+//   return p1.map((arg) => ({description : template(str, [arg]), type : type, enabled: enabled(arg), completed: completed(arg)}));
+// }
 
-function substitute2 (str : string, p1 : string[], p2 : string[], type : TaskType) {
-  var returns : TaskTemplate[] = [];
-  for (var poss1 of p1) {
-    for (var poss2 of p2) {
-      returns.push({description : template(str, [poss1, poss2]), type : type});
-    }
-  }
-  return returns;
-}
+// function substitute2 (str : string, p1 : string[], p2 : string[], type : TaskType) {
+//   var returns : TaskTemplate[] = [];
+//   for (var poss1 of p1) {
+//     for (var poss2 of p2) {
+//       returns.push({description : template(str, [poss1, poss2]), type : type});
+//     }
+//   }
+//   return returns;
+// }
+
+var tactical_enabled = (s: HardwareState2) => s.enabled.tactical;
+var operations_enabled = (s: HardwareState2) => s.enabled.operations;
+var navigation_enabled = (s: HardwareState2) => s.enabled.navigation;
+var security_enabled = (s: HardwareState2) => s.enabled.security;
 
 var task_templates : TaskTemplate[] = [
-  substitute1('Press the %s colored button at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
-  substitute1('Press the button labelled %s at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
-  substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation'], TaskType.PressButton),
-  [{description : 'Scan hand at Security', type : TaskType.ScanHand}],
-  substitute2('Flip the %s colored switches to the %s position', 
-    ['Yellow and Green', 'Yellow and Blue', 'Yellow and Red', 'Green and Blue', 'Green and Red', 'Blue and Red'], ['up', 'down'], TaskType.FlipSwitches),
-  substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
-  substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["", "", "", "", ""], TaskType.ReadCode),
-  [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
-  [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
-  [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
-  [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
-].reduce((acc, cur) => acc.concat(cur));
+  {description: 'Press the Yellow colored button at Tactical', type: TaskType.PressButton, enabled: tactical_enabled, completed: (s: HardwareState2) => s.tactical.yellowButton.pressed},
+  {description: 'Press the Green colored button at Tactical', type: TaskType.PressButton, enabled: tactical_enabled, completed: (s: HardwareState2) => s.tactical.greenButton.pressed},
+  {description: 'Press the Blue colored button at Tactical', type: TaskType.PressButton, enabled: tactical_enabled, completed: (s: HardwareState2) => s.tactical.blueButton.pressed},
+
+  {description: 'Press the Red colored button at Tactical', type: TaskType.PressButton, enabled: tactical_enabled, completed: (s) => s.tactical.redButton.pressed},
+  {description: 'Press the Red colored button at Operations', type: TaskType.PressButton, enabled: operations_enabled, completed: (s) => s.operations.redButton.pressed},
+  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: navigation_enabled, completed: (s) => s.navigation.redButton.pressed},
+  {description: 'Press the White colored button at Tactical', type: TaskType.PressButton, enabled: tactical_enabled, completed: (s) => s.tactical.whiteButton.pressed},
+  {description: 'Press the White colored button at Operations', type: TaskType.PressButton, enabled: operations_enabled, completed: (s) => s.operations.whiteButton.pressed},
+  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: navigation_enabled, completed: (s) => s.navigation.whiteButton.pressed},
+
+  {description: 'Scan hand at Security', type: TaskType.ScanHand, enabled: security_enabled, completed: (s) => s.security.touchpad.pressedThreeSeconds},
+
+  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations && s.enabled.navigation, completed: (s) => s.operations.yellowSwitch.up && s.navigation.greenSwitch.up},
+  // 11 more like this
+
+  {description: 'Plug the Red wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotToo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotToo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotToo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTwo == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTwo == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slotTwo == Color.Yellow},
+  {description: 'Plug the Red wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slot10 == Color.Red},
+  {description: 'Plug the Blue wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slot10 == Color.Blue},
+  {description: 'Plug the Yellow wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: operations_enabled, completed: (s) => s.operations.plugboard.slot10 == Color.Yellow},
+
+  {description: "Read the code on the captain's chair.  Enter it on the keypad.", type: TaskType.ReadCode, enabled: operations_enabled, completed: (s) => s.operations.keypad.correct},
+
+  {description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard, enabled: security_enabled, completed: (s) => true},
+  {description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard, enabled: security_enabled, completed: (s) => true},
+  {description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard, enabled: security_enabled, completed: (s) => true},
+  {description : "Press the Big Red Button", type : TaskType.PressBigButton, enabled: tactical_enabled, completed: (s) => s.tactical.bigRedButton.pressed}
+]
+
+// var task_templates : TaskTemplate[] = [
+//   substitute1('Press the %s colored button at Tactical', ['Yellow', 'Green', 'Blue']),
+//   substitute1('Press the button labelled %s at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
+//   substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation'], TaskType.PressButton),
+//   [{description : 'Scan hand at Security', type : TaskType.ScanHand}],
+//   substitute2('Flip the %s colored switches to the %s position', 
+//     ['Yellow and Green', 'Yellow and Blue', 'Yellow and Red', 'Green and Blue', 'Green and Red', 'Blue and Red'], ['up', 'down'], TaskType.FlipSwitches),
+//   substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
+//   substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["", "", "", "", ""], TaskType.ReadCode),
+//   [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
+//   [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
+//   [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
+//   [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
+// ].reduce((acc, cur) => acc.concat(cur));
 
 var INITIAL_WEIGHTS = {
   [TaskType.PressButton] : 1,
