@@ -8,11 +8,15 @@ class PullUpListener {
     port: number;
     label: string;
     old_state: number;
+    flashing: boolean;
+    currentInterval: number;
 
     constructor(port: number, label: string) {
         this.port = port;
         this.label = label;
         this.old_state = 0;
+        this.flashing = false;
+        this.currentInterval = 0;
     }
 
     init () {
@@ -40,6 +44,27 @@ class PullUpListener {
         }
         });
     }
+
+    flash() {
+        if (!this.flashing) {
+            this.currentInterval = setInterval(() => {
+                console.log("flashing");
+                var lit = false;
+                if (lit) {
+                    lit = false;
+                    rpio.write(40, rpio.LOW);
+                } else {
+                    lit = true;
+                    rpio.write(40, rpio.HIGH);
+                }
+            }, 1000);
+        }
+    }
+    stopFlash () {
+        if (this.flashing) {
+            clearInterval(this.currentInterval);
+        }
+    }
 }
 
 // @ts-ignore
@@ -55,10 +80,29 @@ if (process.argv[3] === 'stationA') {
     greenButton.init();
     let yellowButton = new PullUpListener(19, "stationA-yellow-button");
     yellowButton.init();
+
+    socket.on('button-flash', (label: string) => {
+        if (label === 'stationA-blue-button') {
+            blueButton.flash();
+        } else if (label === 'stationA-green-button') {
+            greenButton.flash();
+        } else if (label === 'stationA-yellow-button') {
+            yellowButton.flash();
+        }
+    });
+    socket.on('button-stop-flash', (label: string) => {
+        if (label === 'stationA-blue-button') {
+            blueButton.stopFlash();
+        } else if (label === 'stationA-green-button') {
+            greenButton.stopFlash();
+        } else if (label === 'stationA-yellow-button') {
+            yellowButton.stopFlash();
+        }
+    });
 }
 // @ts-ignore
 else if (process.argv[3] === 'stationB') {
-    let blueSwitch = new PullUpListener(5, "stationC-blue-switch");
+    let blueSwitch = new PullUpListener(5, "stationB-blue-switch");
     blueSwitch.init();
     let whiteButton = new PullUpListener(10, "stationB-white-button");
     whiteButton.init();
@@ -66,7 +110,26 @@ else if (process.argv[3] === 'stationB') {
     blueButton.init();
     let yellowButton = new PullUpListener(19, "stationB-yellow-button");
     yellowButton.init();
+    socket.on('button-flash', (label: string) => {
+        if (label === 'stationB-white-button') {
+            whiteButton.flash();
+        } else if (label === 'stationB-blue-button') {
+            blueButton.flash();
+        } else if (label === 'stationB-yellow-button') {
+            yellowButton.flash();
+        }
+    });
+    socket.on('button-stop-flash', (label: string) => {
+        if (label === 'stationB-white-button') {
+            whiteButton.stopFlash();
+        } else if (label === 'stationB-blue-button') {
+            blueButton.stopFlash();
+        } else if (label === 'stationB-yellow-button') {
+            yellowButton.stopFlash();
+        }
+    });
 }
+// @ts-ignore
 else if (process.argv[3] === 'stationC') {
     let greenSwitch = new PullUpListener(5, "stationC-green-switch");
     greenSwitch.init();
@@ -76,6 +139,25 @@ else if (process.argv[3] === 'stationC') {
     whiteButton.init();
     let greenButton = new PullUpListener(19, "stationC-green-button");
     greenButton.init();
+    socket.on('button-flash', (label: string) => {
+        if (label === 'stationC-yellow-button') {
+            yellowButton.flash();
+        } else if (label === 'stationC-white-button') {
+            whiteButton.flash();
+        } else if (label === 'stationC-green-button') {
+            greenButton.flash();
+        }
+    });
+
+    socket.on('button-stop-flash', (label: string) => {
+        if (label === 'stationC-yellow-button') {
+            yellowButton.stopFlash();
+        } else if (label === 'stationC-white-button') {
+            whiteButton.stopFlash();
+        } else if (label === 'stationC-green-button') {
+            greenButton.stopFlash();
+        }
+    });
 }
 // @ts-ignore
 else if (process.argv[3] === 'stationD') {
@@ -87,6 +169,25 @@ else if (process.argv[3] === 'stationD') {
     whiteButton.init();
     let blueButton = new PullUpListener(19, "stationD-blue-button");
     blueButton.init();
+
+    socket.on('button-flash', (label: string) => {
+        if (label === 'stationD-green-button') {
+            greenButton.flash();
+        } else if (label === 'stationD-white-button') {
+            whiteButton.flash();
+        } else if (label === 'stationD-blue-button') {
+            blueButton.flash();
+        }
+    });
+    socket.on('button-stop-flash', (label: string) => {
+        if (label === 'stationD-green-button') {
+            greenButton.stopFlash();
+        } else if (label === 'stationD-white-button') {
+            whiteButton.stopFlash();
+        } else if (label === 'stationD-blue-button') {
+            blueButton.stopFlash();
+        }
+    });
 }
 
 socket.on('connect', () => {
