@@ -36,6 +36,7 @@ export interface TaskDurations {
 export interface TaskTemplate {
     description: string;
     type: TaskType;
+    start: (() => void) | null;
     enabled: HardwareCheck;
     completed: HardwareCheck;
     // completed : HardwareState;
@@ -46,6 +47,7 @@ export interface Task {
     id: number;
     time_created: number;
     time_expires: number;
+    start: (() => void) | null;
     enabled: HardwareCheck;
     completed: HardwareCheck;
 }

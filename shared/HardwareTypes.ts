@@ -55,59 +55,62 @@
 
 export interface HardwareState {
     stationA: {
-        redSwitch: SwitchState;
+        redSwitch: ButtonState;
         blueButton: ButtonState; 
         greenButton: ButtonState; 
         yellowButton: ButtonState;
+        keypad: KeypadState;
     };
     stationB: {
-        greenSwitch: SwitchState;
+        greenSwitch: ButtonState;
         whiteButton: ButtonState; 
         blueButton: ButtonState; 
         yellowButton: ButtonState;
+        plugboard: PlugboardState;
+    };
+    stationC: {
+        blueSwitch: ButtonState;
+        yellowButton: ButtonState;
+        whiteButton: ButtonState;
+        greenButton: ButtonState;
+        touchpad: TouchSensorState;
     };
     stationD: {
-        orangeSwitch: SwitchState;
-        blueButton: ButtonState;
-        whiteButton: ButtonState;
+        yellowSwitch: ButtonState;
         greenButton: ButtonState;
-    };
-    tactical: {
-        yellowButton: ButtonState;
-        blueButton: ButtonState;
-        greenButton: ButtonState;
-        bigRedButton: ButtonState;
-        redSwitch: SwitchState;
         whiteButton: ButtonState;
-        redButton: ButtonState;
+        blueButton: ButtonState;
+        rfidScanner: RFIDScannerState;
     };
     enabled: {
-        navigation: {
-            greenSwitch: boolean;
-            whiteButton: boolean;
-            redButton: boolean
-        };
-        operations: {
-            plugboard: boolean;
-            keypad: boolean;
-            yellowSwitch: boolean;
-            whiteButton: boolean;
-            redButton: boolean;
-        };
-        security: {
-            touchpad: boolean;
-            rfidScanner: boolean;
-            blueSwitch: boolean;
-        };
-        tactical: {
-            yellowButton: boolean;
-            blueButton: boolean;
-            greenButton: boolean;
-            bigRedButton: boolean;
+        stationA: {
             redSwitch: boolean;
+            blueButton: boolean; 
+            greenButton: boolean; 
+            yellowButton: boolean;
+            keypad: boolean;
+        };
+        stationB: {
+            greenSwitch: boolean;
+            whiteButton: boolean; 
+            blueButton: boolean; 
+            yellowButton: boolean;
+            plugboard: boolean;
+        };
+        stationC: {
+            blueSwitch: boolean;
+            yellowButton: boolean;
             whiteButton: boolean;
-            redButton: boolean;
-        }
+            greenButton: boolean;
+            touchpad: boolean;
+        };
+        stationD: {
+            yellowSwitch: boolean;
+            greenButton: boolean;
+            whiteButton: boolean;
+            blueButton: boolean;
+            rfidScanner: boolean;
+        };
     };
 }
 
@@ -154,61 +157,63 @@ export interface TouchSensorState {
 }
 
 var createButton = (s: string) => ({pressed: false, label: s, lit: false});
-var createSwitch = (s: string) => ({up: false, label: s, lit: false});
 export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
-    stationA : {
-        redSwitch: createSwitch('stationA-red-switch'),
+    stationA: {
+        redSwitch: createButton('stationA-red-switch'),
         blueButton: createButton('stationA-blue-button'),
         greenButton: createButton('stationA-green-button'),
-        yellowButton: createButton('stationA-yellow-button')
+        yellowButton: createButton('stationA-yellow-button'),
+        keypad: { correct: true }
     },
     stationB: {
-        greenSwitch: createSwitch('stationB-red-switch'),
-        whiteButton: createButton('stationB-blue-button'),
-        blueButton: createButton('stationB-green-button'),
-        yellowButton: createButton('stationB-yellow-button')
+        greenSwitch: createButton('stationB-green-switch'),
+        whiteButton: createButton('stationB-white-button'),
+        blueButton: createButton('stationB-blue-button'),
+        yellowButton: createButton('stationB-yellow-button'),
+        plugboard: { slotTo: Color.None, slotToo: Color.None, slotTwo: Color.None, slot10: Color.None }
     },
-    tactical: {
-        yellowButton: createButton('tactical-yellow-button'),
-        blueButton: createButton('tactical-blue-button'),
-        greenButton: createButton('tactical-green-button'),
-        bigRedButton: createButton('tactical-big-button'),
-        redSwitch: createSwitch('tactical-red-switch'),
-        whiteButton: createButton('tactical-white-button'),
-        redButton: createButton('tactical-red-button')
+    stationC: {
+        blueSwitch: createButton('stationC-blue-switch'),
+        yellowButton: createButton('stationC-yellow-button'),
+        whiteButton: createButton('stationC-white-button'),
+        greenButton: createButton('stationC-green-button'),
+        touchpad: { pressedThreeSeconds: true }
     },
     stationD: {
-        orangeSwitch: createSwitch('stationD-orange-switch'),
+        yellowSwitch: createButton('stationD-yellow-switch'),
+        greenButton: createButton('stationD-green-button'),
         whiteButton: createButton('stationD-white-button'),
         blueButton: createButton('stationD-blue-button'),
-        greenButton: createButton('stationD-green-button'),
+        rfidScanner: { }
     },
     enabled: {
-        navigation: {
-            greenSwitch: true,
-            whiteButton: true,
-            redButton: true,
-        },
-        operations: {
-            plugboard: true,
-            keypad: true,
-            yellowSwitch: true,
-            whiteButton: true,
-            redButton: true,
-        },
-        security: {
-            touchpad: true,
-            rfidScanner: true,
-            blueSwitch: true,
-        },
-        tactical: {
-            yellowButton: true,
+        stationA: {
+            redSwitch: true,
             blueButton: true,
             greenButton: true,
-            bigRedButton: true,
-            redSwitch: true,
+            yellowButton: true,
+            keypad: true
+        },
+        stationB: {
+            greenSwitch: true,
             whiteButton: true,
-            redButton: true,
+            blueButton: true,
+            yellowButton: true,
+            plugboard: true
+        },
+        stationC: {
+            blueSwitch: true,
+            yellowButton: true,
+            whiteButton: true,
+            greenButton: true,
+            touchpad: true
+        },
+        stationD: {
+            yellowSwitch: true,
+            greenButton: true,
+            whiteButton: true,
+            blueButton: true,
+            rfidScanner: true
         }
     }
 });
