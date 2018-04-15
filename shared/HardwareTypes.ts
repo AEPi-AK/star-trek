@@ -151,7 +151,7 @@ export interface CaptainsChairState {
 }
 
 export interface KeypadState {
-    correct: boolean;
+    currentString: string
 }
 
 export interface TouchSensorState {
@@ -165,7 +165,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         blueButton: createButton('stationA-blue-button'),
         greenButton: createButton('stationA-green-button'),
         yellowButton: createButton('stationA-yellow-button'),
-        keypad: { correct: false }
+        keypad: { currentString: ''}
     },
     stationB: {
         greenSwitch: createButton('stationB-green-switch'),
