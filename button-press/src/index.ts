@@ -5,16 +5,18 @@ console.log("starting station");
 
 
 class PullUpListener {
-    port : number;
-    label : string;
-    old_state : number;
-    listening : boolean;
+    port: number;
+    label: string;
+    old_state: number;
+    channel: string;
+    propName: string;
 
-    constructor(port : number, label : string) {
+    constructor(port: number, label: string, channel: string, propName: string) {
         this.port = port;
         this.label = label;
         this.old_state = 0;
-        this.listening = false;
+	this.channel = channel;
+	this.propName = propName;
     }
 
     init () {
@@ -27,8 +29,13 @@ class PullUpListener {
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
                 console.log(this.label + "has been pressed, new state %d", new_state);
-                socket.emit('button-pressed',
-                    {label : this.label, pressed: this.old_state ? false : true, lit : false});
+		var state = {
+		  label: this.label,
+		  lit: false
+		};
+		// @ts-ignore
+		state[this.propName] = this.old_state ? false : true;
+                socket.emit(this.channel, state);
             }
         });
 
@@ -44,15 +51,15 @@ class PullUpListener {
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 
-let orangeSwitch = new PullUpListener(5, "station1-orange-switch");
+let orangeSwitch = new PullUpListener(5, "station1-orange-switch", 'switch-pressed', 'up');
 orangeSwitch.init();
-let greenButton = new PullUpListener(10, "station1-green-button");
+let greenButton = new PullUpListener(10, "station1-green-button", 'button-pressed', 'pressed');
 greenButton.init();
-let whiteButton = new PullUpListener(13, "station1-white-button");
+let whiteButton = new PullUpListener(13, "station1-white-button", 'button-pressed', 'pressed');
 whiteButton.init();
-let blueButton = new PullUpListener(19, "station1-blue-button");
+let blueButton = new PullUpListener(19, "station1-blue-button", 'button-pressed', 'pressed');
 blueButton.init();
 
 socket.on('connect', () => {
-    socket.emit('identification', 'button-1');
+    socket.emit('identification', 'stationA');
 });
