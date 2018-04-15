@@ -44,7 +44,7 @@ class PullUpListener {
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 
-let orangeSwitch = new PullUpListener(3, "station1-orange-switch");
+let orangeSwitch = new PullUpListener(5, "station1-orange-switch");
 orangeSwitch.init();
 let greenButton = new PullUpListener(10, "station1-green-button");
 greenButton.init();
