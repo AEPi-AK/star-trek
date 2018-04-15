@@ -7,7 +7,7 @@ console.log("Keypad started.");
 
 
 
-class KeypadListener {
+export class KeypadListener {
     keypad: Keypad;
     socket: SocketIOClient.Socket;
     sequence: number[];

@@ -1,5 +1,6 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client')
+import { KeypadListener } from '../../keypad/src/index'; 
 
 console.log("starting station");
 
@@ -193,6 +194,8 @@ else if (process.argv[3] === 'stationD') {
 else if (process.argv[3] === 'captains-chair') {
     let redButton = new PullUpListener(5, "big-red-button");
     redButton.init();
+
+    let keypad = new KeypadListener(socket);
 
     socket.on('button-flash', (label: string) => {
         if (label === 'big-red-button') {
