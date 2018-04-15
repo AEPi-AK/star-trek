@@ -8,7 +8,7 @@ console.log("rfid started.");
 readline.emitKeypressEvents(process.stdin);
 
 
-var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 socket.on('connect', () => {
     socket.emit('identification', 'keypad');

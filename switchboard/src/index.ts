@@ -66,7 +66,7 @@ class SwitchboardListener {
     }
 }
 
-var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
+var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 
 let switchboard = new SwitchboardListener([8, 10], [11, 13, 15], "switchboard-1");
