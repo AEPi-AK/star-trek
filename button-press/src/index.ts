@@ -189,6 +189,21 @@ else if (process.argv[3] === 'stationD') {
         }
     });
 }
+else if (process.argv[3] === 'captains-chair') {
+    let redButton = new PullUpListener(5, "big-red-button");
+    redButton.init();
+
+    socket.on('button-flash', (label: string) => {
+        if (label === 'big-red-button') {
+            redButton.flash();
+        }
+    });
+    socket.on('button-stop-flash', (label: string) => {
+        if (label === 'big-red-button') {
+            redButton.stopFlash();
+        }
+    });
+}
 
 socket.on('connect', () => {
     // @ts-ignore
