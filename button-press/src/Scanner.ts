@@ -35,7 +35,6 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
 
   endpoint.on('data', (data: Buffer) => {
     const scanCode = parseInt(data.toString('hex', 2, 3), 16);
-    console.log(data);
     // Every other scan code is blank padding
     if (scanCode === 0) {
       return;
