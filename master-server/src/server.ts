@@ -96,24 +96,53 @@ var task_templates : TaskTemplate[] = [
   {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationC-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-white-button'); }, 
     enabled: s => s.enabled.stationC.whiteButton, completed: s => s.stationC.whiteButton.pressed},
-    
+  {description: 'Press the flashing green button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
+    start: () => { io.sockets.emit('button-flash', 'stationA-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-green-button'); }, 
+    enabled: s => s.enabled.stationA.greenButton, completed: s => s.stationA.greenButton.pressed},
+  {description: 'Press the flashing green button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
+    start: () => { io.sockets.emit('button-flash', 'stationC-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-green-button'); }, 
+    enabled: s => s.enabled.stationC.greenButton, completed: s => s.stationC.greenButton.pressed},  
+   {description: 'Press the flashing yellow button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressYellowButton,
+    start: () => { io.sockets.emit('button-flash', 'stationA-yellow-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-yellow-button'); }, 
+    enabled: s => s.enabled.stationA.yellowButton, completed: s => s.stationA.yellowButton.pressed},
+  {description: 'Press the flashing yellow button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressYellowButton,
+    start: () => { io.sockets.emit('button-flash', 'stationB-yellow-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-yellow-button'); }, 
+    enabled: s => s.enabled.stationB.yellowButton, completed: s => s.stationB.yellowButton.pressed},
+  {description: 'Press the flashing green button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
+    start: () => { io.sockets.emit('button-flash', 'stationA-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-green-button'); }, 
+    enabled: s => s.enabled.stationA.greenButton, completed: s => s.stationA.greenButton.pressed},
+  {description: 'Press the flashing green button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
+    start: () => { io.sockets.emit('button-flash', 'stationD-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationD-green-button'); }, 
+    enabled: s => s.enabled.stationD.greenButton, completed: s => s.stationD.greenButton.pressed},
+
   {description: 'Scan hand at Security', frequencyType: FrequencyTaskType.ScanHand, exclusionType: ExclusionTaskType.ScanHand,
     start: null, end: null,
     enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressed},
 
-  {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
-    start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
   {description: 'Flip the yellow and green colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
-  {description: 'Flip the yellow and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
+  {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
   {description: 'Flip the yellow and blue colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
+  {description: 'Flip the yellow and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
     enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationC.blueSwitch.pressed},
-  // more
+  {description: 'Flip the yellow and red colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationA.redSwitch.pressed},
+  {description: 'Flip the yellow and red colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationA.redSwitch.pressed},
+  {description: 'Flip the green and blue colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationC.blueSwitch.pressed},
+  {description: 'Flip the green and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationC.blueSwitch.pressed},// more
 
   {description: 'Plug the Red wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
@@ -328,7 +357,6 @@ function updatedGameState () {
 function updatedHardwareState () {
   let old_length = game_state.tasks.length;
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
-  console.log(hardware_state);
   if (old_length != game_state.tasks.length) {
     updatedGameState();
   }
@@ -425,10 +453,15 @@ io.on('connect', function(socket: SocketIO.Socket){
   });
 
   socket.on('button-pressed', (s: ButtonState) => {
+    if (!(s.label in button_mapping)) {
+      console.log("wrong label %s", s.label);
+      return;
+    }
     var old_state = button_mapping[s.label](hardware_state);
     old_state.pressed = s.pressed;
     old_state.lit = s.lit;
     updatedHardwareState();
+    console.log("recieved state %s %s", s.label, s.pressed ? "pressed" : "unpressed");
   });
 
   socket.on('switchboard-update', (s: PlugboardState) => {
@@ -445,8 +478,8 @@ var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
   'stationB-white-button': s => s.stationB.whiteButton,
   'stationB-blue-button': s => s.stationB.blueButton,
   'stationB-yellow-button': s => s.stationB.yellowButton,
-  'stationB-green-switch' : s => s.stationB.greenSwitch,
-  'stationC-blue-switch': s => s.stationC.blueSwitch,
+  'stationB-blue-switch' : s => s.stationB.greenSwitch,
+  'stationC-green-switch': s => s.stationC.blueSwitch,
   'stationC-yellow-button': s => s.stationC.yellowButton,
   'stationC-white-button': s => s.stationC.whiteButton,
   'stationC-green-button': s => s.stationC.greenButton,
@@ -455,4 +488,5 @@ var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
   'stationD-blue-button': s => s.stationD.blueButton,
   'stationD-green-button': s => s.stationD.greenButton,
   'stationD-yellow-switch': s => s.stationD.yellowSwitch,
+  'big-red-button': s => s.bigRedButton
 }
