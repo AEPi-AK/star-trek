@@ -187,7 +187,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         greenButton: createButton('stationD-green-button'),
         whiteButton: createButton('stationD-white-button'),
         blueButton: createButton('stationD-blue-button'),
-        rfidScanner: { }
+        rfidScanner: {cardID: "" }
     },
     bigRedButton: createButton('big-red-button'),
     enabled: {
