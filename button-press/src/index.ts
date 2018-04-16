@@ -12,17 +12,20 @@ class PullUpListener {
     old_state: number;
     flashing: boolean;
     currentInterval: number;
+    lightPort?: number;
 
-    constructor(port: number, label: string) {
+    constructor(port: number, label: string, lightPort?: number) {
         this.port = port;
         this.label = label;
         this.old_state = 0;
         this.flashing = false;
         this.currentInterval = 0;
+        this.lightPort = lightPort;
     }
 
     init () {
         rpio.open(this.port, rpio.INPUT, rpio.PULL_UP);
+        rpio.open(this.lightPort, rpio.OUTPUT, rpio.LOW);
         this.old_state = rpio.read(this.port);
 
         rpio.poll(this.port, (pin : number) => {
@@ -50,17 +53,17 @@ class PullUpListener {
     flash() {
         if (!this.flashing) {
             // @ts-ignore
+            var lit = false;
             this.currentInterval = setInterval(() => {
                 console.log("flashing");
-                var lit = false;
                 if (lit) {
                     lit = false;
-                    rpio.write(40, rpio.LOW);
+                    rpio.write(this.lightPort, rpio.LOW);
                 } else {
                     lit = true;
-                    rpio.write(40, rpio.HIGH);
+                    rpio.write(this.lightPort, rpio.HIGH);
                 }
-            }, 1000);
+            }, 500);
         }
     }
     stopFlash () {
@@ -77,12 +80,16 @@ var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 if (process.argv[3] === 'stationA') {
     let redSwitch = new PullUpListener(5, "stationA-red-switch");
     redSwitch.init();
-    let blueButton = new PullUpListener(10, "stationA-blue-button");
+    let blueButton = new PullUpListener(10, "stationA-blue-button", 26);
     blueButton.init();
-    let greenButton = new PullUpListener(13, "stationA-green-button");
+    let greenButton = new PullUpListener(13, "stationA-green-button", 29);
     greenButton.init();
-    let yellowButton = new PullUpListener(19, "stationA-yellow-button");
+    let yellowButton = new PullUpListener(19, "stationA-yellow-button", 33);
     yellowButton.init();
+
+    blueButton.flash();
+    greenButton.flash();
+    yellowButton.flash();
 
     socket.on('button-flash', (label: string) => {
         if (label === 'stationA-blue-button') {

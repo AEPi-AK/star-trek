@@ -4,9 +4,6 @@ import * as HardwareTypes from "../../shared/HardwareTypes";
 
 console.log("Keypad started.");
 
-
-
-
 export class KeypadListener {
     keypad: Keypad;
     socket: SocketIOClient.Socket;
