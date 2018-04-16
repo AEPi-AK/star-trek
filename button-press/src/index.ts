@@ -150,11 +150,11 @@ else if (process.argv[3] === 'stationB') {
 else if (process.argv[3] === 'stationC') {
     let greenSwitch = new PullUpListener(5, "stationC-green-switch");
     greenSwitch.init();
-    let yellowButton = new PullUpListener(10, "stationC-yellow-button");
+    let yellowButton = new PullUpListener(10, "stationC-yellow-button", 26);
     yellowButton.init();
-    let whiteButton = new PullUpListener(13, "stationC-white-button");
+    let whiteButton = new PullUpListener(13, "stationC-white-button", 29);
     whiteButton.init();
-    let greenButton = new PullUpListener(19, "stationC-green-button");
+    let greenButton = new PullUpListener(19, "stationC-green-button", 34);
     greenButton.init();
     socket.on('button-flash', (label: string) => {
         if (label === 'stationC-yellow-button') {
