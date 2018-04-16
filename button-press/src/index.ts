@@ -43,6 +43,9 @@ class PullUpListener {
                     lit: false,
                     pressed: this.old_state ? false : true,
                 };
+                if (this.flashing) {
+                    this.stopFlash();
+                }
                 socket.emit('button-pressed', state);
             }
         });
