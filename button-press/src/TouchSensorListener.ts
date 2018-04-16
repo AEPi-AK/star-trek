@@ -1,14 +1,14 @@
 import rpio = require('rpio');
 import Socket = require('socket.io-client');
 
-class PullUpListener {
+export class TouchSensorListener {
     port: number;
     label: string;
     old_state: number;
     socket: SocketIOClient.Socket;
     lastOff: Date;
 
-    constructor(port: number, label: string, lightPort?: number, socket: SocketIOClient.Socket) {
+    constructor(port: number, label: string, socket: SocketIOClient.Socket) {
         this.port = port;
         this.label = label;
         this.old_state = 0;
@@ -34,7 +34,7 @@ class PullUpListener {
                 if (new_state == 0) {
                     let now = new Date();
                     if (now.getSeconds() - this.lastOff.getSeconds() >= 1000) {
-                        socket.emit('button-pressed', state);
+                        this.socket.emit('button-pressed', state);
                     }
                     this.lastOff = now;
                 }

@@ -2,7 +2,7 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
-import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState } from '../../shared/HardwareTypes';
+import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState, KeypadState } from '../../shared/HardwareTypes';
 import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
@@ -181,9 +181,9 @@ var task_templates : TaskTemplate[] = [
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
 
-  {description: "Read the code on the captain's chair.  Enter it on the keypad.", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+  {description: "Read the code on the captain's chair.  Enter it on the keypad (5524).", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => false},
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "5524"},
 
   {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
@@ -357,6 +357,8 @@ function updatedGameState () {
 function updatedHardwareState () {
   let old_length = game_state.tasks.length;
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
+  let ended_tasks = game_state.tasks.filter((t) => t.completed(hardware_state));
+  ended_tasks.map((t) => {if (t.end) {t.end()}});
   if (old_length != game_state.tasks.length) {
     updatedGameState();
   }
@@ -466,6 +468,11 @@ io.on('connect', function(socket: SocketIO.Socket){
 
   socket.on('switchboard-update', (s: PlugboardState) => {
     hardware_state.stationB.plugboard = s;
+    updatedHardwareState();
+  });
+
+  socket.on('captains-chair-keypad', (s: KeypadState) => {
+    hardware_state.stationA.keypad = s;
     updatedHardwareState();
   });
 });
