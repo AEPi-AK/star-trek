@@ -30,12 +30,12 @@ export class TouchSensorListener {
                     lit: false,
                     pressed: this.old_state ? false : true,
                 };
+                let now = new Date();
+                if (now.getSeconds() - this.lastOff.getSeconds() >= 1) {
+                    console.log(this.label + "has been pressed, new state %d", new_state);
+                    this.socket.emit('button-pressed', state);
+                }
                 if (new_state == 0) {
-                    let now = new Date();
-                    if (now.getSeconds() - this.lastOff.getSeconds() >= 1000) {
-                        console.log(this.label + "has been pressed, new state %d", new_state);
-                        this.socket.emit('button-pressed', state);
-                    }
                     this.lastOff = now;
                 }
             }
