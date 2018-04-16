@@ -1,9 +1,10 @@
 import rpio = require('rpio');
-import Socket = require('socket.io-client')
+import Socket = require('socket.io-client');
 //@ts-ignore
 import { KeypadListener } from './KeypadListener'; 
 import { ScannerListener } from './ScannerListener';
 import { SwitchboardListener } from './SwitchboardListener';
+import { TouchSensorListener } from './TouchSensorListener';
 
 console.log("starting station");
 
@@ -171,7 +172,7 @@ else if (process.argv[3] === 'stationC') {
     whiteButton.init();
     let greenButton = new PullUpListener(19, "stationC-green-button", 33);
     greenButton.init();
-    let touchpad = new PullUpListener(36, "stationC-touchpad");
+    let touchpad = new TouchSensorListener(36, "stationC-touchpad", socket);
     touchpad.init();
 
     socket.on('button-flash', (label: string) => {
