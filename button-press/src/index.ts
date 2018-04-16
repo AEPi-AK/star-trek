@@ -26,7 +26,9 @@ class PullUpListener {
 
     init () {
         rpio.open(this.port, rpio.INPUT, rpio.PULL_UP);
-        rpio.open(this.lightPort, rpio.OUTPUT, rpio.LOW);
+        if (this.lightPort) {
+            rpio.open(this.lightPort, rpio.OUTPUT, rpio.LOW);
+        }
         this.old_state = rpio.read(this.port);
 
         rpio.poll(this.port, (pin : number) => {
@@ -59,10 +61,14 @@ class PullUpListener {
                 console.log("flashing");
                 if (lit) {
                     lit = false;
-                    rpio.write(this.lightPort, rpio.LOW);
+                    if (this.lightPort)  {
+                        rpio.write(this.lightPort, rpio.LOW);
+                    }
                 } else {
                     lit = true;
-                    rpio.write(this.lightPort, rpio.HIGH);
+                    if (this.lightPort) {
+                        rpio.write(this.lightPort, rpio.HIGH);
+                    }
                 }
             }, 500);
         }
