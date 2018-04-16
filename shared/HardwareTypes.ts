@@ -73,7 +73,7 @@ export interface HardwareState {
         yellowButton: ButtonState;
         whiteButton: ButtonState;
         greenButton: ButtonState;
-        touchpad: TouchSensorState;
+        touchpad: ButtonState;
     };
     stationD: {
         yellowSwitch: ButtonState;
@@ -180,7 +180,7 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
         yellowButton: createButton('stationC-yellow-button'),
         whiteButton: createButton('stationC-white-button'),
         greenButton: createButton('stationC-green-button'),
-        touchpad: { pressedThreeSeconds: false }
+        touchpad: createButton('stationC-touchpad')
     },
     stationD: {
         yellowSwitch: createButton('stationD-yellow-switch'),

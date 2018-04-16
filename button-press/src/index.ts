@@ -156,6 +156,12 @@ else if (process.argv[3] === 'stationC') {
     whiteButton.init();
     let greenButton = new PullUpListener(19, "stationC-green-button", 33);
     greenButton.init();
+    let touchpad = new PullUpListener(36, "stationC-touchpad");
+    touchpad.init();
+    yellowButton.flash();
+    whiteButton.flash();
+    greenButton.flash();
+
     socket.on('button-flash', (label: string) => {
         if (label === 'stationC-yellow-button') {
             yellowButton.flash();

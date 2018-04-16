@@ -99,7 +99,7 @@ var task_templates : TaskTemplate[] = [
     
   {description: 'Scan hand at Security', frequencyType: FrequencyTaskType.ScanHand, exclusionType: ExclusionTaskType.ScanHand,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressedThreeSeconds},
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressed},
 
   {description: 'Flip the yellow and green colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
@@ -328,7 +328,7 @@ function updatedGameState () {
 function updatedHardwareState () {
   let old_length = game_state.tasks.length;
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
-  // console.log(hardware_state);
+  console.log(hardware_state);
   if (old_length != game_state.tasks.length) {
     updatedGameState();
   }
@@ -435,10 +435,6 @@ io.on('connect', function(socket: SocketIO.Socket){
     hardware_state.stationB.plugboard = s;
     updatedHardwareState();
   });
-
-  socket.on('hi', (s) => {
-    console.log("hi back!");
-  });
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
@@ -454,6 +450,7 @@ var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
   'stationC-yellow-button': s => s.stationC.yellowButton,
   'stationC-white-button': s => s.stationC.whiteButton,
   'stationC-green-button': s => s.stationC.greenButton,
+  'stationC-touchpad': s => s.stationC.touchpad,
   'stationD-white-button': s => s.stationD.whiteButton,
   'stationD-blue-button': s => s.stationD.blueButton,
   'stationD-green-button': s => s.stationD.greenButton,
