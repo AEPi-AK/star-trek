@@ -30,6 +30,7 @@ class PullUpListener {
         rpio.open(this.port, rpio.INPUT, rpio.PULL_UP);
         if (this.lightPort) {
             rpio.open(this.lightPort, rpio.OUTPUT, rpio.LOW);
+            this.flash();
         }
         this.old_state = rpio.read(this.port);
 
