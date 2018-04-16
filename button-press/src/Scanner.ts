@@ -46,17 +46,13 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
       // If the enter key was pressed
       const sequence = Number(scanCodes.join(''));
       console.log(`Read card with sequence: ${sequence}`);
-      /*const entry = manifest.find(m => m.sequence === sequence);
-      if (entry) {
-        console.log(`Identified ${entry.name} (id ${entry.cardID})`);
         sendPacket({
           kind: 'scan',
-          cardID: entry.cardID,
+          cardID: sequence,
         });
-      }*/
+      }
 
       scanCodes = [];
-    }
   });
 
   endpoint.on('error', error => {

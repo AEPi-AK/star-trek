@@ -1,6 +1,6 @@
 import { Device, getDeviceList, on as onUsb, InEndpoint } from 'usb';
 
-const VENDOR_ID = 3141; // 2^16 - 1. Lol. Very lazy of them.
+const VENDOR_ID = 3141;
 function deviceIsKeypad(device: Device): boolean {
   return device.deviceDescriptor.idVendor === VENDOR_ID;
 }
