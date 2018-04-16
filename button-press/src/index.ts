@@ -137,9 +137,9 @@ else if (process.argv[3] === 'stationB') {
     blueSwitch.init();
     let whiteButton = new PullUpListener(10, "stationB-white-button", 26);
     whiteButton.init();
-    let blueButton = new PullUpListener(13, "stationB-blue-button", 29);
+    let blueButton = new PullUpListener(13, "stationB-blue-button", 32);
     blueButton.init();
-    let yellowButton = new PullUpListener(19, "stationB-yellow-button", 32);
+    let yellowButton = new PullUpListener(19, "stationB-yellow-button", 29);
     yellowButton.init();
     let switchboard = new SwitchboardListener([31, 33, 35, 37], [36, 38, 40], "switchboard-1", socket);
     switchboard.init();
