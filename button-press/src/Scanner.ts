@@ -40,6 +40,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
     if (scanCode === 0) {
       return;
     } else if (scanCode >= 0x1e && scanCode <= 0x27) {
+      console.log('valid scan number');
       // Only push numbers 0-9
       // https://github.com/abcminiuser/lufa/blob/master/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h#L113
       scanCodes.push(scanCode - 0x1d);
