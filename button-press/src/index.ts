@@ -54,6 +54,7 @@ class PullUpListener {
     }
 
     flash() {
+        console.log("flashing");
         if (!this.flashing) {
             var lit = false;
             // @ts-ignore
@@ -185,11 +186,11 @@ else if (process.argv[3] === 'stationC') {
 else if (process.argv[3] === 'stationD') {
     let yellowSwitch = new PullUpListener(5, "stationD-yellow-switch");
     yellowSwitch.init();
-    let greenButton = new PullUpListener(10, "stationD-green-button");
+    let greenButton = new PullUpListener(10, "stationD-green-button", 26);
     greenButton.init();
-    let whiteButton = new PullUpListener(13, "stationD-white-button");
+    let whiteButton = new PullUpListener(13, "stationD-white-button", 29);
     whiteButton.init();
-    let blueButton = new PullUpListener(19, "stationD-blue-button");
+    let blueButton = new PullUpListener(19, "stationD-blue-button", 33);
     blueButton.init();
 
     var scanner = new ScannerListener(socket);
