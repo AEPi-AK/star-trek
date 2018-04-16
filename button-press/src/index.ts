@@ -54,11 +54,11 @@ class PullUpListener {
     }
 
     flash() {
+        console.log("flashing");
         if (!this.flashing) {
             var lit = false;
             // @ts-ignore
             this.currentInterval = setInterval(() => {
-                console.log("flashing");
                 if (lit) {
                     lit = false;
                     if (this.lightPort)  {
