@@ -53,8 +53,8 @@ class PullUpListener {
 
     flash() {
         if (!this.flashing) {
-            // @ts-ignore
             var lit = false;
+            // @ts-ignore
             this.currentInterval = setInterval(() => {
                 console.log("flashing");
                 if (lit) {
