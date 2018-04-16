@@ -3,8 +3,6 @@ import Socket = require('socket.io-client')
 
 import { Color } from '../../shared/HardwareTypes';
 
-console.log("starting");
-
 
 var color_map : { [t: number]: Color } = {
     [-1]: Color.None,
@@ -14,20 +12,22 @@ var color_map : { [t: number]: Color } = {
 };
 
 
-class SwitchboardListener {
+export class SwitchboardListener {
     inputs : number[];
     outputs : number[];
     label : string;
     listening : boolean;
     current_state : number[];
     timestep : number = 0;
+    socket: SocketIOClient.Socket;
 
-    constructor(inputs : number[], outputs : number[], label : string) {
+    constructor(inputs : number[], outputs : number[], label : string, socket: SocketIOClient.Socket) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.label = label;
         this.listening = false;
         this.current_state = [];
+        this.socket = socket;
 
         for (var inindex = 0; inindex < this.inputs.length; inindex++) {
             this.current_state.push(-1);
@@ -36,6 +36,7 @@ class SwitchboardListener {
     }
 
     init () {
+        console.log("Switchboard started.");
         for (var port of this.inputs) {
             // console.log("opening port %d", port);
             rpio.open(port, rpio.INPUT, rpio.PULL_DOWN);
@@ -78,27 +79,18 @@ class SwitchboardListener {
                 // console.log("emitted");
             console.log(this.current_state, color_map);
             var new_state = { slotTo: color_map[this.current_state[0]], slotTwo: color_map[this.current_state[1]], slotToo: color_map[this.current_state[2]], slot10: color_map[this.current_state[3]] };
-            socket.emit('switchboard-update', new_state);
+            this.socket.emit('switchboard-update', new_state);
             // }
         }, 100);
 
-        socket.on('switchboard-request', (label : string) => {
+        this.socket.on('switchboard-request', (label : string) => {
             if (label == this.label) {
-                socket.emit('switchboard-read', {label : this.label, values : this.current_state});
+                this.socket.emit('switchboard-read', {label : this.label, values : this.current_state});
             }
         });
     }
 }
 
-var socket: SocketIOClient.Socket = Socket(process.argv[2]);
-let switchboard = new SwitchboardListener([31, 33, 35, 37], [36, 38, 40], "switchboard-1");
-switchboard.init();
-
-socket.on('connect', () => {
-    socket.emit('identification', 'switchboard-1');
-    socket.emit('hi', {});
-
-});
 
 
 

@@ -3,6 +3,7 @@ import Socket = require('socket.io-client')
 //@ts-ignore
 import { KeypadListener } from './KeypadListener'; 
 import { ScannerListener } from './ScannerListener';
+import { SwitchboardListener } from './SwitchboardListener';
 
 console.log("starting station");
 
@@ -129,6 +130,8 @@ else if (process.argv[3] === 'stationB') {
     blueButton.init();
     let yellowButton = new PullUpListener(19, "stationB-yellow-button", 32);
     yellowButton.init();
+    let switchboard = new SwitchboardListener([31, 33, 35, 37], [36, 38, 40], "switchboard-1", socket);
+    switchboard.init();
     socket.on('button-flash', (label: string) => {
         if (label === 'stationB-white-button') {
             whiteButton.flash();
