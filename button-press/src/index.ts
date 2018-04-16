@@ -89,7 +89,7 @@ if (process.argv[3] === 'stationA') {
     redSwitch.init();
     let blueButton = new PullUpListener(10, "stationA-blue-button", 26);
     blueButton.init();
-    let greenButton = new PullUpListener(13, "stationA-green-button", 29);
+    let greenButton = new PullUpListener(13, "stationA-green-button", 40);
     greenButton.init();
     let yellowButton = new PullUpListener(19, "stationA-yellow-button", 33);
     yellowButton.init();
