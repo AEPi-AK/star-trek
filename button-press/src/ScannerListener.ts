@@ -15,7 +15,7 @@ export class ScannerListener {
     }
     constructor(socket: SocketIOClient.Socket) {
     console.log("Scanner started.");
-	this.sendPacket = this.sendPacket.bind(this);
+        this.sendPacket = this.sendPacket.bind(this);
         this.scanner = new Scanner(this.sendPacket)
         this.socket = socket;
     }

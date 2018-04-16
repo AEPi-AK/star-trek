@@ -19,7 +19,7 @@ export class KeypadListener {
     }
     constructor(socket: SocketIOClient.Socket) {
         console.log("Keypad started.");
-	this.sendPacket = this.sendPacket.bind(this);
+        this.sendPacket = this.sendPacket.bind(this);
         this.keypad = new Keypad(this.sendPacket)
         this.socket = socket;
         this.sequence = [];
