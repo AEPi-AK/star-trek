@@ -84,7 +84,9 @@ class PullUpListener {
         console.log("checked current interval: %s", this.currentInterval);
         if (this.flashing) {
             this.flashing = false;
-            rpio.write(this.lightPort, rpio.LOW);
+            if (this.lightPort) {
+                rpio.write(this.lightPort, rpio.LOW);
+            }
             clearInterval(this.currentInterval);
         }
     }
