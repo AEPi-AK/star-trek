@@ -2,7 +2,7 @@ import Express = require('express');
 import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
-import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState, KeypadState } from '../../shared/HardwareTypes';
+import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState, KeypadState, RFIDScannerState } from '../../shared/HardwareTypes';
 import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
@@ -200,13 +200,13 @@ var task_templates : TaskTemplate[] = [
 
   {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '1044210282'},
   {description : "Scan the Engineer's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '106942132'},
   {description : "Scan an ID card with access level IV at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => true},
+    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '12341684'},
   {description : "Press the Big Red Button", frequencyType : FrequencyTaskType.PressBigButton, exclusionType: ExclusionTaskType.PressBigButton,
     start: null, end: null,
     enabled: s => s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
@@ -486,6 +486,11 @@ io.on('connect', function(socket: SocketIO.Socket){
 
   socket.on('captains-chair-keypad', (s: KeypadState) => {
     hardware_state.stationA.keypad = s;
+    updatedHardwareState();
+  });
+
+  socket.on('captains-chair-scanner', (s: RFIDScannerState) => {
+    hardware_state.stationD.rfidScanner= s;
     updatedHardwareState();
   });
 });
