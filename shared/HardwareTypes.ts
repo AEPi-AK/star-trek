@@ -129,6 +129,7 @@ export interface SwitchState {
 }
 
 export interface RFIDScannerState {
+    cardID: string;
 }
 
 export enum Color {
@@ -151,7 +152,7 @@ export interface CaptainsChairState {
 }
 
 export interface KeypadState {
-    currentString: string
+    currentString: string;
 }
 
 export interface TouchSensorState {

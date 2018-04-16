@@ -2,6 +2,7 @@ import rpio = require('rpio');
 import Socket = require('socket.io-client')
 //@ts-ignore
 import { KeypadListener } from './KeypadListener'; 
+import { ScannerListener } from './ScannerListener';
 
 console.log("starting station");
 
@@ -179,6 +180,8 @@ else if (process.argv[3] === 'stationD') {
     whiteButton.init();
     let blueButton = new PullUpListener(19, "stationD-blue-button");
     blueButton.init();
+
+    var scanner = new ScannerListener(socket);
 
     socket.on('button-flash', (label: string) => {
         if (label === 'stationD-green-button') {
