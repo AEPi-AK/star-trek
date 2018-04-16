@@ -76,12 +76,15 @@ class PullUpListener {
                     }
                 }
             }, 500);
+            console.log("assigned current interval: %s", this.currentInterval);
         }
     }
     stopFlash () {
         console.log('stop flashing?');
+        console.log("checked current interval: %s", this.currentInterval);
         if (this.flashing) {
             this.flashing = false;
+            rpio.write(this.lightPort, rpio.LOW);
             clearInterval(this.currentInterval);
         }
     }
