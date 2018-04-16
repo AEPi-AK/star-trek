@@ -94,6 +94,8 @@ if (process.argv[3] === 'stationA') {
     let yellowButton = new PullUpListener(19, "stationA-yellow-button", 33);
     yellowButton.init();
 
+    var keypad = new KeypadListener(socket);
+
     blueButton.flash();
     greenButton.flash();
     yellowButton.flash();
@@ -158,9 +160,6 @@ else if (process.argv[3] === 'stationC') {
     greenButton.init();
     let touchpad = new PullUpListener(36, "stationC-touchpad");
     touchpad.init();
-    yellowButton.flash();
-    whiteButton.flash();
-    greenButton.flash();
 
     socket.on('button-flash', (label: string) => {
         if (label === 'stationC-yellow-button') {
@@ -218,8 +217,6 @@ else if (process.argv[3] === 'captains-chair') {
     console.log('starting captains chair');
     let redButton = new PullUpListener(5, "big-red-button", 10);
     redButton.init();
-
-    var keypad = new KeypadListener(socket);
 
     socket.on('button-flash', (label: string) => {
         if (label === 'big-red-button') {
