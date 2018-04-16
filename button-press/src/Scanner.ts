@@ -31,7 +31,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
 
   (endpoint as InEndpoint).startPoll(1, 8);
 
-  let scanCodes: number[] = [];
+  var scanCodes: number[] = [];
 
   endpoint.on('data', (data: Buffer) => {
     const scanCode = parseInt(data.toString('hex', 2, 3), 16);
@@ -41,6 +41,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
       return;
     } else if (scanCode >= 0x1e && scanCode <= 0x27) {
       console.log('valid scan number');
+      console.log(scanCode);
       // Only push numbers 0-9
       // https://github.com/abcminiuser/lufa/blob/master/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h#L113
       scanCodes.push(scanCode - 0x1d);
