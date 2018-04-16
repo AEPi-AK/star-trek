@@ -142,7 +142,20 @@ var task_templates : TaskTemplate[] = [
     enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationC.blueSwitch.pressed},
   {description: 'Flip the green and blue colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationC.blueSwitch.pressed},// more
+    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationC.blueSwitch.pressed},
+  {description: 'Flip the green and red colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationA.redSwitch.pressed},
+  {description: 'Flip the green and red colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationA.redSwitch.pressed},
+  {description: 'Flip the blue and red colored switches to the down position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationA.redSwitch.pressed && s.stationC.blueSwitch.pressed},
+  {description: 'Flip the blue and red colored switches to the up position', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
+    start: null, end: null,
+    enabled: (s) => s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationA.redSwitch.pressed && !s.stationC.blueSwitch.pressed},
+  
 
   {description: 'Plug the Red wire into the port labelled To at Operations', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
