@@ -29,7 +29,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
     throw Error('invalid endpoint for interface');
   }
 
-  (endpoint as InEndpoint).startPoll(1, 1);
+  (endpoint as InEndpoint).startPoll(1, 8);
 
   let scanCodes: number[] = [];
 
