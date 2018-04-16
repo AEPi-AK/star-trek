@@ -99,10 +99,6 @@ if (process.argv[3] === 'stationA') {
 
     var keypad = new KeypadListener(socket);
 
-    blueButton.flash();
-    greenButton.flash();
-    yellowButton.flash();
-
     socket.on('button-flash', (label: string) => {
         if (label === 'stationA-blue-button') {
             blueButton.flash();
