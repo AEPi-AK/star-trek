@@ -44,6 +44,7 @@ function watchDevice(device: Device, sendPacket: (p: any) => any): void {
       // Only push numbers 0-9
       // https://github.com/abcminiuser/lufa/blob/master/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h#L113
       scanCodes.push(scanCode - 0x1d);
+      console.log(scanCodes);
     } else if (scanCode === 0x28) {
       // If the enter key was pressed
       const sequence = Number(scanCodes.join(''));
