@@ -26,12 +26,12 @@ export class TouchSensorListener {
                 on_count++;
                 if (on_count === 10) {
                     console.log('touchpad pressed');
-                    this.socket.emit('button-pressed', {label: this.label, lit: false, pressed: false});
+                    this.socket.emit('button-pressed', {label: this.label, lit: false, pressed: true});
                 }
             } else {
                 if (on_count >= 10) {
                     console.log('touchpad unpressed');
-                    this.socket.emit('button-pressed', {label: this.label, lit: false, pressed: true})
+                    this.socket.emit('button-pressed', {label: this.label, lit: false, pressed: false})
                 }
                 on_count = 0;
             }
