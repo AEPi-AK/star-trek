@@ -58,7 +58,6 @@ class PullUpListener {
             var lit = false;
             // @ts-ignore
             this.currentInterval = setInterval(() => {
-                console.log("flashing");
                 if (lit) {
                     lit = false;
                     if (this.lightPort)  {
@@ -154,8 +153,14 @@ else if (process.argv[3] === 'stationC') {
     yellowButton.init();
     let whiteButton = new PullUpListener(13, "stationC-white-button", 29);
     whiteButton.init();
-    let greenButton = new PullUpListener(19, "stationC-green-button", 34);
+    let greenButton = new PullUpListener(19, "stationC-green-button", 33);
     greenButton.init();
+    let touchpad = new PullUpListener(36, "stationC-touchpad");
+    touchpad.init();
+    yellowButton.flash();
+    whiteButton.flash();
+    greenButton.flash();
+
     socket.on('button-flash', (label: string) => {
         if (label === 'stationC-yellow-button') {
             yellowButton.flash();
