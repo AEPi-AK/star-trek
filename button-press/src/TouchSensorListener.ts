@@ -25,7 +25,6 @@ export class TouchSensorListener {
             var new_state : number = rpio.read(pin);
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
-                console.log(this.label + "has been pressed, new state %d", new_state);
                 var state = {
                     label: this.label,
                     lit: false,
@@ -34,6 +33,7 @@ export class TouchSensorListener {
                 if (new_state == 0) {
                     let now = new Date();
                     if (now.getSeconds() - this.lastOff.getSeconds() >= 1000) {
+                        console.log(this.label + "has been pressed, new state %d", new_state);
                         this.socket.emit('button-pressed', state);
                     }
                     this.lastOff = now;
