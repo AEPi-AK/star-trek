@@ -79,6 +79,7 @@ class PullUpListener {
         }
     }
     stopFlash () {
+        console.log('stop flashing?');
         if (this.flashing) {
             this.flashing = false;
             clearInterval(this.currentInterval);
