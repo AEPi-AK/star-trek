@@ -210,8 +210,9 @@ else if (process.argv[3] === 'stationD') {
 }
 else if (process.argv[3] === 'captains-chair') {
     console.log('starting captains chair');
-    let redButton = new PullUpListener(5, "big-red-button");
+    let redButton = new PullUpListener(5, "big-red-button", 10);
     redButton.init();
+    redButton.flash();
 
     var keypad = new KeypadListener(socket);
 
