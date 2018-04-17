@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as Socket from 'socket.io-client';
-import { GameState, GamePhase, Task } from './shared/GameTypes';
+import { GameState, GamePhase, Task, GameDifficulty } from './shared/GameTypes';
 
 import './fonts/slider.css';
 import './fonts/roboto-mono.css';
@@ -18,11 +18,22 @@ const defaultGameState: GameState = {
   tasks: [],
   failures: 0,
   time: 0,
+  difficulty: GameDifficulty.PreEasy,
   phase: GamePhase.NotConnected,
   weights: {},
   durations: {},
-  task_frequency: 0,
-  max_tasks: 0,
+  task_frequency: {
+    [GameDifficulty.PreEasy]: 10,
+    [GameDifficulty.Easy]: 5,
+    [GameDifficulty.Medium]: 4,
+    [GameDifficulty.Hard]: 3,
+  },
+  max_tasks: {
+    [GameDifficulty.PreEasy]: 2,
+    [GameDifficulty.Easy]: 3,
+    [GameDifficulty.Medium]: 4,
+    [GameDifficulty.Hard]: 5,
+  },
 };
 
 function subscribeToGameState(setTasks: (state: GameState) => void) {
@@ -60,19 +71,25 @@ const HealthBar = (props: { remaining: number }) => {
 };
 
 const TaskCard = (props: { task: Task }) => {
+  const totalTime = props.task.time_expires - props.task.time_created;
+  const timeElapsed = Date.now() - props.task.time_created;
+  const percentTimeRemaining = (totalTime - timeElapsed) / totalTime;
+  let color = 'green';
+  if (percentTimeRemaining < 0.3) {
+    color = 'red';
+  } else if (percentTimeRemaining < 0.7) {
+    color = 'yellow';
+  }
+
   return (
-    <img
-      className="TaskCard"
-      key={props.task.id}
-      src={`images/tasks/${props.task.name}.png`}
-    />
-    // <div
-    //   style={{ backgroundImage: `images/tasks/${props.task.name}.png` }}
-    //   key={props.task.id}
-    //   className="TaskProgress"
-    // >
-    //   {props.task.time_expires - props.task.time_created}
-    // </div>
+    <div className="TaskCard" key={props.task.id}>
+      <img src={`images/tasks/${props.task.name}.png`} />
+      <div className="TaskCard-progress TaskCard-progress-background" />
+      <div
+        className={`TaskCard-progress TaskCard-progress-${color}`}
+        style={{ width: `${percentTimeRemaining * 100}%` }}
+      />
+    </div>
   );
 };
 
@@ -82,6 +99,7 @@ interface TaskGridProps {
 
 interface TaskGridState {
   slots: Array<Task | null>;
+  updateTimer: number;
 }
 
 class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
@@ -89,7 +107,17 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
     super(props);
     this.state = {
       slots: Array(GRID_SIZE),
+      updateTimer: 0,
     };
+  }
+
+  componentDidMount() {
+    const updateTimer = setInterval(this.forceUpdate.bind(this), 50);
+    this.setState({ updateTimer });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.updateTimer);
   }
 
   updateSlotsWithTasks(newTasks: Task[]) {

@@ -38,7 +38,7 @@ html,
 }
 
 .Window-animated {
-  animation: animatedBackground 200s linear infinite;
+  /* animation: animatedBackground 200s linear infinite; */
 }
 
 .Window-border-green {
@@ -112,7 +112,37 @@ html,
   grid-gap: 50px;
 }
 
-.TaskCard {
+.TaskCard > img {
   width: 374px;
   height: 302px;
+}
+
+.TaskCard-progress {
+  margin-top: -20px;
+  position: relative;
+  height: 20px;
+  border-radius: 0 0 0px 20px;
+  z-index: 100;
+  width: 50%;
+  transition: all 200ms ease-in-out;
+  clip-path: rectangle(0, 0, 60px, 20px, 20px, 20px);
+}
+
+.TaskCard-progress-background {
+  margin-top: -30px;
+  border-radius: 0 0 20px 20px;
+  background-color: #dddbdb;
+  width: 100%;
+}
+
+.TaskCard-progress-yellow {
+  background-color: #f1bf50;
+}
+
+.TaskCard-progress-red {
+  background-color: #d64c4c;
+}
+
+.TaskCard-progress-green {
+  background-color: #76cf82;
 }
