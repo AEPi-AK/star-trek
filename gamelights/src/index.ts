@@ -8,7 +8,7 @@ const NUM_LIGHTS = 20;
 
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
-console.log('starting game lights. connecting to: ', process.env[2]);
+console.log('Starting game lights. Connecting to server: ', process.argv[2]);
 
 enum Color {
   None = 0,
