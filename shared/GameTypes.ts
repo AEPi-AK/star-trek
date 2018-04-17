@@ -7,10 +7,13 @@ export interface GameState {
     failures: number;
     time: number;
     phase: GamePhase;
+    difficulty: GameDifficulty;
     weights: TaskWeights;
     durations: TaskDurations;
-    task_frequency: number; // Number of seconds before attempting to create a new task
-    max_tasks: number;
+    // should be {[d: GameDifficulty]: number}
+    task_frequency: {[d: number]: number}; // Number of seconds before attempting to create a new task
+    // should be {[d: GameDifficulty]: number}
+    max_tasks: {[d: number]: number};
 }
 
 export enum FrequencyTaskType {
@@ -42,8 +45,8 @@ export interface TaskWeights {
 }
 
 export interface TaskDurations {
-    // Should be [t: TaskType]: number
-    [t: number]: number;
+    // Should be [t: TaskType]: {[d: GameDifficulty]: number}
+    [t: number]: {[d: number]: number};
 }
 
 export interface TaskTemplate {
@@ -74,4 +77,11 @@ export enum GamePhase {
     NotConnected, // This should only be set in the game-screen module.
     EnterPlayers,
     PlayGame,
+}
+
+export enum GameDifficulty {
+    PreEasy,
+    Easy,
+    Medium,
+    Hard
 }
