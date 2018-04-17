@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Video Streaming Demonstration</title>
+  </head>
+
+  <body>
+    <h1>Look Ma, I'm famous!</h1>
+    <img id="bg" src="{{ url_for('video_feed') }}">
+    <div id='timer'></div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+          console.log('http://' + document.domain + ':' + location.port);
+          var socket = io.connect('http://' + document.domain + ':' + location.port);
+          socket.on('connect', function() {
+                console.log('connected');
+                socket.emit('client_connected', {data: '{}'});
+          });
+          
+          var timeRemaining = 5;
+          var timer = document.getElementById('timer');
+  
+          function onTimeElapsed(){
+            if(timeRemaining === 0){
+              timer.innerHTML = '';
+              timeRemaining = 5;
+              socket.emit('capture', '{}');
+            } else {
+              timeRemaining -= 1;
+              timer.innerHTML = `${timeRemaining}`;
+              setTimeout(onTimeElapsed, 1000);
+            }
+          }
+
+          function startCountdown(){
+            timer.innerHTML = `${timeRemaining}`;
+              setTimeout(onTimeElapsed, 1000);
+          }
+          
+    </script>
+    <button onclick="startCountdown()">Beam me up, Scottie Dog</button>
+  </body>
+</html>
