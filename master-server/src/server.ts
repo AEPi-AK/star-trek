@@ -34,6 +34,15 @@ function stationOnline(label: string) {
   return clients.indexOf(label) >= 0;
 }
 
+var switchboard_performed = false;
+function switchboardEnabled (c: Color) {
+  return switchboard_performed || c == Color.None;
+}
+function switchboardStart () {
+  switchboard_performed = true;
+}
+
+
 var task_templates : TaskTemplate[] = [
   {description: 'Press the flashing white button', name: 'button-white', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-white-button'); },
@@ -115,41 +124,41 @@ var task_templates : TaskTemplate[] = [
 
 
   {description: 'Plug the Red wire into the port labelled To at Operations', name: 'plug-red-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled To at Operations', name: 'plug-blue-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled To at Operations', name: 'plug-yellow-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled Too at Operations', name: 'plug-red-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled Too at Operations', name: 'plug-blue-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled Too at Operations', name: 'plug-yellow-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled Two at Operations', name: 'plug-red-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled Two at Operations', name: 'plug-blue-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled Two at Operations', name: 'plug-yellow-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled 10 at Operations', name: 'plug-red-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
   {description: 'Plug the Blue wire into the port labelled 10 at Operations', name: 'plug-blue-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled 10 at Operations', name: 'plug-yellow-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
 
   {description: "Enter 2063 on the keypad", name: 'keypad-2063', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
@@ -272,6 +281,7 @@ function resetGameState () {
     task_frequency: game_state.task_frequency,
     max_tasks: game_state.max_tasks,
    };
+   switchboard_performed = false;
 }
 
 var MAX_FAILURES = 5;
