@@ -77,6 +77,9 @@ export enum GamePhase {
     NotConnected, // This should only be set in the game-screen module.
     EnterPlayers,
     PlayGame,
+    LateGame,
+    GameLost,
+    GameWon,
 }
 
 export enum GameDifficulty {
