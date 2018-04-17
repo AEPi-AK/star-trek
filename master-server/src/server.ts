@@ -268,6 +268,8 @@ function resetGameState () {
    };
 }
 
+var MAX_FAILURES = 5;
+
 function taskTemplateValid(task : TaskTemplate) {
   return task.enabled(hardware_state) && !task.completed(hardware_state) && game_state.tasks.filter(({exclusionType: t}) => t === task.exclusionType).length === 0;
 }
@@ -332,7 +334,7 @@ function completedTasks(tasks: Task[]) {
 }
 
 var game_timer_ids : NodeJS.Timer[] = [];
-function startGame() {
+function switchToPlayGame() {
   var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
@@ -363,6 +365,10 @@ function startGame() {
     if (new_failures > 0) {
       game_state.failures += new_failures;
       updatedGameState();
+      if (game_state.failures > MAX_FAILURES) {
+        endMainPhase();
+        switchToGameLost();
+      }
     }
   }, 500));
 
@@ -374,18 +380,72 @@ function startGame() {
       game_state.difficulty = GameDifficulty.Hard;
     }
     if (game_state.time == 0) {
-      endGame();
+      endMainPhase();
+      switchToLateGame();
     } else {
       updatedGameState();
     }
   }, 1000));
 }
 
-function endGame () {
-  for (var timer of game_timer_ids) {
+function endMainPhase () {
+  for (let timer of game_timer_ids) {
     clearInterval(timer);
   }
+  game_timer_ids = [];
+}
+
+function switchToLateGame () {
+  game_state.phase = GamePhase.LateGame;
+
+  var buttons = ['stationA-blue-button', 'stationB-blue-button', 'stationD-blue-button',
+                 'stationA-green-button', 'stationC-green-button', 'stationD-green-button'];
+  for (let button of buttons) {
+    io.sockets.emit('button-flash', button);
+  }
+
+  let interval = setInterval(() => {
+    let all_pressed = true;
+    for (let button of buttons) {
+      if (!button_mapping[button](hardware_state).pressed) all_pressed = false;
+    }
+    if (all_pressed) {
+      clearInterval(interval);
+      switchToGameWon();
+    }
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    switchToGameWon();
+  }, 20000);
+
+  updatedGameState();
+}
+
+function switchToGameLost () {
+  game_state.phase = GamePhase.GameLost;
+  updatedGameState();
+
+  setTimeout(switchToEnterPlayers, 10000);
+}
+
+function switchToGameWon () {
+  game_state.phase = GamePhase.GameWon;
+  updatedGameState();
+
+  setTimeout(switchToEnterPlayers, 10000);
+}
+
+function stopFlashingButtons() {
+  for (let button in button_mapping) {
+    io.sockets.emit('button-stop-flash', button);
+  }
+}
+
+function switchToEnterPlayers() {
   resetGameState();
+  stopFlashingButtons();
   updatedGameState();
 }
 
@@ -420,7 +480,7 @@ io.on('connect', function(socket: SocketIO.Socket){
     number_of_players = num;
     if (game_state.phase != GamePhase.PlayGame) {
       game_state.phase = GamePhase.PlayGame;
-      startGame();
+      switchToPlayGame();
       updatedGameState();
     }
   })
@@ -451,7 +511,7 @@ io.on('connect', function(socket: SocketIO.Socket){
   });
 
   socket.on('reset-game', () => {
-    endGame();
+    switchToLateGame();
   });
 
   socket.on('increment-probability', (x: FrequencyTaskType) => {
@@ -505,6 +565,7 @@ io.on('connect', function(socket: SocketIO.Socket){
     updatedHardwareState();
     console.log("recieved state %s %s", s.label, s.pressed ? "pressed" : "unpressed");
   });
+
 
   socket.on('switchboard-update', (s: PlugboardState) => {
     hardware_state.stationB.plugboard = s;
