@@ -6,9 +6,9 @@ import { GameState, GamePhase } from '../../shared/GameTypes';
 
 const NUM_LIGHTS = 20;
 
-console.log('starting');
-
 var socket: SocketIOClient.Socket = Socket(process.argv[2]);
+
+console.log('starting game lights. connecting to: ', process.env[2]);
 
 enum Color {
   None = 0,

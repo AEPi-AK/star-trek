@@ -5,8 +5,8 @@ var ws281x = require('rpi-ws281x-native');
 var Socket = require("socket.io-client");
 var GameTypes_1 = require("../../shared/GameTypes");
 var NUM_LIGHTS = 20;
-console.log('starting');
 var socket = Socket(process.argv[2]);
+console.log('starting game lights. connecting to: ', process.env[2]);
 var Color;
 (function (Color) {
     Color[Color["None"] = 0] = "None";
