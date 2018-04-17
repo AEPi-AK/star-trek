@@ -1,60 +1,55 @@
-import rpio = require('rpio');
-import Socket = require('socket.io-client')
+import * as _ from 'lodash';
+const ws281x = require('rpi-ws281x-native');
+import Socket = require('socket.io-client');
 
-console.log("starting");
+import { GameState, GamePhase } from '../../shared/GameTypes';
 
+const NUM_LIGHTS = 20;
 
-class ButtonListener {
-    port : number;
-    label : string;
-    old_state : number;
-    listening : boolean;
+console.log('starting');
 
-    constructor(port : number, label : string) {
-        this.port = port;
-        this.label = label;
-        this.old_state = 0;
-        this.listening = false;
-    }
+var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
-    init () {
-        rpio.open(this.port, rpio.INPUT, rpio.PULL_DOWN);
-        this.old_state = rpio.read(this.port);
-
-        rpio.poll(3, (pin : number) => {
-            rpio.msleep(10);
-            var new_state : number = rpio.read(pin);
-            if (new_state !== this.old_state) {
-                this.old_state = new_state;
-                console.log("button has been pressed, new state %d", new_state);
-                if (this.listening) {
-                    socket.emit('button-pressed',
-                        {label : this.label, pressed: this.old_state ? false : true, lit : false});
-                }
-            }
-        });
-
-        socket.on('button-listen', (label : string) => {
-            if (label === this.label) {
-                this.listening = true;
-                console.log("now being listened to as label %s", label);
-            }
-        });
-
-        socket.on('request-state',(label : string) =>{
-          if (label === this.label) {
-          socket.emit('state-response',this.old_state)
-        }
-        });
-    }
+enum Color {
+  None = 0,
+  Purple = 0xff00ff,
+  Green = 0x00ff00,
+  Red = 0xff0000,
+  White = 0xffffff,
 }
 
-var socket: SocketIOClient.Socket = Socket('http://localhost:3000');
-
-
-let button = new ButtonListener(3, "button3");
-button.init();
-
 socket.on('connect', () => {
-    socket.emit('identification', 'button-1');
+  socket.emit('identification', 'game-lights');
+
+  socket.on('game-state-updated', ({ phase }: GameState) => {
+    console.log('new phase: ', phase);
+    if (phase === GamePhase.NotConnected) {
+      setAllLightsToColor(Color.Purple);
+    } else if (phase === GamePhase.GameWon) {
+      setAllLightsToColor(Color.Green);
+    } else if (phase === GamePhase.GameLost) {
+      setAllLightsToColor(Color.Red);
+    } else if (phase === GamePhase.FiringLaser) {
+      setAllLightsToColor(Color.Red);
+    } else if (phase === GamePhase.EnterPlayers) {
+      setAllLightsToColor(Color.White);
+    }
+  });
 });
+
+function setAllLightsToColor(color: number) {
+  const pixelData = new Uint32Array(NUM_LIGHTS);
+  _.times(NUM_LIGHTS, i => {
+    pixelData[i] = color;
+  });
+  ws281x.render(pixelData);
+}
+
+ws281x.init(NUM_LIGHTS, {
+  // Use BCM Pin 18 (Pin #12, PWM0)
+  // See here: https://github.com/jgarff/rpi_ws281x#gpio-usage
+  gpioPin: 18,
+  brightness: 255,
+});
+
+setAllLightsToColor(Color.White);
