@@ -3,7 +3,7 @@ import Http = require('http');
 import IO = require('socket.io');
 import readline = require('readline');
 import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState, KeypadState, RFIDScannerState } from '../../shared/HardwareTypes';
-import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType } from '../../shared/GameTypes';
+import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType, GameDifficulty } from '../../shared/GameTypes';
 import { isNumber } from 'util';
 
 var app = Express();
@@ -194,34 +194,42 @@ var INITIAL_WEIGHTS = {
   [FrequencyTaskType.PressBigButton] : 1
 }
 
+var defaultDuration = {[GameDifficulty.PreEasy]: 30, [GameDifficulty.Easy]: 15, [GameDifficulty.Medium]: 10, [GameDifficulty.Hard]: 8}
+
 var INITIAL_DURATIONS = {
-  [FrequencyTaskType.PressButton] : 10,
-  [FrequencyTaskType.ScanHand] : 10,
-  [FrequencyTaskType.FlipSwitches] : 10,
-  [FrequencyTaskType.Plugboard] : 10,
-  [FrequencyTaskType.ReadCode] : 10,
-  [FrequencyTaskType.ScanCard] : 10,
-  [FrequencyTaskType.PressBigButton] : 10
+  [FrequencyTaskType.PressButton] : defaultDuration,
+  [FrequencyTaskType.ScanHand] : defaultDuration,
+  [FrequencyTaskType.FlipSwitches] : defaultDuration,
+  [FrequencyTaskType.Plugboard] : defaultDuration,
+  [FrequencyTaskType.ReadCode] : defaultDuration,
+  [FrequencyTaskType.ScanCard] : defaultDuration,
+  [FrequencyTaskType.PressBigButton] : defaultDuration
 }
 
 var task_id = 0;
 
-var game_state : GameState = {
-  tasks: [],
-  failures: 0,
-  time: 150,
-  phase: GamePhase.EnterPlayers,
-  weights : INITIAL_WEIGHTS,
-  durations: INITIAL_DURATIONS,
-  task_frequency: 5,
-  max_tasks: 5,
-};
+function startingGameState (): GameState{
+  return {
+    tasks: [],
+    failures: 0,
+    time: 120,
+    difficulty: GameDifficulty.PreEasy,
+    phase: GamePhase.EnterPlayers,
+    weights : INITIAL_WEIGHTS,
+    durations: INITIAL_DURATIONS,
+    task_frequency: {[GameDifficulty.PreEasy]: 10, [GameDifficulty.Easy]: 5, [GameDifficulty.Medium]: 4, [GameDifficulty.Hard]: 3},
+    max_tasks: {[GameDifficulty.PreEasy]: 2, [GameDifficulty.Easy]: 3, [GameDifficulty.Medium]: 4, [GameDifficulty.Hard]: 5},
+  };
+}
+
+var game_state : GameState = startingGameState();
 var number_of_players = 0;
 function resetGameState () {
   game_state = {
     tasks: [],
     failures: 0,
-    time: 150,
+    time: 120,
+    difficulty: GameDifficulty.PreEasy,
     phase: GamePhase.EnterPlayers,
     weights: game_state.weights,
     durations: game_state.durations,
@@ -272,7 +280,8 @@ function pickRandomTaskTemplate () : TaskTemplate {
 function createTaskFromTemplate (template : TaskTemplate) : Task {
   var time = new Date();
   var end_time = new Date();
-  end_time.setSeconds(time.getSeconds() + game_state.durations[template.frequencyType]);
+  var time_to_complete = game_state.durations[template.frequencyType][game_state.difficulty];
+  end_time.setSeconds(time.getSeconds() + time_to_complete);
   var id = task_id++;
   return {description: template.description, time_created: time.getTime(), time_expires: end_time.getTime(), id: id, exclusionType: template.exclusionType, start: template.start, end: template.end, enabled: template.enabled, completed: template.completed};
 }
@@ -282,13 +291,23 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
+function completedTasks(tasks: Task[]) {
+  if (game_state.difficulty === GameDifficulty.PreEasy) {
+    game_state.difficulty = GameDifficulty.Easy;
+    updatedGameState();
+  }
+  for (let task of tasks) {
+    if (task.end) task.end();
+  }
+}
+
 var game_timer_ids : NodeJS.Timer[] = [];
 function startGame() {
-  var time_since_last_made = 0;
+  var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
-    if (time_since_last_made >= game_state.task_frequency || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
-      if (game_state.tasks.length < game_state.max_tasks) {
+    if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
+      if (game_state.tasks.length < game_state.max_tasks[game_state.difficulty]) {
         time_since_last_made = 0;
         var task = createNewTask();
         if (task.start) {
@@ -303,14 +322,14 @@ function startGame() {
   game_timer_ids.push(setInterval(() => {
     var now = new Date();
     var old_length = game_state.tasks.length;
-    var ended_tasks = game_state.tasks.filter(({time_expires : end}) => end < now.getTime());
-    for (let task of ended_tasks) {
+    var failed_tasks = game_state.tasks.filter(({time_expires : end}) => end < now.getTime());
+    for (let task of failed_tasks) {
       if (task.end) {
         task.end();
       }
     }
     game_state.tasks = game_state.tasks.filter(({time_expires : end}) => end >= now.getTime());
-    var new_failures = ended_tasks.length;
+    var new_failures = failed_tasks.length;
     if (new_failures > 0) {
       game_state.failures += new_failures;
       updatedGameState();
@@ -319,6 +338,11 @@ function startGame() {
   
   game_timer_ids.push(setInterval(() => {
     game_state.time -= 1;
+    if (game_state.time == 75) {
+      game_state.difficulty = GameDifficulty.Medium;
+    } else if (game_state.time == 45) {
+      game_state.difficulty = GameDifficulty.Hard;
+    }
     if (game_state.time == 0) {
       endGame();
     } else {
@@ -343,7 +367,7 @@ function updatedHardwareState () {
   let old_length = game_state.tasks.length;
   game_state.tasks = game_state.tasks.filter((t) => !t.completed(hardware_state));
   let ended_tasks = game_state.tasks.filter((t) => t.completed(hardware_state));
-  ended_tasks.map((t) => {if (t.end) {t.end()}});
+  completedTasks(ended_tasks);
   if (old_length != game_state.tasks.length) {
     updatedGameState();
   }
@@ -372,7 +396,8 @@ io.on('connect', function(socket: SocketIO.Socket){
   })
 
   socket.on('task-completed', (id : number) => {
-    game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id != id);
+    completedTasks(game_state.tasks.filter(({id: task_id}) => task_id === id));
+    game_state.tasks = game_state.tasks.filter(({id : task_id}) => task_id !== id);
     updatedGameState();
   })
 
@@ -410,32 +435,32 @@ io.on('connect', function(socket: SocketIO.Socket){
   });
 
   socket.on('increment-duration', (x: FrequencyTaskType) => {
-    game_state.durations[x] = game_state.durations[x] + 1;
+    game_state.durations[x][game_state.difficulty] = game_state.durations[x][game_state.difficulty] + 1;
     updatedGameState();
   });
 
   socket.on('decrement-duration', (x: FrequencyTaskType) => {
-    game_state.durations[x] = Math.max(game_state.durations[x] - 1, 0);
+    game_state.durations[x][game_state.difficulty] = Math.max(game_state.durations[x][game_state.difficulty] - 1, 0);
     updatedGameState();
   });
 
   socket.on('increment-frequency', () => {
-    game_state.task_frequency = game_state.task_frequency + 1;
+    game_state.task_frequency[game_state.difficulty] = game_state.task_frequency[game_state.difficulty] + 1;
     updatedGameState();
   });
 
   socket.on('decrement-frequency', () => {
-    game_state.task_frequency = Math.max(1, game_state.task_frequency - 1);
+    game_state.task_frequency[game_state.difficulty] = Math.max(1, game_state.task_frequency[game_state.difficulty] - 1);
     updatedGameState();
   });
 
   socket.on('increment-max-tasks', () => {
-    game_state.max_tasks = game_state.max_tasks + 1;
+    game_state.max_tasks[game_state.difficulty] = game_state.max_tasks[game_state.difficulty] + 1;
     updatedGameState();
   });
 
   socket.on('decrement-max-tasks', () => {
-    game_state.max_tasks = Math.max(1, game_state.max_tasks - 1);
+    game_state.max_tasks[game_state.difficulty] = Math.max(1, game_state.max_tasks[game_state.difficulty] - 1);
     updatedGameState();
   });
 

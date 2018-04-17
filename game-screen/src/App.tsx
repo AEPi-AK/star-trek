@@ -12,11 +12,12 @@ var defaultGameState: GameTypes.GameState = {
   tasks: [],
   failures: 0,
   time: 0,
+  difficulty: GameTypes.GameDifficulty.PreEasy,
   phase: GameTypes.GamePhase.NotConnected,
   weights: {},
   durations: {},
-  task_frequency: 0,
-  max_tasks: 0,
+  task_frequency: {},
+  max_tasks: {},
 };
 
 // const logo = require('./logo.svg');
@@ -358,12 +359,13 @@ class App extends React.Component<{}, GameTypes.GameState> {
     return (
       <div className="App">
         <div className="RoundInfo">{'Strikes: ' + this.state.failures}</div>
+        <div>{'Game difficulty: ' + this.state.difficulty}</div>
         <div id="tasks">
           <ul>{tasks}</ul>
         </div>
         <div className="LineLabel">Time Remaining</div>
         <Line
-          percent={Math.max(0, this.state.time / 150 * 100)}
+          percent={Math.max(0, this.state.time / 120 * 100)}
           strokeWidth="3"
           strokeColor="#008000"
         />
