@@ -345,6 +345,10 @@ function completedTasks(tasks: Task[]) {
 
 var game_timer_ids : NodeJS.Timer[] = [];
 function switchToPlayGame() {
+  for (let button in button_mapping) {
+    io.sockets.emit('button-request-state', button);
+  }
+
   var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
@@ -576,6 +580,13 @@ io.on('connect', function(socket: SocketIO.Socket){
     console.log("recieved state %s %s", s.label, s.pressed ? "pressed" : "unpressed");
   });
 
+  socket.on('button-state-response', (data: {label: string, pressed: boolean}) => {
+    var old_state = button_mapping[data.label](hardware_state);
+    old_state.pressed = data.pressed;
+    updatedHardwareState();
+    console.log("recieved state %s %s", data.label, data.pressed ? "pressed" : "unpressed");
+
+  });
 
   socket.on('switchboard-update', (s: PlugboardState) => {
     hardware_state.stationB.plugboard = s;
