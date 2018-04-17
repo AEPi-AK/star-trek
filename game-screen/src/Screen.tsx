@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import * as Socket from 'socket.io-client';
+import { HealthBar, TorpedoTimer } from './Widgets';
 import { GameState, GamePhase, Task, GameDifficulty } from './shared/GameTypes';
 
 import './fonts/slider.css';
@@ -8,11 +9,6 @@ import './fonts/roboto-mono.css';
 import './Screen.css';
 
 const socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER!);
-
-// Press F to pay respects
-function formatSeconds(seconds: number) {
-  return new Date(0, 0, 0, 0, 0, seconds).toTimeString().substring(4, 8);
-}
 
 const defaultGameState: GameState = {
   tasks: [],
@@ -51,24 +47,7 @@ enum BorderColor {
   Green = 'green',
 }
 
-const MAX_HEALTH = 6;
 const GRID_SIZE = 6;
-
-const HealthBar = (props: { remaining: number }) => {
-  return (
-    <div className="HealthBar">
-      {_.range(MAX_HEALTH).map(i => (
-        <div
-          className={`HealthBar-circle ${
-            i >= props.remaining ? 'HealthBar-circle-missing' : ''
-          }
-          }`}
-          key={i}
-        />
-      ))}
-    </div>
-  );
-};
 
 const TaskCard = (props: { task: Task }) => {
   const totalTime = props.task.time_expires - props.task.time_created;
@@ -257,12 +236,12 @@ class Screen extends React.Component<{}, GameState> {
                 <div className="Below-Info-PlayGame">
                   <div className="Below-Info-ship-health">
                     <div className="Below-Info-label">Ship Health</div>
-                    <HealthBar remaining={MAX_HEALTH - this.state.failures} />
+                    <HealthBar failures={this.state.failures} />
                   </div>
                   <div className="Below-Info-torpedo">
                     <div className="Below-Info-label">Torpedo Ready In</div>
-                    <div className="TorpedoTimer">
-                      {formatSeconds(this.state.time)}
+                    <div className="Below-Info-timer">
+                      <TorpedoTimer time={this.state.time} />
                     </div>
                   </div>
                 </div>
