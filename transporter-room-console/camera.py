@@ -14,6 +14,11 @@ class VideoCamera(object):
     
     def __del__(self):
         self.video.release()
+
+    def capture(self):
+        print("capturing now")
+        s, img = self.video.read()
+        cv2.imwrite("/test.jpg", img)
     
     def get_frame(self):
         success, image = self.video.read()
