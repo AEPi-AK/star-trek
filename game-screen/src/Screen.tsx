@@ -237,7 +237,16 @@ class Screen extends React.Component<{}, GameState> {
               if (this.state.phase === GamePhase.EnterPlayers) {
                 return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
               } else if (this.state.phase === GamePhase.PlayGame) {
-                return 'COMPLETE TASKS TO PROTECT SHIP';
+                // return 'COMPLETE TASKS TO PROTECT SHIP';
+                return `Difficulty: ${this.state.difficulty}`;
+              } else if (this.state.phase === GamePhase.LateGame) {
+                return 'LATE GAME';
+              } else if (this.state.phase === GamePhase.FiringLaser) {
+                return 'FIRING LASER';
+              } else if (this.state.phase === GamePhase.GameLost) {
+                return 'GAME LOST';
+              } else if (this.state.phase === GamePhase.GameWon) {
+                return 'GAME WON';
               } else {
                 return null;
               }
