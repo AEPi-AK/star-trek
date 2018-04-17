@@ -1,0 +1,5 @@
+Run ./script to start application
+
+Sources:
+https://github.com/nothings/stb/blob/master/stb_image.h
+https://github.com/nothings/stb/blob/master/stb_image_write.h
