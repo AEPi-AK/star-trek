@@ -2,6 +2,7 @@ body,
 html,
 #root {
   height: 100%;
+  overflow: hidden;
 }
 
 .ArmChair {
@@ -67,6 +68,7 @@ html,
 }
 
 .ArmChair-Banner {
+  margin-top: 20px;
   font-size: 60px;
 }
 
