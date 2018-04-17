@@ -36,19 +36,5 @@ export class TouchSensorListener {
                 on_count = 0;
             }
         }, 100);
-        // rpio.poll(this.port, (pin : number) => {
-        //     rpio.msleep(10);
-        //     var new_state : number = rpio.read(pin);
-        //     this.old_state = new_state;
-        //     let now = new Date();
-        //     if (now.getSeconds() - this.lastOff.getSeconds() >= 1 && new_state === 1) {
-        //         console.log(this.label + "has been pressed, new state %d", new_state);
-        //         this.socket.emit('button-pressed', state);
-        //     }
-        //     if (new_state === 0) {
-        //         this.lastOff = now;
-        //     }
-
-        // });
     }
 }

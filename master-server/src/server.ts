@@ -28,67 +28,6 @@ function template(str : string, args : string[]) {
 
 var hardware_state = DEFAULT_HARDWARE_STATE();
 
-
-var task_templates : TaskTemplate[] = [
-  /*
-  {description: 'Press the Yellow colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.yellowButton, completed: s => s.tactical.yellowButton.pressed},
-  {description: 'Press the Green colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.greenButton, completed: s => s.tactical.greenButton.pressed},
-  {description: 'Press the Blue colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.blueButton, completed: s => s.tactical.blueButton.pressed},
-
-  {description: 'Press the Red colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.redButton, completed: (s) => s.tactical.redButton.pressed},
-  {description: 'Press the Red colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.redButton, completed: (s) => s.stationA.redButton.pressed},
-  {description: 'Press the Red colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.redButton, completed: (s) => s.stationD.greenButton.pressed},
-  {description: 'Press the White colored button at Tactical', type: TaskType.PressButton, enabled: s => s.enabled.tactical.whiteButton, completed: (s) => s.tactical.whiteButton.pressed},
-  {description: 'Press the White colored button at Operations', type: TaskType.PressButton, enabled: s => s.enabled.operations.whiteButton, completed: (s) => s.operations.whiteButton.pressed},
-  {description: 'Press the White colored button at Navigation', type: TaskType.PressButton, enabled: s => s.enabled.navigation.whiteButton, completed: (s) => s.stationD.whiteButton.pressed},
-
-  {description: 'Scan hand at Security', type: TaskType.ScanHand, enabled: s => s.enabled.security.touchpad, completed: (s) => s.security.touchpad.pressedThreeSeconds},
-
-  {description: 'Flip the yellow and green colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => s.operations.yellowSwitch.up && s.stationD.orangeSwitch.up},
-  {description: 'Flip the yellow and green colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.navigation.greenSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.stationD.orangeSwitch.up},
-  {description: 'Flip the yellow and blue colored switches to the up position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => s.operations.yellowSwitch.up && s.security.blueSwitch.up},
-  {description: 'Flip the yellow and blue colored switches to the down position', type: TaskType.FlipSwitches, enabled: (s) => s.enabled.operations.yellowSwitch && s.enabled.security.blueSwitch, completed: (s) => !s.operations.yellowSwitch.up && !s.security.blueSwitch.up},
-
-  // 11 more like this
-
-  {description: 'Plug the Red wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled To at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotToo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotToo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled Too at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotToo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTwo == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTwo == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled Two at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slotTwo == Color.Yellow},
-  {description: 'Plug the Red wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slot10 == Color.Red},
-  {description: 'Plug the Blue wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slot10 == Color.Blue},
-  {description: 'Plug the Yellow wire into the port labelled 10 at Operations', type: TaskType.Plugboard, enabled: s => s.enabled.operations.plugboard, completed: (s) => s.operations.plugboard.slot10 == Color.Yellow},
-
-  {description: "Read the code on the captain's chair.  Enter it on the keypad.", type: TaskType.ReadCode, enabled: s => s.enabled.operations.keypad, completed: (s) => s.operations.keypad.correct},
-
-  {description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard, enabled: s => s.enabled.security.rfidScanner, completed: (s) => true},
-  {description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard, enabled: s => s.enabled.security.rfidScanner, completed: (s) => true},
-  {description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard, enabled: s => s.enabled.security.rfidScanner, completed: (s) => true},
-  {description : "Press the Big Red Button", type : TaskType.PressBigButton, enabled: s => s.enabled.tactical.bigRedButton, completed: (s) => s.tactical.bigRedButton.pressed}
-  */
-]
-
-// var task_templates : TaskTemplate[] = [
-//   substitute1('Press the %s colored button at Tactical', ['Yellow', 'Green', 'Blue']),
-//   substitute1('Press the button labelled %s at Tactical', ['Yellow', 'Green', 'Blue'], TaskType.PressButton),
-//   substitute2('Press the %s colored button at %s', ['Red', 'White'], ['Tactical', 'Operations', 'Navigation'], TaskType.PressButton),
-//   [{description : 'Scan hand at Security', type : TaskType.ScanHand}],
-//   substitute2('Flip the %s colored switches to the %s position', 
-//     ['Yellow and Green', 'Yellow and Blue', 'Yellow and Red', 'Green and Blue', 'Green and Red', 'Blue and Red'], ['up', 'down'], TaskType.FlipSwitches),
-//   substitute2('Plug the %s wire into the port labelled %s at Operations', ['Red', 'Blue', 'Yellow'], ['To', 'Too', 'Two', '10'], TaskType.Plugboard),
-//   substitute1("Read the code on the captain's chair (%s).  Enter it on the keypad.", ["", "", "", "", ""], TaskType.ReadCode),
-//   [{description : "Scan Montgomery Scott's ID card at Security", type : TaskType.ScanCard}],
-//   [{description : "Scan the Engineer's ID card at Security", type : TaskType.ScanCard}],
-//   [{description : "Scan an ID card with access level IV at Security", type : TaskType.ScanCard}],
-//   [{description : "Press the Big Red Button", type : TaskType.PressBigButton}]
-// ].reduce((acc, cur) => acc.concat(cur));
-
-
 var task_templates : TaskTemplate[] = [
   {description: 'Press the flashing white button', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-white-button'); }, 
@@ -206,9 +145,30 @@ var task_templates : TaskTemplate[] = [
     start: null, end: null,
     enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
 
-  {description: "Enter 5524 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+  {description: "Enter 2063 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "5524"},
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "2063"},
+  {description: "Enter 9983 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9983"},
+  {description: "Enter 0004 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "0004"},
+  {description: "Enter 7245 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7245"},
+  {description: "Enter 8518 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "8518"},
+  {description: "Enter 9515 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9515"},
+  {description: "Enter 7459 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7459"},
+  {description: "Enter 3471 on the keypad", frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
+    start: null, end: null,
+    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "3471"},
 
   {description : "Scan Montgomery Scott's ID card at Security", frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
