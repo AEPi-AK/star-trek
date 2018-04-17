@@ -23,9 +23,8 @@ def handle_client_connect_event(json):
 
 @socketio.on('capture')
 def capture(dummy):
-    assert(False)
     print("received")
-    VideoCamera.capture()
+    VideoCamera().capture()
     
 
 @app.route('/video_feed')
