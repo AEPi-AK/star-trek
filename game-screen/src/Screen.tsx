@@ -52,7 +52,7 @@ enum BorderColor {
 
 const GRID_SIZE = 6;
 
-const TaskCard = (props: { task: Task }) => {
+const TaskCard = (props: { task: Task; onClick: () => void }) => {
   const totalTime = props.task.time_expires - props.task.time_created;
   const timeElapsed = Date.now() - props.task.time_created;
   const percentTimeRemaining = (totalTime - timeElapsed) / totalTime;
@@ -65,7 +65,10 @@ const TaskCard = (props: { task: Task }) => {
 
   return (
     <div className="TaskCard" key={props.task.id}>
-      <img src={`images/tasks/${props.task.name}.png`} />
+      <img
+        src={`images/tasks/${props.task.name}.png`}
+        onClick={props.onClick}
+      />
       <div className="TaskCard-progress TaskCard-progress-background" />
       <div
         className={`TaskCard-progress TaskCard-progress-${color}`}
@@ -77,6 +80,7 @@ const TaskCard = (props: { task: Task }) => {
 
 interface TaskGridProps {
   tasks: Task[];
+  completeTask: (id: number) => void;
 }
 
 interface TaskGridState {
@@ -152,7 +156,12 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
       <div className="TaskGrid">
         {this.state.slots.map((task: Task | null, index) => {
           if (task) {
-            return <TaskCard task={task} />;
+            return (
+              <TaskCard
+                task={task}
+                onClick={() => this.props.completeTask(task.id)}
+              />
+            );
           } else {
             return (
               <img
@@ -204,10 +213,15 @@ class Screen extends React.Component<{}, GameState> {
     subscribeToGameState(this.setGameState);
 
     this.addPlayers = this.addPlayers.bind(this);
+    this.completeTask = this.completeTask.bind(this);
   }
 
   addPlayers() {
     socket.emit('number-players', 5);
+  }
+
+  completeTask(id: number) {
+    socket.emit('task-completed', id);
   }
 
   render() {
@@ -223,7 +237,16 @@ class Screen extends React.Component<{}, GameState> {
               if (this.state.phase === GamePhase.EnterPlayers) {
                 return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
               } else if (this.state.phase === GamePhase.PlayGame) {
-                return 'COMPLETE TASKS TO PROTECT SHIP';
+                // return 'COMPLETE TASKS TO PROTECT SHIP';
+                return `Difficulty: ${this.state.difficulty}`;
+              } else if (this.state.phase === GamePhase.LateGame) {
+                return 'LATE GAME';
+              } else if (this.state.phase === GamePhase.FiringLaser) {
+                return 'FIRING LASER';
+              } else if (this.state.phase === GamePhase.GameLost) {
+                return 'GAME LOST';
+              } else if (this.state.phase === GamePhase.GameWon) {
+                return 'GAME WON';
               } else {
                 return null;
               }
@@ -246,7 +269,12 @@ class Screen extends React.Component<{}, GameState> {
               } else if (this.state.phase === GamePhase.NotConnected) {
                 return 'NOT CONNECTED';
               } else if (this.state.phase === GamePhase.PlayGame) {
-                return <TaskGrid tasks={this.state.tasks} />;
+                return (
+                  <TaskGrid
+                    completeTask={this.completeTask}
+                    tasks={this.state.tasks}
+                  />
+                );
               } else {
                 return null;
               }
