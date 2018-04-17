@@ -18,10 +18,7 @@
     "baseUrl": ".",
     "typeRoots": ["node_modules/@types"]
   },
-  "include": [
-    "./src/**/*",
-    "../common/**/*"
-  ],
+  "include": ["./src/**/*", "../common/**/*"],
   "exclude": [
     "node_modules",
     "dist",
