@@ -22,7 +22,7 @@ def handle_client_connect_event(json):
     print('received json: {0}'.format(str(json)))
 
 @socketio.on('capture')
-def capture(dummy):
+def capture():
     print("received")
     VideoCamera().capture()
     

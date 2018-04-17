@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+#timer {
+  text-align: center;
+  font-size: 100px;
+  margin: 0;
+  line-height: 100vh;
+}
