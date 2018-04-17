@@ -48,6 +48,7 @@ export interface TaskDurations {
 
 export interface TaskTemplate {
     description: string;
+    name: string;
     frequencyType: FrequencyTaskType;
     exclusionType: ExclusionTaskType;
     start: (() => void) | null;
@@ -59,6 +60,7 @@ export interface TaskTemplate {
 export interface Task {
     description: string;
     id: number;
+    name: string;
     exclusionType: ExclusionTaskType;
     time_created: number;
     time_expires: number;

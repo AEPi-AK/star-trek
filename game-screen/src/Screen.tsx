@@ -41,6 +41,7 @@ enum BorderColor {
 }
 
 const MAX_HEALTH = 6;
+const GRID_SIZE = 6;
 
 const HealthBar = (props: { remaining: number }) => {
   return (
@@ -58,22 +59,100 @@ const HealthBar = (props: { remaining: number }) => {
   );
 };
 
+const TaskCard = (props: { task: Task }) => {
+  return (
+    <img
+      className="TaskCard"
+      key={props.task.id}
+      src={`images/tasks/${props.task.name}.png`}
+    />
+    // <div
+    //   style={{ backgroundImage: `images/tasks/${props.task.name}.png` }}
+    //   key={props.task.id}
+    //   className="TaskProgress"
+    // >
+    //   {props.task.time_expires - props.task.time_created}
+    // </div>
+  );
+};
+
 interface TaskGridProps {
   tasks: Task[];
 }
 
-class TaskGrid extends React.Component<TaskGridProps, {}> {
+interface TaskGridState {
+  slots: Array<Task | null>;
+}
+
+class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
   constructor(props: TaskGridProps) {
     super(props);
+    this.state = {
+      slots: Array(GRID_SIZE),
+    };
+  }
+
+  updateSlotsWithTasks(newTasks: Task[]) {
+    const getRandomAvailableSlotIndex = (): number | null => {
+      const openIndicies = this.state.slots
+        // map filled slots to null, open slots to an index
+        .map((slot, i) => (slot ? null : i))
+        // remove null slots
+        .filter((index: number | null) => index !== null);
+      return openIndicies.length > 0 ? _.sample(openIndicies)! : null;
+    };
+
+    const slots = _.cloneDeep(this.state.slots);
+
+    // Add newly-added tasks
+    newTasks.forEach(task => {
+      if (_.some(slots, t => t && t.id === task.id)) {
+        return;
+      }
+      const indexForTask = getRandomAvailableSlotIndex();
+      if (indexForTask === null) {
+        console.log('THIS SHOULD NOT HAPPEN! PRESS F AND BUG JORDAN OR AVI');
+        return;
+      }
+      slots[indexForTask] = task;
+    });
+
+    // Remove newly-removed tasks
+    slots.forEach((task, i) => {
+      if (!task) {
+        return;
+      }
+
+      if (_.some(newTasks, t => t.id === task.id)) {
+        return;
+      }
+
+      slots[i] = null;
+    });
+
+    this.setState({ slots });
+  }
+
+  componentWillReceiveProps(nextProps: TaskGridProps) {
+    this.updateSlotsWithTasks(nextProps.tasks);
   }
 
   render() {
-    console.log(this.props.tasks);
     return (
       <div className="TaskGrid">
-        {[1, 2, 3, 4, 5, 6].map(task => (
-          <img className="Task" key={2} src={`images/tasks/plug-blue-10.png`} />
-        ))}
+        {this.state.slots.map((task: Task | null, index) => {
+          if (task) {
+            return <TaskCard task={task} />;
+          } else {
+            return (
+              <img
+                className="TaskCard"
+                key={index}
+                src={`images/tasks/blank.png`}
+              />
+            );
+          }
+        })}
       </div>
     );
   }
@@ -95,7 +174,7 @@ class Screen extends React.Component<{}, GameState> {
   }
 
   addPlayers() {
-    socket.emit('number-players', 3);
+    socket.emit('number-players', 5);
   }
 
   render() {
@@ -105,7 +184,17 @@ class Screen extends React.Component<{}, GameState> {
     return (
       <div className="Screen">
         {/* Above window */}
-        <div className="Above-Info">COMPLETE TASKS TO PROTECT SHIP</div>
+        <div className="Above-Info">
+          {(() => {
+            if (this.state.phase === GamePhase.EnterPlayers) {
+              return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
+            } else if (this.state.phase === GamePhase.PlayGame) {
+              return 'COMPLETE TASKS TO PROTECT SHIP';
+            } else {
+              return null;
+            }
+          })()}
+        </div>
 
         {/* Window */}
         <div
@@ -140,7 +229,7 @@ class Screen extends React.Component<{}, GameState> {
                 <div className="Below-Info-PlayGame">
                   <div className="Below-Info-ship-health">
                     <div className="Below-Info-label">Ship Health</div>
-                    <HealthBar remaining={6} />
+                    <HealthBar remaining={MAX_HEALTH - this.state.failures} />
                   </div>
                   <div className="Below-Info-torpedo">
                     <div className="Below-Info-label">Torpedo Ready In</div>
