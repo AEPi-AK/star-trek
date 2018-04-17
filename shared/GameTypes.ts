@@ -78,6 +78,7 @@ export enum GamePhase {
     EnterPlayers,
     PlayGame,
     LateGame,
+    FiringLaser,
     GameLost,
     GameWon,
 }

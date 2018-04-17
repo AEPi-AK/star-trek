@@ -2,6 +2,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as Socket from 'socket.io-client';
 import { HealthBar, TorpedoTimer } from './Widgets';
+// @ts-ignore
+import { Shake } from 'reshake';
+
 import { GameState, GamePhase, Task, GameDifficulty } from './shared/GameTypes';
 
 import './fonts/slider.css';
@@ -165,6 +168,29 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
   }
 }
 
+class Shakeable extends React.Component<{ isShaking: boolean }, {}> {
+  render() {
+    if (!this.props.isShaking) {
+      return this.props.children;
+    }
+    return (
+      <Shake
+        h={5}
+        v={5}
+        r={3}
+        dur={300}
+        int={10}
+        max={100}
+        fixed={true}
+        fixedStop={false}
+        freez={true}
+      >
+        {this.props.children}
+      </Shake>
+    );
+  }
+}
+
 class Screen extends React.Component<{}, GameState> {
   setGameState(gamestate: GameState) {
     this.setState(gamestate);
@@ -189,69 +215,71 @@ class Screen extends React.Component<{}, GameState> {
     const isStarfieldAnimated = this.state.phase === GamePhase.EnterPlayers;
 
     return (
-      <div className="Screen">
-        {/* Above window */}
-        <div className="Above-Info">
-          {(() => {
-            if (this.state.phase === GamePhase.EnterPlayers) {
-              return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
-            } else if (this.state.phase === GamePhase.PlayGame) {
-              return 'COMPLETE TASKS TO PROTECT SHIP';
-            } else {
-              return null;
-            }
-          })()}
-        </div>
+      <Shakeable isShaking={false}>
+        <div className="Screen">
+          {/* Above window */}
+          <div className="Above-Info">
+            {(() => {
+              if (this.state.phase === GamePhase.EnterPlayers) {
+                return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
+              } else if (this.state.phase === GamePhase.PlayGame) {
+                return 'COMPLETE TASKS TO PROTECT SHIP';
+              } else {
+                return null;
+              }
+            })()}
+          </div>
 
-        {/* Window */}
-        <div
-          className={`Window Window-border-${borderColor} ${
-            isStarfieldAnimated ? 'Window-animated' : ''
-          }`}
-        >
-          {(() => {
-            if (this.state.phase === GamePhase.EnterPlayers) {
-              return (
-                <div className="StartInstructions">
-                  <img src="/images/start.png" onClick={this.addPlayers} />
-                </div>
-              );
-            } else if (this.state.phase === GamePhase.NotConnected) {
-              return 'NOT CONNECTED';
-            } else if (this.state.phase === GamePhase.PlayGame) {
-              return <TaskGrid tasks={this.state.tasks} />;
-            } else {
-              return null;
-            }
-          })()}
-        </div>
-
-        {/* Below window */}
-        <div className="Below-Info">
-          {(() => {
-            if (this.state.phase === GamePhase.EnterPlayers) {
-              return null;
-            } else if (this.state.phase === GamePhase.PlayGame) {
-              return (
-                <div className="Below-Info-PlayGame">
-                  <div className="Below-Info-ship-health">
-                    <div className="Below-Info-label">Ship Health</div>
-                    <HealthBar failures={this.state.failures} />
+          {/* Window */}
+          <div
+            className={`Window Window-border-${borderColor} ${
+              isStarfieldAnimated ? 'Window-animated' : ''
+            }`}
+          >
+            {(() => {
+              if (this.state.phase === GamePhase.EnterPlayers) {
+                return (
+                  <div className="StartInstructions">
+                    <img src="/images/start.png" onClick={this.addPlayers} />
                   </div>
-                  <div className="Below-Info-torpedo">
-                    <div className="Below-Info-label">Torpedo Ready In</div>
-                    <div className="Below-Info-timer">
-                      <TorpedoTimer time={this.state.time} />
+                );
+              } else if (this.state.phase === GamePhase.NotConnected) {
+                return 'NOT CONNECTED';
+              } else if (this.state.phase === GamePhase.PlayGame) {
+                return <TaskGrid tasks={this.state.tasks} />;
+              } else {
+                return null;
+              }
+            })()}
+          </div>
+
+          {/* Below window */}
+          <div className="Below-Info">
+            {(() => {
+              if (this.state.phase === GamePhase.EnterPlayers) {
+                return null;
+              } else if (this.state.phase === GamePhase.PlayGame) {
+                return (
+                  <div className="Below-Info-PlayGame">
+                    <div className="Below-Info-ship-health">
+                      <div className="Below-Info-label">Ship Health</div>
+                      <HealthBar failures={this.state.failures} />
+                    </div>
+                    <div className="Below-Info-torpedo">
+                      <div className="Below-Info-label">Torpedo Ready In</div>
+                      <div className="Below-Info-timer">
+                        <TorpedoTimer time={this.state.time} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            } else {
-              return null;
-            }
-          })()}
+                );
+              } else {
+                return null;
+              }
+            })()}
+          </div>
         </div>
-      </div>
+      </Shakeable>
     );
   }
 }
