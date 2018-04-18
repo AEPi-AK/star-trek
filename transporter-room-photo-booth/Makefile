@@ -13,4 +13,4 @@ main: main.o
 	$(CC) -c -o $@ $< $(CCFLAGS)
 
 clean:
-	rm -f main *.o ./Results/* map.jpg
+	rm -f main *.o ./Results/* map.jpg out.mp4
