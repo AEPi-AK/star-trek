@@ -304,9 +304,9 @@ void WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
   //int num_loops;
 
   int i;
-  #pragma omp parallel private(thread_id, num_loops)
-  {
-    num_loops = 0;
+  //#pragma omp parallel private(thread_id, num_loops)
+  //{
+  //  num_loops = 0;
   if (fadeOutVideo) {
     #pragma omp for 
     for (i = 0; i < NUMFRAMES / 2; i++) {
@@ -323,7 +323,7 @@ void WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
   }
   //thread_id = omp_get_thread_num();
   //printf("Thread %d performed %d iterations of the loop.\n", thread_id, num_loops);
-  }
+  //}
 
   if (fadeInVideo) {
     for (i = 0; i < NUMFRAMES / 2; i++) {
