@@ -10,14 +10,13 @@
 #include "stb_image.h"
 
 /* Total number of output frames */
-//#define NUMFRAMES 30 // At most 498, must be even
-int NUMFRAMES;
+int NUMFRAMES; // At most 498, must be even
 
 /* Path to store output frames */
 #define RESULTSPATH "./Results/"
 
 /* Comment to suppress debug messages */
-#define DEBUG
+//#define DEBUG
 
 /* Type of effect */
 enum EFFECT {NONE, PIXELIZE};
@@ -95,9 +94,9 @@ unsigned char** FadeOut(unsigned char* occupiedScene, unsigned char* emptyScene,
     for (y = 0; y < Y; y++) {
       for (x = 0; x < X; x++) {
         float alpha = 1.0 - (float)i / (float)((NUMFRAMES / 2) - 1);
-        int yellow = map[y*X + x] ? (random() / (double)INT_MAX) < (1.0 - alpha) : 0;
+        int yellow = (double)map[y*X + x] > 200.0 ? (random() / (double)INT_MAX) < (1.0 - alpha) : 0;
         for (n = 0; n < N; n++) {
-          if (yellow) {
+          if (effect == PIXELIZE && yellow) {
             video[i][y*X*N + x*N + n] = alpha * (n == 2 ? 0 : 255) + (1.0 - alpha) * emptyScene[y*X*N + x*N + n];
           } else {
             video[i][y*X*N + x*N + n] = alpha * occupiedScene[y*X*N + x*N + n] + (1.0 - alpha) * emptyScene[y*X*N + x*N + n];
@@ -108,7 +107,6 @@ unsigned char** FadeOut(unsigned char* occupiedScene, unsigned char* emptyScene,
   }
 
 #ifdef DEBUG
-  //printf("Successful fade out\n");
   clock_t end = clock();
   printf("Fading out took %f seconds\n", ((double)(end - start)) / CLOCKS_PER_SEC);
 #endif
@@ -149,7 +147,7 @@ unsigned char** FadeIn(unsigned char* occupiedScene, unsigned char* foreignScene
         float alpha = (float)i / (float)((NUMFRAMES / 2) - 1);
         int yellow = (effect == PIXELIZE) ? (random() / (double)INT_MAX) < (1.0 - alpha) : 0;
         for (n = 0; n < N; n++) {
-          if (abs((double)map[y*X + x] - 255.0) < 10.0) {
+          if ((double)map[y*X + x] > 200.0) {
             /* This pixel contains the person */
             if (yellow) {
               video[i][y*X*N + x*N + n] = alpha * (n == 2 ? 0 : 255) + (1.0 - alpha) * foreignScene[y*X*N + x*N + n];
@@ -165,7 +163,6 @@ unsigned char** FadeIn(unsigned char* occupiedScene, unsigned char* foreignScene
   }
 
 #ifdef DEBUG
-  //printf("Successful fade in\n");
   clock_t end = clock();
   printf("Fading In took %f seconds\n", ((double)(end - start)) / CLOCKS_PER_SEC);
 #endif
@@ -304,25 +301,29 @@ int WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
   int ret = 0;
 
   int i;
-  for (i = 0; i < NUMFRAMES / 2; i++) {
-    int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
-    char filename[len];
-    snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i);
-    ret = WriteImage(filename, X, Y, N, fadeOutVideo[i]);
-    if (ret < 0) {
-      printf("ERROR: Failed to write frame %d\n", i);
-      break;
+  if (fadeOutVideo) {
+    for (i = 0; i < NUMFRAMES / 2; i++) {
+      int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
+      char filename[len];
+      snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i);
+      ret = WriteImage(filename, X, Y, N, fadeOutVideo[i]);
+      if (ret < 0) {
+        printf("ERROR: Failed to write frame %d\n", i);
+        break;
+      }
     }
   }
 
-  for (i = 0; i < NUMFRAMES / 2; i++) {
-    int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
-    char filename[len];
-    snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i + NUMFRAMES / 2);
-    ret = WriteImage(filename, X, Y, N, fadeInVideo[i]);
-    if (ret < 0) {
-      printf("ERROR: Failed to write frame %d\n", i + NUMFRAMES);
-      break;
+  if (fadeInVideo) {
+    for (i = 0; i < NUMFRAMES / 2; i++) {
+      int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
+      char filename[len];
+      snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i + NUMFRAMES / 2);
+      ret = WriteImage(filename, X, Y, N, fadeInVideo[i]);
+      if (ret < 0) {
+        printf("ERROR: Failed to write frame %d\n", i + NUMFRAMES);
+        break;
+      }
     }
   }
 
@@ -338,6 +339,8 @@ int WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
  * Returns 1 iff new dimensions match global dimensions.
  */
 int CheckDimensions(int newX, int newY, int newN) {
+  newX = newX / 2 * 2;
+  newY = newY / 2 * 2;
   return (newX == X && newY == Y && newN == N);
 }
 
@@ -370,8 +373,8 @@ int main(int argc, char *argv[]) {
     printf("ERROR: %s\n", stbi_failure_reason());
     return -1;
   }
-  X = occupiedSceneX;
-  Y = occupiedSceneY;
+  X = occupiedSceneX / 2 * 2;
+  Y = occupiedSceneY / 2 * 2;
   N = occupiedSceneN;
 
   char* emptySceneFilename = argv[2];
@@ -406,18 +409,6 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  //int* map = GetPersonMap(emptyScene, occupiedScene);
-  //if (map == NULL) {
-  //  FreeImage(occupiedScene);
-  //  FreeImage(emptyScene);
-  //  FreeImage(foreignScene);
-  //  return -1;
-  //}
-//#ifdef MAP
-//  WriteImage("Results/map.jpg", X, Y, 1, MapImage(map));
-//  unsigned char* difference = GetDifference(emptyScene, occupiedScene);
-//  WriteImage("Results/difference.jpg", X, Y, N, difference);
-//#endif
   char* mapFilename = argv[4];
   int mapX, mapY, mapN;
   unsigned char* map = ReadImage(mapFilename, &mapX, &mapY, &mapN);
@@ -447,7 +438,7 @@ int main(int argc, char *argv[]) {
     free(map);
     return -1;
   }
-  unsigned char** fadeInVideo = FadeIn(occupiedScene, foreignScene, map);
+  /*unsigned char** fadeInVideo = FadeIn(occupiedScene, foreignScene, map);
   if (fadeInVideo == NULL) {
     FreeImage(occupiedScene);
     FreeImage(emptyScene);
@@ -455,8 +446,8 @@ int main(int argc, char *argv[]) {
     free(map);
     FreeVideo(fadeOutVideo);
     return -1;
-  }
-  WriteVideo(fadeOutVideo, fadeInVideo);
+  }*/
+  WriteVideo(fadeOutVideo, NULL);//fadeInVideo);
 #ifdef DEBUG
   clock_t freeStart = clock();
 #endif
@@ -466,7 +457,7 @@ int main(int argc, char *argv[]) {
   FreeImage(foreignScene);
   free(map);
   FreeVideo(fadeOutVideo);
-  FreeVideo(fadeInVideo);
+  //FreeVideo(fadeInVideo);
 
 #ifdef DEBUG
   clock_t freeEnd = clock();
