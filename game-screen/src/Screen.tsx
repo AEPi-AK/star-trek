@@ -4,12 +4,26 @@ import * as Socket from 'socket.io-client';
 import { HealthBar, TorpedoTimer } from './Widgets';
 // @ts-ignore
 import { Shake } from 'reshake';
+import { Howl } from 'howler';
 
 import { GameState, GamePhase, Task, GameDifficulty } from './shared/GameTypes';
 
 import './fonts/slider.css';
 import './fonts/roboto-mono.css';
 import './Screen.css';
+
+// Sounds
+const SoundNew = new Howl({
+  src: ['/sounds/new-task.wav']
+});
+
+const SoundCorrect = new Howl({
+  src: ['/sounds/correct.wav']
+});
+
+const SoundWrong = new Howl({
+  src: ['/sounds/incorrect.mp3']
+});
 
 const socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER!);
 
@@ -25,14 +39,14 @@ const defaultGameState: GameState = {
     [GameDifficulty.PreEasy]: 10,
     [GameDifficulty.Easy]: 5,
     [GameDifficulty.Medium]: 4,
-    [GameDifficulty.Hard]: 3,
+    [GameDifficulty.Hard]: 3
   },
   max_tasks: {
     [GameDifficulty.PreEasy]: 2,
     [GameDifficulty.Easy]: 3,
     [GameDifficulty.Medium]: 4,
-    [GameDifficulty.Hard]: 5,
-  },
+    [GameDifficulty.Hard]: 5
+  }
 };
 
 function subscribeToGameState(setTasks: (state: GameState) => void) {
@@ -47,7 +61,7 @@ function subscribeToGameState(setTasks: (state: GameState) => void) {
 enum BorderColor {
   Blue = 'blue',
   Red = 'red',
-  Green = 'green',
+  Green = 'green'
 }
 
 const GRID_SIZE = 6;
@@ -93,7 +107,7 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
     super(props);
     this.state = {
       slots: Array(GRID_SIZE),
-      updateTimer: 0,
+      updateTimer: 0
     };
   }
 
@@ -129,6 +143,7 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
         return;
       }
       slots[indexForTask] = task;
+      SoundNew.play();
     });
 
     // Remove newly-removed tasks
@@ -139,6 +154,15 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
 
       if (_.some(newTasks, t => t.id === task.id)) {
         return;
+      }
+
+      const taskFailed = task.time_expires < Date.now();
+      if (taskFailed) {
+        console.log('failed');
+        SoundWrong.play();
+      } else {
+        console.log('correct');
+        SoundCorrect.play();
       }
 
       slots[i] = null;
@@ -221,6 +245,7 @@ class Screen extends React.Component<{}, GameState> {
   }
 
   completeTask(id: number) {
+    SoundCorrect.play();
     socket.emit('task-completed', id);
   }
 

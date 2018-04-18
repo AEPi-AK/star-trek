@@ -2,7 +2,7 @@
 
 # Variables
 CC = gcc
-CCFLAGS = -std=c99 -pedantic -g
+CCFLAGS = -fopenmp -lm -std=gnu99 -pedantic -g
 
 #Rules
 
@@ -13,4 +13,4 @@ main: main.o
 	$(CC) -c -o $@ $< $(CCFLAGS)
 
 clean:
-	rm -f main *.o ./Results/* map.jpg
+	rm -f main *.o ./Results/* map.jpg out.mp4
