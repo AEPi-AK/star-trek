@@ -29,189 +29,204 @@ function template(str : string, args : string[]) {
 
 var hardware_state = DEFAULT_HARDWARE_STATE();
 
+
+function stationOnline(label: string) {
+  return clients.indexOf(label) >= 0;
+}
+
+var switchboard_performed = false;
+function switchboardEnabled (c: Color) {
+  return switchboard_performed || c == Color.None;
+}
+function switchboardStart () {
+  switchboard_performed = true;
+}
+
+
 var task_templates : TaskTemplate[] = [
   {description: 'Press the flashing white button', name: 'button-white', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-white-button'); },
-    enabled: s => s.enabled.stationB.whiteButton, completed: s => s.stationB.whiteButton.pressed},
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.whiteButton, completed: s => s.stationB.whiteButton.pressed},
   {description: 'Press the flashing white button', name: 'button-white', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationC-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-white-button'); },
-    enabled: s => s.enabled.stationC.whiteButton, completed: s => s.stationC.whiteButton.pressed},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.whiteButton, completed: s => s.stationC.whiteButton.pressed},
   {description: 'Press the flashing white button', name: 'button-white', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressWhiteButton,
     start: () => { io.sockets.emit('button-flash', 'stationD-white-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationD-white-button'); },
-    enabled: s => s.enabled.stationD.whiteButton, completed: s => s.stationD.whiteButton.pressed},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD.whiteButton, completed: s => s.stationD.whiteButton.pressed},
   {description: 'Press the flashing green button', name: 'button-green', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
     start: () => { io.sockets.emit('button-flash', 'stationA-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-green-button'); },
-    enabled: s => s.enabled.stationA.greenButton, completed: s => s.stationA.greenButton.pressed},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.greenButton, completed: s => s.stationA.greenButton.pressed},
   {description: 'Press the flashing green button', name: 'button-green', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
     start: () => { io.sockets.emit('button-flash', 'stationC-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationC-green-button'); },
-    enabled: s => s.enabled.stationC.greenButton, completed: s => s.stationC.greenButton.pressed},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.greenButton, completed: s => s.stationC.greenButton.pressed},
   {description: 'Press the flashing green button', name: 'button-green', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressGreenButton,
     start: () => { io.sockets.emit('button-flash', 'stationD-green-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationD-green-button'); },
-    enabled: s => s.enabled.stationD.greenButton, completed: s => s.stationD.greenButton.pressed},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD.greenButton, completed: s => s.stationD.greenButton.pressed},
    {description: 'Press the flashing yellow button', name: 'button-yellow', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressYellowButton,
     start: () => { io.sockets.emit('button-flash', 'stationA-yellow-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-yellow-button'); },
-    enabled: s => s.enabled.stationA.yellowButton, completed: s => s.stationA.yellowButton.pressed},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.yellowButton, completed: s => s.stationA.yellowButton.pressed},
   {description: 'Press the flashing yellow button', name: 'button-yellow', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressYellowButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-yellow-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-yellow-button'); },
-    enabled: s => s.enabled.stationB.yellowButton, completed: s => s.stationB.yellowButton.pressed},
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.yellowButton, completed: s => s.stationB.yellowButton.pressed},
   {description: 'Press the flashing yellow button', name: 'button-yellow', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressYellowButton,
     start: () => { io.sockets.emit('button-flash', 'stationC-yellow-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationBCyellow-button'); },
-    enabled: s => s.enabled.stationC.yellowButton, completed: s => s.stationC.yellowButton.pressed},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.yellowButton, completed: s => s.stationC.yellowButton.pressed},
   {description: 'Press the flashing blue button', name: 'button-blue', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressBlueButton,
     start: () => { io.sockets.emit('button-flash', 'stationA-blue-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationA-blue-button'); },
-    enabled: s => s.enabled.stationA.blueButton, completed: s => s.stationA.blueButton.pressed},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.blueButton, completed: s => s.stationA.blueButton.pressed},
   {description: 'Press the flashing blue button', name: 'button-blue', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressBlueButton,
     start: () => { io.sockets.emit('button-flash', 'stationB-blue-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationB-blue-button'); },
-    enabled: s => s.enabled.stationB.blueButton, completed: s => s.stationB.blueButton.pressed},
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.blueButton, completed: s => s.stationB.blueButton.pressed},
   {description: 'Press the flashing blue button', name: 'button-blue', frequencyType: FrequencyTaskType.PressButton, exclusionType: ExclusionTaskType.PressBlueButton,
     start: () => { io.sockets.emit('button-flash', 'stationD-blue-button'); }, end: () => { io.sockets.emit('button-stop-flash', 'stationD-blue-button'); },
-    enabled: s => s.enabled.stationD.blueButton, completed: s => s.stationD.blueButton.pressed},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD.blueButton, completed: s => s.stationD.blueButton.pressed},
 
   {description: 'Scan hand at Security', name: 'scan-hand', frequencyType: FrequencyTaskType.ScanHand, exclusionType: ExclusionTaskType.ScanHand,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressed},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationC.touchpad.pressed},
 
   {description: 'Flip the orange and green colored switches to the down position', name: 'switch-green-orange-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationB') && s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationB.greenSwitch.pressed},
   {description: 'Flip the orange and green colored switches to the up position', name: 'switch-green-orange-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationB') && s.enabled.stationD.yellowSwitch && s.enabled.stationB.greenSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationB.greenSwitch.pressed},
   {description: 'Flip the orange and blue colored switches to the down position', name: 'switch-blue-orange-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationC') && s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationC.blueSwitch.pressed},
   {description: 'Flip the orange and blue colored switches to the up position', name: 'switch-blue-orange-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationC') && s.enabled.stationD.yellowSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationC.blueSwitch.pressed},
   {description: 'Flip the orange and red colored switches to the down position', name: 'switch-red-orange-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationA.redSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationA') && s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationD.yellowSwitch.pressed && s.stationA.redSwitch.pressed},
   {description: 'Flip the yellow and red colored switches to the up position', name: 'switch-red-orange-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationA.redSwitch.pressed},
+    enabled: (s) => stationOnline('stationD') && stationOnline('stationA') && s.enabled.stationD.yellowSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationD.yellowSwitch.pressed && !s.stationA.redSwitch.pressed},
   {description: 'Flip the green and blue colored switches to the down position', name: 'switch-green-blue-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationB') && stationOnline('stationC') && s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationC.blueSwitch.pressed},
   {description: 'Flip the green and blue colored switches to the up position', name: 'switch-green-blue-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationB') && stationOnline('stationC') && s.enabled.stationB.greenSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationC.blueSwitch.pressed},
   {description: 'Flip the green and red colored switches to the down position', name: 'switch-red-green-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationA.redSwitch.pressed},
+    enabled: (s) => stationOnline('stationB') && stationOnline('stationA') && s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => s.stationB.greenSwitch.pressed && s.stationA.redSwitch.pressed},
   {description: 'Flip the green and red colored switches to the up position', name: 'switch-red-green-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationA.redSwitch.pressed},
+    enabled: (s) => stationOnline('stationC') && stationOnline('stationA') && s.enabled.stationB.greenSwitch && s.enabled.stationA.redSwitch, completed: (s) => !s.stationB.greenSwitch.pressed && !s.stationA.redSwitch.pressed},
   {description: 'Flip the blue and red colored switches to the down position', name: 'switch-red-blue-down', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationA.redSwitch.pressed && s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationC') && stationOnline('stationA') && s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => s.stationA.redSwitch.pressed && s.stationC.blueSwitch.pressed},
   {description: 'Flip the blue and red colored switches to the up position', name: 'switch-red-blue-up', frequencyType: FrequencyTaskType.FlipSwitches, exclusionType: ExclusionTaskType.FlipSwitches,
     start: null, end: null,
-    enabled: (s) => s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationA.redSwitch.pressed && !s.stationC.blueSwitch.pressed},
+    enabled: (s) => stationOnline('stationC') && stationOnline('stationA') && s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationA.redSwitch.pressed && !s.stationC.blueSwitch.pressed},
 
 
   {description: 'Plug the Red wire into the port labelled To at Operations', name: 'plug-red-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled To at Operations', name: 'plug-blue-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled To at Operations', name: 'plug-yellow-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled Too at Operations', name: 'plug-red-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled Too at Operations', name: 'plug-blue-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled Too at Operations', name: 'plug-yellow-too', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotToo), completed: (s) => s.stationB.plugboard.slotToo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled Two at Operations', name: 'plug-red-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Red},
   {description: 'Plug the Blue wire into the port labelled Two at Operations', name: 'plug-blue-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled Two at Operations', name: 'plug-yellow-two', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTwo), completed: (s) => s.stationB.plugboard.slotTwo == Color.Yellow},
   {description: 'Plug the Red wire into the port labelled 10 at Operations', name: 'plug-red-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Red},
   {description: 'Plug the Blue wire into the port labelled 10 at Operations', name: 'plug-blue-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Blue},
   {description: 'Plug the Yellow wire into the port labelled 10 at Operations', name: 'plug-yellow-10', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
-    start: null, end: null,
-    enabled: s => s.enabled.stationB.plugboard, completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
+    start: switchboardStart, end: null,
+    enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slot10), completed: (s) => s.stationB.plugboard.slot10 == Color.Yellow},
 
   {description: "Enter 2063 on the keypad", name: 'keypad-2063', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "2063"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "2063"},
   {description: "Enter 9983 on the keypad", name: 'keypad-9983', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9983"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9983"},
   {description: "Enter 0004 on the keypad", name: 'keypad-0004', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "0004"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "0004"},
   {description: "Enter 7245 on the keypad", name: 'keypad-7245', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7245"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7245"},
   {description: "Enter 8518 on the keypad", name: 'keypad-8518', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "8518"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "8518"},
   {description: "Enter 9515 on the keypad", name: 'keypad-9515', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9515"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "9515"},
   {description: "Enter 7459 on the keypad", name: 'keypad-7459', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7459"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "7459"},
   {description: "Enter 3471 on the keypad", name: 'keypad-3471', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
-    enabled: s => s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "3471"},
+    enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "3471"},
   {description : "Scan James Kirk's ID card at Security", name: 'ID-name-kirk', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
+    enabled: s => stationOnline('stationA') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
+  
   {description : "Scan the captain's ID", name: 'ID-role-captain', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
   {description : "Scan the ID with access level X", name: 'ID-level-X', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
   {description : "Scan Nyota Uhura's ID card", name: 'ID-name-uhura', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
   {description : "Scan the ID with access level IV", name: 'ID-level-IV', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
   {description : "Scan Leonard Mccoy's ID card", name: 'ID-name-mccoy', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
   {description : "Scan the ID with access level III", name: 'ID-level-iii', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
   {description : "Scan Hikaru Sulu's ID card", name: 'ID-name-sulu', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
   {description : "Scan the Lieutenant's ID card", name: 'ID-role-lieutenant', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
   {description : "Scan the ID with acces level IX", name: 'ID-level-ix', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
   {description : "Scan Chekov's ID card", name: 'ID-name-chekov', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
   {description : "Scan the Engineer's card", name: 'ID-role-engineer', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
   {description : "Scan the ID card with access level VI", name: 'ID-level-vi', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
   {description : "Press the Big Red Button", name: 'big-red-button', frequencyType : FrequencyTaskType.PressBigButton, exclusionType: ExclusionTaskType.PressBigButton,
     start: () => { io.sockets.emit('button-flash', 'big-red-button')} , end: () => { io.sockets.emit('button-stop-flash', 'big-red-button'); },
-    enabled: s => s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
+    enabled: s => stationOnline('captains-chair') && s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
 ]
 
 var INITIAL_WEIGHTS = {
@@ -266,6 +281,7 @@ function resetGameState () {
     task_frequency: game_state.task_frequency,
     max_tasks: game_state.max_tasks,
    };
+   switchboard_performed = false;
 }
 
 var MAX_FAILURES = 5;
@@ -323,6 +339,10 @@ function createNewTask () {
   return createTaskFromTemplate(template);
 }
 
+function canCreateTask() {
+  return task_templates.filter(taskTemplateValid).length > 0;
+}
+
 function completedTasks(tasks: Task[]) {
   if (game_state.difficulty === GameDifficulty.PreEasy) {
     game_state.difficulty = GameDifficulty.Easy;
@@ -335,11 +355,15 @@ function completedTasks(tasks: Task[]) {
 
 var game_timer_ids : NodeJS.Timer[] = [];
 function switchToPlayGame() {
+  for (let button in button_mapping) {
+    io.sockets.emit('button-request-state', button);
+  }
+
   var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
     if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
-      if (game_state.tasks.length < game_state.max_tasks[game_state.difficulty]) {
+      if (game_state.tasks.length < game_state.max_tasks[game_state.difficulty] && canCreateTask()) {
         time_since_last_made = 0;
         var task = createNewTask();
         if (task.start) {
@@ -566,6 +590,13 @@ io.on('connect', function(socket: SocketIO.Socket){
     console.log("recieved state %s %s", s.label, s.pressed ? "pressed" : "unpressed");
   });
 
+  socket.on('button-state-response', (data: {label: string, pressed: boolean}) => {
+    var old_state = button_mapping[data.label](hardware_state);
+    old_state.pressed = data.pressed;
+    updatedHardwareState();
+    console.log("recieved state %s %s", data.label, data.pressed ? "pressed" : "unpressed");
+
+  });
 
   socket.on('switchboard-update', (s: PlugboardState) => {
     hardware_state.stationB.plugboard = s;
