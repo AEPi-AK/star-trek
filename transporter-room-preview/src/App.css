@@ -32,11 +32,12 @@
 }
 
 #video {
-  width: 705px;
-  height: 397px;
   position: fixed;
-  top: 23px;
-  left: 39px;
+  width: 1920px;
+  height: 1080px;
+  transform: scale(0.54);
+  top: -220px;
+  left: -390px;
 }
 
 #foreground {
@@ -91,7 +92,7 @@
   height: 480px;
   background-color: white;
   position: fixed;
-  opacity: 0;
+  opacity: 1;
   animation: fade-in 0.4s;
 }
 
@@ -108,18 +109,19 @@
   font-family: 'Exo 2';
   font-weight: bold;
   text-align: center;
-  font-size: 30px;
+  font-size: 26px;
   width: 600px;
   position: fixed;
-  top: 57px;
+  top: 31px;
   left: 98px;
+  color: white;
 }
 
 #photo {
-  width: 360px;
+  width: 300px;
   position: fixed;
-  left: 219px;
-  top: 151px;
+  left: 255px;
+  top: 121px;
 }
 
 #next-button {
@@ -131,10 +133,14 @@
 #countdown-text {
   position: fixed;
   font-family: 'Exo 2';
-  font-weight: 'bold';
+  font-weight: 800;
   color: white;
   font-size: 170px;
   left: 334px;
   top: 110px;
   -webkit-text-stroke: 5px black;
+}
+
+#rectangle {
+  position: fixed;
 }
