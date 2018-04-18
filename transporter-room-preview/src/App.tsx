@@ -11,7 +11,7 @@ class App extends React.Component<
   constructor(props: {}) {
     super(props);
     this.state = {
-      phase: 0,
+      phase: 3,
       percentDone: 0,
       timer: 3
     };
@@ -96,9 +96,10 @@ class App extends React.Component<
         </div>
       );
     } else if (this.state.phase === 2) {
+      this.capture();
       setTimeout(() => {
         this.setState({ phase: 3 });
-      }, 400);
+      }, 700);
       return (
         <div>
           <object
@@ -120,11 +121,12 @@ class App extends React.Component<
             data="http://localhost:5000/video_feed"
             style={{ maxWidth: '1px' }}
           />
-          <img id="photo" src="img/webcam.png" />
+          <img id="photo" src="img/beaming.gif" />
+          <img id="rectangle" src="img/rectangle.png" />
           <img id="foreground" src="img/foreground.png" />
           <div id="end-text">
-            Go to the console at the back of the room to see your transporter
-            video!
+            Go to the Console at the back of the room, your video will be ready
+            shortly!
           </div>
           <img
             id="next-button"
