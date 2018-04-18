@@ -142,7 +142,7 @@ else if (process.argv[3] === 'stationB') {
     blueButton.init();
     let yellowButton = new PullUpListener(21, "stationB-yellow-button", 29);
     yellowButton.init();
-    let switchboard = new SwitchboardListener([23, 15, 31, 37], [36, 38, 40], "switchboard-1", socket);
+    let switchboard = new SwitchboardListener([23, 27, 15, 37], [36, 38, 40], "switchboard-1", socket);
     switchboard.init();
     socket.on('button-flash', (label: string) => {
         if (label === 'stationB-white-button') {
