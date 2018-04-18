@@ -4,10 +4,13 @@ import * as Socket from 'socket.io-client';
 
 var socket = Socket('http://localhost:5000');
 
-class App extends React.Component<{}, {}> {
-
+class App extends React.Component<{}, { phase: number; percentDone: number }> {
   constructor(props: {}) {
     super(props);
+    this.state = {
+      phase: 0,
+      percentDone: 0
+    };
   }
 
   capture() {
@@ -15,17 +18,78 @@ class App extends React.Component<{}, {}> {
   }
 
   render() {
-    return (
-      <div>
-        <object
-            type="text/html"
-            data="http://localhost:5000/video_feed"
-        />
-      <button onClick={e => this.capture()}>
-        capture
-      </button>
-      </div>
-    );
+    if (this.state.phase === 0) {
+      return (
+        <div>
+          {/* <object
+                id="video"
+                type="text/html"
+                data="http://localhost:5000/video_feed"
+            /> */}
+          <img id="video" src="img/webcam.png" />
+          <img id="foreground" src="img/foreground.png" />
+          {/* <img id="capture-button" src="img/beam-up.png" onClick={e => this.capture()}/> */}
+          <img
+            id="capture-button"
+            src="img/beam-up.png"
+            onClick={() => {
+              const webcamStartTime = Date.now();
+              const interval = window.setInterval(() => {
+                console.log('yo');
+                this.setState({
+                  percentDone: (Date.now() - webcamStartTime) / 1000,
+                  phase: 1
+                });
+                if (this.state.percentDone >= 1) {
+                  window.clearInterval(interval);
+                  this.setState({ phase: 2 });
+                }
+              }, 10);
+            }}
+          />
+        </div>
+      );
+    } else if (this.state.phase === 1) {
+      const beamBarWidth = 460;
+      return (
+        <div>
+          <img id="video" src="img/webcam.png" />
+          <img id="foreground" src="img/foreground.png" />
+          <div id="beam-text">BEAMING</div> <div id="beam-background" />
+          <div
+            id="beam-loading"
+            style={{ width: `${this.state.percentDone * beamBarWidth}px` }}
+          />
+        </div>
+      );
+    } else if (this.state.phase === 2) {
+      setTimeout(() => {
+        this.setState({ phase: 3 });
+      }, 400);
+      return (
+        <div>
+          <img id="video" src="img/webcam.png" />
+          <div id="flash" />
+          <img id="foreground" src="img/foreground.png" />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <img id="photo" src="img/webcam.png" />
+          <img id="foreground" src="img/foreground.png" />
+          <div id="end-text">
+            Go to the console at the back of the room to see your transporter
+            video!
+          </div>
+          <img
+            id="next-button"
+            src="img/next-crew.png"
+            onClick={() => this.setState({ phase: 0 })}
+          />
+        </div>
+      );
+    }
   }
 }
 
