@@ -1,0 +1,119 @@
+body,
+html,
+#root {
+  height: 100%;
+}
+
+.Screen {
+  background-color: #181c3c;
+  height: 100%;
+  color: white;
+  font-family: 'Slider';
+  font-size: 44px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 35px;
+  overflow: hidden;
+}
+
+@keyframes animatedBackground {
+  to {
+    background-position: 0 3000px;
+  }
+}
+
+.Window {
+  width: 1450px;
+  height: 740px;
+  background-repeat: repeat;
+  background-image: url('background.png');
+  border-radius: 50px;
+  box-shadow: 0 0 15px 10px #4199ff inset;
+  padding: 25px;
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.Window-animated {
+  /* animation: animatedBackground 200s linear infinite; */
+}
+
+.Window-border-green {
+  box-shadow: 0 0 15px 10px #41ff71 inset;
+}
+
+.Window-border-red {
+  box-shadow: 0 0 15px 10px #ff4141 inset;
+}
+
+.Above-Info {
+  font-size: 45px;
+}
+
+.Below-Info {
+  width: 1450px;
+  font-size: 45px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Below-Info-PlayGame {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Below-Info-label {
+  margin-bottom: 15px;
+}
+
+.Below-Info-timer {
+  margin-bottom: -10px;
+  /* press F */
+  float: right;
+}
+
+.TaskGrid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 50px;
+}
+
+.TaskCard > img {
+  width: 374px;
+  height: 302px;
+}
+
+.TaskCard-progress {
+  margin-top: -20px;
+  position: relative;
+  height: 20px;
+  border-radius: 0 0 0px 20px;
+  z-index: 100;
+  width: 50%;
+  transition: all 200ms ease-in-out;
+  clip-path: rectangle(0, 0, 60px, 20px, 20px, 20px);
+}
+
+.TaskCard-progress-background {
+  margin-top: -30px;
+  border-radius: 0 0 20px 20px;
+  background-color: #dddbdb;
+  width: 100%;
+}
+
+.TaskCard-progress-yellow {
+  background-color: #f1bf50;
+}
+
+.TaskCard-progress-red {
+  background-color: #d64c4c;
+}
+
+.TaskCard-progress-green {
+  background-color: #76cf82;
+}

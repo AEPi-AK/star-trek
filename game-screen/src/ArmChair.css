@@ -1,0 +1,85 @@
+body,
+html,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+.ArmChair {
+  background-color: black;
+  height: 100%;
+  color: white;
+  font-family: 'Slider';
+  font-size: 44px;
+  padding-top: 35px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ArmChair-instruction {
+  font-size: 60px;
+  margin-top: 75px;
+  margin-bottom: 75px;
+  text-align: center;
+}
+
+.ArmChair-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 330px;
+  margin-bottom: 130px;
+}
+
+.ArmChair-number {
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ArmChair-number-selected {
+  background-color: #4b97f0;
+}
+
+.ArmChair-button-start {
+  background-color: #4490e8;
+  border: 10px solid #2b62a3;
+  border-radius: 10px;
+  padding: 35px;
+}
+
+.ArmChair-button-start-disabled {
+  opacity: 0.7;
+}
+
+.ArmChair-InGame-Inner {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 350px;
+  margin-top: 100px;
+}
+
+.ArmChair-Banner {
+  margin-top: 20px;
+  font-size: 60px;
+}
+
+.ArmChair-Subbanner {
+  font-size: 40px;
+}
+
+.ArmChair-Health-Label {
+  margin-bottom: 20px;
+}
+
+.ArmChair-Torpedo-Label {
+  margin-bottom: 20px;
+}

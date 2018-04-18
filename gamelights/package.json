@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/index.js"
+    "start": "node dist/gamelights/src/index.js \"http://localhost:3000\"",
+    "deploy":
+      "node dist/gamelights/src/index.js \"http://master-server.local:3000\""
   },
   "author": "",
   "license": "ISC",
@@ -15,10 +17,13 @@
     "@types/socket.io": "^1.4.33",
     "@types/socket.io-client": "^1.4.32",
     "socket.io": "^2.0.4",
-    "socket.io-client": "^2.0.4",
+    "socket.io-client": "^2.1.0",
     "strict-event-emitter-types": "^1.2.0"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.107",
+    "lodash": "^4.17.5",
+    "rpi-ws281x-native": "^0.8.2",
     "rpio": "^0.9.21"
   }
 }

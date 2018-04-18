@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import Screen from './Screen';
+import ArmChair from './ArmChair';
 import './index.css';
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root') as HTMLElement
-);
-registerServiceWorker();
+if (document.location.search.includes('armchair')) {
+  ReactDOM.render(<ArmChair />, document.getElementById('root') as HTMLElement);
+} else {
+  ReactDOM.render(<Screen />, document.getElementById('root') as HTMLElement);
+}
