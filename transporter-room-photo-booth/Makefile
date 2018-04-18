@@ -2,7 +2,7 @@
 
 # Variables
 CC = gcc
-CCFLAGS = -std=c99 -pedantic -g
+CCFLAGS = -fopenmp -lm -std=gnu99 -pedantic -g
 
 #Rules
 

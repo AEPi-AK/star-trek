@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+#include <omp.h>
 
 /* Needed for image reading & writing */
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -294,24 +295,34 @@ int WriteImage(char const *filename, int w, int h, int comp, const void *data) {
 /**
  * Writes the frames of the video to file.
  */
-int WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
+void WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
 #ifdef DEBUG
   clock_t start = clock();
 #endif
-  int ret = 0;
+  int thread_id;
+  //int ret;
+  //int num_loops;
 
   int i;
+  #pragma omp parallel private(thread_id, num_loops)
+  {
+    num_loops = 0;
   if (fadeOutVideo) {
+    #pragma omp for 
     for (i = 0; i < NUMFRAMES / 2; i++) {
       int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
       char filename[len];
       snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i);
-      ret = WriteImage(filename, X, Y, N, fadeOutVideo[i]);
+      int ret = WriteImage(filename, X, Y, N, fadeOutVideo[i]);
       if (ret < 0) {
         printf("ERROR: Failed to write frame %d\n", i);
-        break;
+        //break;
       }
+      //num_loops++;
     }
+  }
+  //thread_id = omp_get_thread_num();
+  //printf("Thread %d performed %d iterations of the loop.\n", thread_id, num_loops);
   }
 
   if (fadeInVideo) {
@@ -319,7 +330,7 @@ int WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
       int len = strlen(RESULTSPATH) + 3 + 3 + strlen(".jpg") + 1;
       char filename[len];
       snprintf(filename, len, "%simg%03d.jpg", RESULTSPATH, i + NUMFRAMES / 2);
-      ret = WriteImage(filename, X, Y, N, fadeInVideo[i]);
+      int ret = WriteImage(filename, X, Y, N, fadeInVideo[i]);
       if (ret < 0) {
         printf("ERROR: Failed to write frame %d\n", i + NUMFRAMES);
         break;
@@ -332,7 +343,7 @@ int WriteVideo(unsigned char** fadeOutVideo, unsigned char** fadeInVideo) {
   printf("Writing took %f seconds\n", ((double)(end - start)) / CLOCKS_PER_SEC);
 #endif
 
-  return ret;
+  //return ret;
 }
 
 /**

@@ -5,7 +5,10 @@
 ##time bash Matlab/newMain/for_redistribution_files_only/run_newMain.sh /Applications/MATLAB/MATLAB_Runtime/v85 "woo_occupied.jpg" "woo_empty.jpg"
 #cp ../map.jpg .
 #convert woo_empty.jpg woo_occupied.jpg -compose difference -composite -threshold 20% -blur 0x8 -threshold 20% -blur 0x8 map.jpg
-compare -fuzz 13% woo_empty.jpg woo_occupied.jpg -compose Src -highlight-color White -lowlight-color Black map.jpg
+#960 x 540
+convert background_preview.jpeg -resize 720x405\> background_preview_small.jpeg
+convert people_preview.jpeg -resize 720x405\> people_preview_small.jpeg
+compare -fuzz 13% background_preview_small.jpeg people_preview_small.jpeg -compose Src -highlight-color White -lowlight-color Black map.jpg
 convert map.jpg -median 12 map.jpg
 convert map.jpg -morphology Dilate Octagon map.jpg
 convert map.jpg -morphology Dilate Octagon map.jpg
@@ -13,6 +16,7 @@ convert map.jpg -morphology Dilate Octagon map.jpg
 convert map.jpg -threshold 50% -define connected-components:verbose=true -define connected-components:area-threshold=1000 -define connected-components:mean-color=true -connected-components 8 map.jpg
 #convert map.jpg -morphology Erode Octagon map
 convert map.jpg -median 12 map.jpg
-./main woo_occupied.jpg woo_empty.jpg woo_foreign.jpg map.jpg 120
+rm Results/*
+./main people_preview_small.jpeg background_preview_small.jpeg people_preview_small.jpeg map.jpg 60
 ffmpeg -i Results/img%03d.jpg -vcodec libx264 -pix_fmt yuv420p -loglevel panic -y out.mp4
-open out.mp4
+xdg-open out.mp4
