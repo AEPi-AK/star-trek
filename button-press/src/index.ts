@@ -102,7 +102,7 @@ var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 
 // @ts-ignore
 if (process.argv[3] === 'stationA') {
-    let redSwitch = new PullUpListener(5, "stationA-red-switch");
+    let redSwitch = new PullUpListener(3, "stationA-red-switch");
     redSwitch.init();
     let blueButton = new PullUpListener(10, "stationA-blue-button", 26);
     blueButton.init();
@@ -142,7 +142,7 @@ else if (process.argv[3] === 'stationB') {
     blueButton.init();
     let yellowButton = new PullUpListener(19, "stationB-yellow-button", 29);
     yellowButton.init();
-    let switchboard = new SwitchboardListener([31, 33, 35, 37], [36, 38, 40], "switchboard-1", socket);
+    let switchboard = new SwitchboardListener([23, 15, 31, 37], [36, 38, 40], "switchboard-1", socket);
     switchboard.init();
     socket.on('button-flash', (label: string) => {
         if (label === 'stationB-white-button') {
