@@ -1,0 +1,56 @@
+.App {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  background-color: #f05e37;
+  overflow: hidden;
+}
+
+#main-image-container {
+  width: 1175px;
+  height: 648px;
+  position: fixed;
+  left: 373px;
+  top: 32px;
+  background-color: white;
+  border-radius: 40px;
+  box-shadow: 0px 2px 10px black;
+}
+
+#main-image {
+  width: 1036px;
+  height: 582px;
+  position: fixed;
+  top: 58px;
+  left: 440px;
+  border-radius: 20px;
+}
+
+.thumbnail-active {
+  width: 372px;
+  height: 219px;
+  background-color: white;
+  border-radius: 26px;
+  padding-left: 3px;
+}
+
+#thumbnail-container {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  bottom: 24px;
+  right: 25px;
+}
+
+.thumbnail {
+  width: 340px;
+  height: 188px;
+  padding: 15px;
+  border-radius: 40px;
+}
+
+#arrows {
+  left: 673px;
+  top: 717px;
+  position: fixed;
+}
