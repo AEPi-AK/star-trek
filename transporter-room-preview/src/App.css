@@ -127,3 +127,14 @@
   left: 266px;
   top: 370px;
 }
+
+#countdown-text {
+  position: fixed;
+  font-family: 'Exo 2';
+  font-weight: 'bold';
+  color: white;
+  font-size: 170px;
+  left: 334px;
+  top: 110px;
+  -webkit-text-stroke: 5px black;
+}
