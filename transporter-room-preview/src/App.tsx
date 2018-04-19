@@ -12,7 +12,7 @@ class App extends React.Component<
   constructor(props: {}) {
     super(props);
     this.state = {
-      phase: 3,
+      phase: 0,
       percentDone: 0,
       timer: 3
     };
