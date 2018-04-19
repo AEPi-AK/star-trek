@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './App.css';
+import './stylesheet.css';
 import * as Socket from 'socket.io-client';
 
 var socket = Socket('http://localhost:5000');

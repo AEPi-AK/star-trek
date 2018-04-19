@@ -106,7 +106,7 @@
 }
 
 #end-text {
-  font-family: 'Exo 2';
+  font-family: 'Exo2';
   font-weight: bold;
   text-align: center;
   font-size: 26px;
@@ -132,8 +132,8 @@
 
 #countdown-text {
   position: fixed;
-  font-family: 'Exo 2';
-  font-weight: 800;
+  font-family: 'Exo2';
+  font-weight: 900;
   color: white;
   font-size: 170px;
   left: 334px;
