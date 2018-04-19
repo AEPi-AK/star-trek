@@ -359,7 +359,7 @@ function switchToIntroVideo() {
   game_state.phase = GamePhase.IntroVideo;
   updatedGameState();
 
-  setTimeout(switchToPlayGame, 32000);
+  game_timer_ids.push(setTimeout(switchToPlayGame, 32000));
 }
 
 var game_timer_ids : NodeJS.Timer[] = [];
@@ -448,7 +448,7 @@ function switchToLateGame () {
   }
 
   let interval = setInterval(() => {
-    let all_pressed = true;
+    let all_pressed = buttons.length > 0;
     for (let button of buttons) {
       if (!button_mapping[button](hardware_state).pressed) all_pressed = false;
     }
@@ -460,10 +460,10 @@ function switchToLateGame () {
 
   game_timer_ids.push(interval);
 
-  setTimeout(() => {
+  game_timer_ids.push(setTimeout(() => {
     clearInterval(interval);
     switchToGameWon();
-  }, 20000);
+  }, 20000));
 
   updatedGameState();
 }
@@ -473,7 +473,7 @@ function switchToGameLost () {
   game_state.phase = GamePhase.GameLost;
   updatedGameState();
 
-  setTimeout(switchToEnterPlayers, 17000);
+  game_timer_ids.push(setTimeout(switchToEnterPlayers, 17000));
 }
 
 function switchToGameWon () {
@@ -481,7 +481,7 @@ function switchToGameWon () {
   game_state.phase = GamePhase.GameWon;
   updatedGameState();
 
-  setTimeout(switchToEnterPlayers, 12000);
+  game_timer_ids.push(setTimeout(switchToEnterPlayers, 12000));
 }
 
 function stopFlashingButtons() {
