@@ -434,8 +434,15 @@ function switchToLateGame () {
   endPhase();
   game_state.phase = GamePhase.LateGame;
 
-  var buttons = ['stationA-blue-button', 'stationB-blue-button', 'stationD-blue-button',
-                 'stationA-green-button', 'stationC-green-button', 'stationD-green-button'];
+  let buttons : string[] = [];
+  if (stationOnline('stationA') && hardware_state.enabled.stationA.blueButton) buttons.push('stationA-blue-button'); 
+  if (stationOnline('stationB') && hardware_state.enabled.stationB.blueButton) buttons.push('stationB-blue-button'); 
+  if (stationOnline('stationD') && hardware_state.enabled.stationD.blueButton) buttons.push('stationD-blue-button'); 
+  if (stationOnline('stationA') && hardware_state.enabled.stationA.greenButton) buttons.push('stationA-green-button'); 
+  if (stationOnline('stationC') && hardware_state.enabled.stationC.greenButton) buttons.push('stationC-green-button'); 
+  if (stationOnline('stationD') && hardware_state.enabled.stationD.greenButton) buttons.push('stationD-green-button'); 
+
+  
   for (let button of buttons) {
     io.sockets.emit('button-flash', button);
   }
