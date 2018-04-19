@@ -319,7 +319,9 @@ class Screen extends React.Component<{}, GameState> {
                 return 'COMPLETE TASKS TO PROTECT SHIP';
                 // return `Difficulty: ${this.state.difficulty}`;
               } else if (this.state.phase === GamePhase.LateGame) {
-                GameMusic.pause();
+                if (GameMusic.playing()) {
+                  GameMusic.pause();
+                }
                 if (
                   !EndGameInstruction.playing() &&
                   !this.endGameInstructionPlayed
