@@ -27,15 +27,19 @@ html,
   width: 1450px;
   height: 740px;
   background-repeat: repeat;
-  background-image: url('background.png');
-  border-radius: 50px;
-  box-shadow: 0 0 15px 10px #4199ff inset;
   padding: 25px;
   margin: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  z-index: 900;
+}
+
+.Window-border {
+  background-image: url('background.png');
+  border-radius: 50px;
+  box-shadow: 0 0 15px 10px #4199ff inset;
 }
 
 .Window-animated {
@@ -99,6 +103,10 @@ html,
   clip-path: rectangle(0, 0, 60px, 20px, 20px, 20px);
 }
 
+.TaskCard-progressBar {
+  clip-path: rectangle(0, 0, 60px, 20px, 20px, 20px);
+}
+
 .TaskCard-progress-background {
   margin-top: -30px;
   border-radius: 0 0 20px 20px;
@@ -108,12 +116,29 @@ html,
 
 .TaskCard-progress-yellow {
   background-color: #f1bf50;
+  /* border-radius: 0 0 20px 20px; */
 }
 
 .TaskCard-progress-red {
   background-color: #d64c4c;
+  /* border-radius: 0 0 20px 20px; */
 }
 
 .TaskCard-progress-green {
   background-color: #76cf82;
+  /* border-radius: 0 0 20px 20px; */
+}
+
+.Video {
+  z-index: 800;
+  object-fit: cover;
+  border-radius: 50px;
+}
+
+.VideoContainer {
+  border-radius: 50px;
+  box-shadow: 0 0 15px 10px #4199ff inset;
+  width: 1450px;
+  height: 750px;
+  padding: 25px;
 }

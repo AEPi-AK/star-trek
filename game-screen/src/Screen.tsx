@@ -17,13 +17,23 @@ const SoundNew = new Howl({
   src: ['/sounds/new-task.wav']
 });
 
+SoundNew.volume(0.9);
+
 const SoundCorrect = new Howl({
   src: ['/sounds/correct.wav']
 });
 
+SoundCorrect.volume(0.8);
+
 const SoundWrong = new Howl({
   src: ['/sounds/incorrect.mp3']
 });
+
+const SoundGame = new Howl({
+  src: ['/sounds/game-music2.wav']
+});
+
+SoundGame.volume(0.07);
 
 const socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER!);
 
@@ -83,11 +93,30 @@ const TaskCard = (props: { task: Task; onClick: () => void }) => {
         src={`images/tasks/${props.task.name}.png`}
         onClick={props.onClick}
       />
-      <div className="TaskCard-progress TaskCard-progress-background" />
-      <div
-        className={`TaskCard-progress TaskCard-progress-${color}`}
-        style={{ width: `${percentTimeRemaining * 100}%` }}
-      />
+      <div className="TaskCard-progressBar">
+        <div className="TaskCard-progress TaskCard-progress-background">
+          <div
+            className={`TaskCard-progress TaskCard-progress-${color}`}
+            style={{ width: `${percentTimeRemaining * 100}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const GameVideo = (props: { name: 'Lose' | 'Win' | 'Intro' }) => {
+  return (
+    <div className="VideoContainer">
+      <video
+        className="Video"
+        width="1450"
+        height="740"
+        autoPlay={true}
+        loop={true}
+      >
+        <source src={`/videos/${props.name}.mp4`} type="video/mp4" />
+      </video>
     </div>
   );
 };
@@ -238,6 +267,8 @@ class Screen extends React.Component<{}, GameState> {
 
     this.addPlayers = this.addPlayers.bind(this);
     this.completeTask = this.completeTask.bind(this);
+
+    (window as any).addPlayers = this.addPlayers;
   }
 
   addPlayers() {
@@ -245,13 +276,14 @@ class Screen extends React.Component<{}, GameState> {
   }
 
   completeTask(id: number) {
-    SoundCorrect.play();
     socket.emit('task-completed', id);
   }
 
   render() {
     const borderColor = BorderColor.Blue;
     const isStarfieldAnimated = this.state.phase === GamePhase.EnterPlayers;
+
+    const isPlayingVideo = this.state.phase === GamePhase.EnterPlayers;
 
     return (
       <Shakeable isShaking={false}>
@@ -263,14 +295,17 @@ class Screen extends React.Component<{}, GameState> {
                 return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
               } else if (this.state.phase === GamePhase.PlayGame) {
                 // return 'COMPLETE TASKS TO PROTECT SHIP';
+                SoundGame.play();
                 return `Difficulty: ${this.state.difficulty}`;
               } else if (this.state.phase === GamePhase.LateGame) {
                 return 'LATE GAME';
               } else if (this.state.phase === GamePhase.FiringLaser) {
                 return 'FIRING LASER';
               } else if (this.state.phase === GamePhase.GameLost) {
+                SoundGame.pause();
                 return 'GAME LOST';
               } else if (this.state.phase === GamePhase.GameWon) {
+                SoundGame.pause();
                 return 'GAME WON';
               } else {
                 return null;
@@ -281,8 +316,8 @@ class Screen extends React.Component<{}, GameState> {
           {/* Window */}
           <div
             className={`Window Window-border-${borderColor} ${
-              isStarfieldAnimated ? 'Window-animated' : ''
-            }`}
+              isPlayingVideo ? '' : 'Window-border'
+            } ${isStarfieldAnimated ? 'Window-animated' : ''}`}
           >
             {(() => {
               if (this.state.phase === GamePhase.EnterPlayers) {
@@ -293,6 +328,8 @@ class Screen extends React.Component<{}, GameState> {
                 );
               } else if (this.state.phase === GamePhase.NotConnected) {
                 return 'NOT CONNECTED';
+              } else if (this.state.phase === GamePhase.GameLost) {
+                return <GameVideo name={'Lose'} />;
               } else if (this.state.phase === GamePhase.PlayGame) {
                 return (
                   <TaskGrid
