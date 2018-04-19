@@ -196,19 +196,19 @@ var task_templates : TaskTemplate[] = [
     enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
   {description : "Scan Nyota Uhura's ID card", name: 'ID-name-uhura', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '251014852'}, 251014852
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '251014852'}, 
   {description : "Scan the ID with access level IV", name: 'ID-level-IV', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '251014852'},
   {description : "Scan Leonard Mccoy's ID card", name: 'ID-name-mccoy', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '10951066610'}, 10951066610
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '10951066610'}, 
   {description : "Scan the ID with access level III", name: 'ID-level-iii', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '10951066610'},
   {description : "Scan Hikaru Sulu's ID card", name: 'ID-name-sulu', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'}, 1062571092
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'},
   {description : "Scan the Lieutenant's ID card", name: 'ID-role-lieutenant', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'},
