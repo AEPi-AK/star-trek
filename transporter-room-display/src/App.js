@@ -99,6 +99,7 @@ class App extends Component {
           <img id="overlay-layer" src="./img/overlay.png" />
         </div>
         <img id="main-image-container" src="./img/beamup-frame.png" />
+        <img id="arrow-keys" src="./img/beamup-arrows.png" />
         <div id="thumbnail-container">{thumbnailImages}</div>
       </div>
     );

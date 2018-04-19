@@ -45,12 +45,6 @@
   border-radius: 40px;
 }
 
-#arrows {
-  left: 673px;
-  top: 717px;
-  position: fixed;
-}
-
 #effect-layer {
   width: 1036px;
   height: 582px;
@@ -131,4 +125,26 @@
   height: 530px;
   left: 800px;
   position: fixed;
+}
+
+#arrow-keys {
+  position: fixed;
+  left: 598px;
+  top: 740px;
+  animation: 'swell' 3s infinite;
+}
+
+@keyframes swell {
+  0% {
+    width: 725px;
+    left: 598px;
+  }
+  50% {
+    width: 670px;
+    left: 620px;
+  }
+  100% {
+    width: 725px;
+    left: 598px;
+  }
 }
