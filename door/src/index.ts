@@ -24,7 +24,7 @@ class DoorListener {
             if (new_state !== this.old_state) {
                 this.old_state = new_state;
                 console.log(this.label + "has been pressed, new state %d", new_state);
-                if (new_state) {
+                if (!new_state) {
                     this.openDoor();
                     // @Matt Wait for some time and then call close door?
                     // How do you want to handle this?
@@ -34,10 +34,12 @@ class DoorListener {
     }
 
     openDoor() {
-        rpio.write(this.doorPort, rpio.HIGH);
+        console.log('open door');
+        rpio.write(this.doorPort, rpio.LOW);
     }
 
     closeDoor () {
+        console.log('close door');
         rpio.write(this.doorPort, rpio.HIGH);
     }
 }
@@ -48,10 +50,10 @@ var socket: SocketIOClient.Socket = Socket(process.argv[2]);
 // @Matt: The first number should be replaced by the door's
 // non-ground port number (see pinout.xyz), the second
 // should be the same for the button.
-var door = new DoorListener(0,0, 'door');
+var door = new DoorListener(22, 13, 'door');
 door.init();
 
 // When the server sends a close-door message, we call close door.
-socket.on('close-door', door.closeDoor());
+socket.on('close-door', door.closeDoor);
 // Same for open.
-socket.on('open-door', door.openDoor());
+socket.on('open-door', door.openDoor);
