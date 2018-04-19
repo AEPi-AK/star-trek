@@ -29,11 +29,23 @@ const SoundWrong = new Howl({
   src: ['/sounds/incorrect.mp3']
 });
 
-const SoundGame = new Howl({
-  src: ['/sounds/game-music2.wav']
+const GameMusic = new Howl({
+  src: ['/sounds/music.mp3']
 });
 
-SoundGame.volume(0.07);
+GameMusic.volume(0.4);
+
+const CompleteTasksInstruction = new Howl({
+  src: ['/sounds/complete-tasks-instruction.mp3']
+});
+
+CompleteTasksInstruction.volume(0.8);
+
+const EndGameInstruction = new Howl({
+  src: ['/sounds/torpedo-fire.mp3']
+});
+
+EndGameInstruction.volume(0.8);
 
 const socket: SocketIOClient.Socket = Socket(process.env.REACT_APP_MASTER!);
 
@@ -181,10 +193,8 @@ class TaskGrid extends React.Component<TaskGridProps, TaskGridState> {
 
       const taskFailed = task.time_expires < Date.now();
       if (taskFailed) {
-        console.log('failed');
         SoundWrong.play();
       } else {
-        console.log('correct');
         SoundCorrect.play();
       }
 
@@ -248,6 +258,8 @@ class Shakeable extends React.Component<{ isShaking: boolean }, {}> {
 }
 
 class Screen extends React.Component<{}, GameState> {
+  completeTasksInstructionPlayed: boolean;
+  endGameInstructionPlayed: boolean;
   setGameState(gamestate: GameState) {
     this.setState(gamestate);
   }
@@ -261,8 +273,13 @@ class Screen extends React.Component<{}, GameState> {
 
     this.addPlayers = this.addPlayers.bind(this);
     this.completeTask = this.completeTask.bind(this);
-
+    this.advanceScreen = this.advanceScreen.bind(this);
+    this.completeTasksInstructionPlayed = false;
     (window as any).addPlayers = this.addPlayers;
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', () => this.advanceScreen());
   }
 
   addPlayers() {
@@ -273,12 +290,14 @@ class Screen extends React.Component<{}, GameState> {
     socket.emit('task-completed', id);
   }
 
+  advanceScreen() {
+    console.log('advancing phase');
+    socket.emit('switch-phase');
+  }
+
   render() {
     const borderColor = BorderColor.Blue;
     const isStarfieldAnimated = this.state.phase === GamePhase.EnterPlayers;
-
-    const isPlayingVideo = this.state.phase === GamePhase.EnterPlayers;
-
     return (
       <Shakeable isShaking={false}>
         <div className="Screen">
@@ -286,20 +305,37 @@ class Screen extends React.Component<{}, GameState> {
           <div className="Above-Info">
             {(() => {
               if (this.state.phase === GamePhase.EnterPlayers) {
+                this.completeTasksInstructionPlayed = false;
+                this.endGameInstructionPlayed = false;
                 return 'WELCOME ABOARD THE U.S.S. ENTERPRISE';
               } else if (this.state.phase === GamePhase.PlayGame) {
+                if (
+                  !CompleteTasksInstruction.playing() &&
+                  !this.completeTasksInstructionPlayed
+                ) {
+                  this.completeTasksInstructionPlayed = true;
+                  CompleteTasksInstruction.play();
+                }
                 // return 'COMPLETE TASKS TO PROTECT SHIP';
-                SoundGame.play();
                 return `Difficulty: ${this.state.difficulty}`;
               } else if (this.state.phase === GamePhase.LateGame) {
+                GameMusic.pause();
+                if (
+                  !EndGameInstruction.playing() &&
+                  !this.endGameInstructionPlayed
+                ) {
+                  this.endGameInstructionPlayed = true;
+                  EndGameInstruction.play();
+                }
                 return 'LATE GAME';
               } else if (this.state.phase === GamePhase.FiringLaser) {
+                GameMusic.pause();
                 return 'FIRING LASER';
               } else if (this.state.phase === GamePhase.GameLost) {
-                SoundGame.pause();
+                GameMusic.pause();
                 return 'GAME LOST';
               } else if (this.state.phase === GamePhase.GameWon) {
-                SoundGame.pause();
+                GameMusic.pause();
                 return 'GAME WON';
               } else if (this.state.phase === GamePhase.IntroVideo) {
                 return 'INTRO VIDEO';
@@ -311,12 +347,14 @@ class Screen extends React.Component<{}, GameState> {
 
           {/* Window */}
           <div
-            className={`Window Window-border-${borderColor} ${
-              isPlayingVideo ? '' : 'Window-border'
-            } ${isStarfieldAnimated ? 'Window-animated' : ''}`}
+            className={`Window Window-border Window-border-${borderColor}
+             ${isStarfieldAnimated ? 'Window-animated' : ''}`}
           >
             {(() => {
               if (this.state.phase === GamePhase.EnterPlayers) {
+                if (!GameMusic.playing()) {
+                  GameMusic.play();
+                }
                 return (
                   <div className="StartInstructions">
                     <img src="/images/start.png" onClick={this.addPlayers} />
@@ -325,12 +363,21 @@ class Screen extends React.Component<{}, GameState> {
               } else if (this.state.phase === GamePhase.NotConnected) {
                 return 'NOT CONNECTED';
               } else if (this.state.phase === GamePhase.IntroVideo) {
+                if (GameMusic.playing()) {
+                  GameMusic.pause();
+                }
                 return <GameVideo name={'Intro'} />;
               } else if (this.state.phase === GamePhase.GameLost) {
                 return <GameVideo name={'Lose'} />;
               } else if (this.state.phase === GamePhase.GameWon) {
+                if (EndGameInstruction.playing()) {
+                  EndGameInstruction.pause();
+                }
                 return <GameVideo name={'Win'} />;
               } else if (this.state.phase === GamePhase.PlayGame) {
+                if (!GameMusic.playing()) {
+                  GameMusic.play();
+                }
                 return (
                   <TaskGrid
                     completeTask={this.completeTask}
