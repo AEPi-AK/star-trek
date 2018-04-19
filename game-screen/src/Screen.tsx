@@ -108,13 +108,7 @@ const TaskCard = (props: { task: Task; onClick: () => void }) => {
 const GameVideo = (props: { name: 'Lose' | 'Win' | 'Intro' }) => {
   return (
     <div className="VideoContainer">
-      <video
-        className="Video"
-        width="1450"
-        height="740"
-        autoPlay={true}
-        loop={true}
-      >
+      <video className="Video" width="1450" height="740" autoPlay={true}>
         <source src={`/videos/${props.name}.mp4`} type="video/mp4" />
       </video>
     </div>
@@ -307,6 +301,8 @@ class Screen extends React.Component<{}, GameState> {
               } else if (this.state.phase === GamePhase.GameWon) {
                 SoundGame.pause();
                 return 'GAME WON';
+              } else if (this.state.phase === GamePhase.IntroVideo) {
+                return 'INTRO VIDEO';
               } else {
                 return null;
               }
