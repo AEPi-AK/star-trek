@@ -328,8 +328,12 @@ class Screen extends React.Component<{}, GameState> {
                 );
               } else if (this.state.phase === GamePhase.NotConnected) {
                 return 'NOT CONNECTED';
+              } else if (this.state.phase === GamePhase.IntroVideo) {
+                return <GameVideo name={'Intro'} />;
               } else if (this.state.phase === GamePhase.GameLost) {
                 return <GameVideo name={'Lose'} />;
+              } else if (this.state.phase === GamePhase.GameWon) {
+                return <GameVideo name={'Win'} />;
               } else if (this.state.phase === GamePhase.PlayGame) {
                 return (
                   <TaskGrid
