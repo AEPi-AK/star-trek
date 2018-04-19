@@ -54,7 +54,7 @@ class PullUpListener {
 
         socket.on('button-request-state',(label : string) =>{
           if (label === this.label) {
-          socket.emit('button-state-response', {label: this.label, pressed: this.old_state})
+          socket.emit('button-state-response', {label: this.label, pressed: this.old_state ? false : true})
         }
         });
     }
