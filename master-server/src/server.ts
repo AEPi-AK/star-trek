@@ -6,6 +6,7 @@ import readline = require('readline');
 import { ButtonState, HardwareState, Color, DEFAULT_HARDWARE_STATE, SwitchState, PlugboardState, KeypadState, RFIDScannerState } from '../../shared/HardwareTypes';
 import { GameState, TaskTemplate, Task, FrequencyTaskType, GamePhase, HardwareCheck, ExclusionTaskType, GameDifficulty } from '../../shared/GameTypes';
 import { isNumber } from 'util';
+import { Socket } from 'dgram';
 
 var app = Express();
 var http = new Http.Server(app);
@@ -122,7 +123,6 @@ var task_templates : TaskTemplate[] = [
     start: null, end: null,
     enabled: (s) => stationOnline('stationC') && stationOnline('stationA') && s.enabled.stationA.redSwitch && s.enabled.stationC.blueSwitch, completed: (s) => !s.stationA.redSwitch.pressed && !s.stationC.blueSwitch.pressed},
 
-
   {description: 'Plug the Red wire into the port labelled To at Operations', name: 'plug-red-to', frequencyType: FrequencyTaskType.Plugboard, exclusionType: ExclusionTaskType.Plugboard,
     start: switchboardStart, end: null,
     enabled: s => stationOnline('stationB') && s.enabled.stationB.plugboard && switchboardEnabled(s.stationB.plugboard.slotTo), completed: (s) => s.stationB.plugboard.slotTo == Color.Red},
@@ -224,6 +224,7 @@ var task_templates : TaskTemplate[] = [
   {description : "Scan the ID card with access level VI", name: 'ID-level-vi', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+  
   {description : "Press the Big Red Button", name: 'big-red-button', frequencyType : FrequencyTaskType.PressBigButton, exclusionType: ExclusionTaskType.PressBigButton,
     start: () => { io.sockets.emit('button-flash', 'big-red-button')} , end: () => { io.sockets.emit('button-stop-flash', 'big-red-button'); },
     enabled: s => stationOnline('captains-chair') && s.enabled.bigRedButton, completed: (s) => s.bigRedButton.pressed}
@@ -353,8 +354,16 @@ function completedTasks(tasks: Task[]) {
   }
 }
 
+function switchToIntroVideo() {
+  game_state.phase = GamePhase.IntroVideo;
+  updatedGameState();
+
+  setTimeout(switchToPlayGame, 32000);
+}
+
 var game_timer_ids : NodeJS.Timer[] = [];
 function switchToPlayGame() {
+  game_state.phase = GamePhase.PlayGame;
   for (let button in button_mapping) {
     io.sockets.emit('button-request-state', button);
   }
@@ -410,6 +419,8 @@ function switchToPlayGame() {
       updatedGameState();
     }
   }, 1000));
+
+  updatedGameState();
 }
 
 function endMainPhase () {
@@ -451,14 +462,14 @@ function switchToGameLost () {
   game_state.phase = GamePhase.GameLost;
   updatedGameState();
 
-  setTimeout(switchToEnterPlayers, 10000);
+  setTimeout(switchToEnterPlayers, 17000);
 }
 
 function switchToGameWon () {
   game_state.phase = GamePhase.GameWon;
   updatedGameState();
 
-  setTimeout(switchToEnterPlayers, 10000);
+  setTimeout(switchToEnterPlayers, 12000);
 }
 
 function stopFlashingButtons() {
@@ -502,10 +513,8 @@ io.on('connect', function(socket: SocketIO.Socket){
 
   socket.on('number-players', (num : number) => {
     number_of_players = num;
-    if (game_state.phase != GamePhase.PlayGame) {
-      game_state.phase = GamePhase.PlayGame;
-      switchToPlayGame();
-      updatedGameState();
+    if (game_state.phase === GamePhase.EnterPlayers) {
+      switchToIntroVideo();
     }
   })
 
@@ -535,7 +544,7 @@ io.on('connect', function(socket: SocketIO.Socket){
   });
 
   socket.on('reset-game', () => {
-    switchToLateGame();
+    switchToEnterPlayers();
   });
 
   socket.on('increment-probability', (x: FrequencyTaskType) => {
