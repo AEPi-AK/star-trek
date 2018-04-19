@@ -277,7 +277,7 @@ function resetGameState () {
     time: 120,
     difficulty: GameDifficulty.PreEasy,
     phase: GamePhase.EnterPlayers,
-    weights: game_state.weights,
+    weights: INITIAL_WEIGHTS,
     durations: game_state.durations,
     task_frequency: game_state.task_frequency,
     max_tasks: game_state.max_tasks,
