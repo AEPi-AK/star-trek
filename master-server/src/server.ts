@@ -196,34 +196,34 @@ var task_templates : TaskTemplate[] = [
     enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
   {description : "Scan Nyota Uhura's ID card", name: 'ID-name-uhura', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '251014852'}, 
   {description : "Scan the ID with access level IV", name: 'ID-level-IV', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '25014852'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '251014852'},
   {description : "Scan Leonard Mccoy's ID card", name: 'ID-name-mccoy', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '10951066610'}, 
   {description : "Scan the ID with access level III", name: 'ID-level-iii', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '09506660'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '10951066610'},
   {description : "Scan Hikaru Sulu's ID card", name: 'ID-name-sulu', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'},
   {description : "Scan the Lieutenant's ID card", name: 'ID-role-lieutenant', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'},
   {description : "Scan the ID with acces level IX", name: 'ID-level-ix', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '06267092'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '1062571092'},
   {description : "Scan Chekov's ID card", name: 'ID-name-chekov', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '143121036'}, 
   {description : "Scan the Engineer's card", name: 'ID-role-engineer', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '143121036'},
   {description : "Scan the ID card with access level VI", name: 'ID-level-vi', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '14312036'},
+    enabled: s => stationOnline('stationD') && s.enabled.stationD_rfidScanner, completed: (s) => s.stationD.rfidScanner.cardID === '143121036'},
   
   {description : "Press the Big Red Button", name: 'big-red-button', frequencyType : FrequencyTaskType.PressBigButton, exclusionType: ExclusionTaskType.PressBigButton,
     start: () => { io.sockets.emit('button-flash', 'big-red-button')} , end: () => { io.sockets.emit('button-stop-flash', 'big-red-button'); },
@@ -240,7 +240,7 @@ var INITIAL_WEIGHTS = {
   [FrequencyTaskType.PressBigButton] : 1
 }
 
-var defaultDuration = {[GameDifficulty.PreEasy]: 30, [GameDifficulty.Easy]: 15, [GameDifficulty.Medium]: 10, [GameDifficulty.Hard]: 8}
+var defaultDuration = {[GameDifficulty.PreEasy]: 30, [GameDifficulty.Easy]: 30, [GameDifficulty.Medium]: 20, [GameDifficulty.Hard]: 16}
 
 var INITIAL_DURATIONS = {
   [FrequencyTaskType.PressButton] : defaultDuration,
@@ -277,7 +277,7 @@ function resetGameState () {
     time: 120,
     difficulty: GameDifficulty.PreEasy,
     phase: GamePhase.EnterPlayers,
-    weights: game_state.weights,
+    weights: INITIAL_WEIGHTS,
     durations: game_state.durations,
     task_frequency: game_state.task_frequency,
     max_tasks: game_state.max_tasks,
@@ -373,7 +373,7 @@ function switchToPlayGame() {
   var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
-    if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
+    if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 3 && game_state.tasks.length === 0)) {
       if (game_state.tasks.length < game_state.max_tasks[game_state.difficulty] && canCreateTask()) {
         time_since_last_made = 0;
         var task = createNewTask();
