@@ -84,41 +84,26 @@ export interface HardwareState {
     };
     bigRedButton: ButtonState;
     enabled: {
-        stations: {
-            A: boolean;
-            B: boolean;
-            C: boolean;
-            D: boolean;
-            chair: boolean;
-        };
-        stationA: {
-            redSwitch: boolean;
-            blueButton: boolean; 
-            greenButton: boolean; 
-            yellowButton: boolean;
-            keypad: boolean;
-        };
-        stationB: {
-            greenSwitch: boolean;
-            whiteButton: boolean; 
-            blueButton: boolean; 
-            yellowButton: boolean;
-            plugboard: boolean;
-        };
-        stationC: {
-            blueSwitch: boolean;
-            yellowButton: boolean;
-            whiteButton: boolean;
-            greenButton: boolean;
-            touchpad: boolean;
-        };
-        stationD: {
-            yellowSwitch: boolean;
-            greenButton: boolean;
-            whiteButton: boolean;
-            blueButton: boolean;
-            rfidScanner: boolean;
-        };
+        stationA_redSwitch: boolean;
+        stationA_blueButton: boolean; 
+        stationA_greenButton: boolean; 
+        stationA_yellowButton: boolean;
+        stationA_keypad: boolean;
+        stationB_greenSwitch: boolean;
+        stationB_whiteButton: boolean; 
+        stationB_blueButton: boolean; 
+        stationB_yellowButton: boolean;
+        stationB_plugboard: boolean;
+        stationC_blueSwitch: boolean;
+        stationC_yellowButton: boolean;
+        stationC_whiteButton: boolean;
+        stationC_greenButton: boolean;
+        stationC_touchpad: boolean;
+        stationD_yellowSwitch: boolean;
+        stationD_greenButton: boolean;
+        stationD_whiteButton: boolean;
+        stationD_blueButton: boolean;
+        stationD_rfidScanner: boolean;
         bigRedButton: boolean;
     };
 }
@@ -198,41 +183,26 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
     },
     bigRedButton: createButton('big-red-button'),
     enabled: {
-        stations: {
-            A: false,
-            B: false,
-            C: false,
-            D: false,
-            chair: false,
-        },
-        stationA: {
-            redSwitch: true,
-            blueButton: true,
-            greenButton: true,
-            yellowButton: true,
-            keypad: true
-        },
-        stationB: {
-            greenSwitch: true,
-            whiteButton: true,
-            blueButton: true,
-            yellowButton: true,
-            plugboard: true
-        },
-        stationC: {
-            blueSwitch: false,
-            yellowButton: true,
-            whiteButton: true,
-            greenButton: true,
-            touchpad: true
-        },
-        stationD: {
-            yellowSwitch: true,
-            greenButton: true,
-            whiteButton: true,
-            blueButton: true,
-            rfidScanner: true
-        },
+        stationA_redSwitch: true,
+        stationA_blueButton: true, 
+        stationA_greenButton: true,
+        stationA_yellowButton: true,
+        stationA_keypad: true,
+        stationB_greenSwitch: true,
+        stationB_whiteButton: true,
+        stationB_blueButton: true, 
+        stationB_yellowButton: true,
+        stationB_plugboard: true,
+        stationC_blueSwitch: true,
+        stationC_yellowButton: true,
+        stationC_whiteButton: true,
+        stationC_greenButton: true,
+        stationC_touchpad: true,
+        stationD_yellowSwitch: true,
+        stationD_greenButton: true,
+        stationD_whiteButton: true,
+        stationD_blueButton: true,
+        stationD_rfidScanner: true,
         bigRedButton: true
     }
 });
