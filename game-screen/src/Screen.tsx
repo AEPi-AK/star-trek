@@ -327,18 +327,18 @@ class Screen extends React.Component<{}, GameState> {
                   this.endGameInstructionPlayed = true;
                   EndGameInstruction.play();
                 }
-                return 'LATE GAME';
+                return 'TORPEDO READY';
               } else if (this.state.phase === GamePhase.FiringLaser) {
                 GameMusic.pause();
-                return 'FIRING LASER';
+                return ' ';
               } else if (this.state.phase === GamePhase.GameLost) {
                 GameMusic.pause();
-                return 'GAME LOST';
+                return 'MISSION FAILED';
               } else if (this.state.phase === GamePhase.GameWon) {
                 GameMusic.pause();
-                return 'GAME WON';
+                return 'MISSION SUCCESS';
               } else if (this.state.phase === GamePhase.IntroVideo) {
-                return 'INTRO VIDEO';
+                return 'INCOMING TRANSMISSION';
               } else {
                 return null;
               }
@@ -362,6 +362,8 @@ class Screen extends React.Component<{}, GameState> {
                 );
               } else if (this.state.phase === GamePhase.NotConnected) {
                 return 'NOT CONNECTED';
+              } else if (this.state.phase === GamePhase.LateGame) {
+                return <img className="EndGameImg" src="/images/endgame.png" />;
               } else if (this.state.phase === GamePhase.IntroVideo) {
                 if (GameMusic.playing()) {
                   GameMusic.pause();
