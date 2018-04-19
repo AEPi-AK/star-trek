@@ -240,7 +240,7 @@ var INITIAL_WEIGHTS = {
   [FrequencyTaskType.PressBigButton] : 1
 }
 
-var defaultDuration = {[GameDifficulty.PreEasy]: 30, [GameDifficulty.Easy]: 15, [GameDifficulty.Medium]: 10, [GameDifficulty.Hard]: 8}
+var defaultDuration = {[GameDifficulty.PreEasy]: 30, [GameDifficulty.Easy]: 30, [GameDifficulty.Medium]: 20, [GameDifficulty.Hard]: 16}
 
 var INITIAL_DURATIONS = {
   [FrequencyTaskType.PressButton] : defaultDuration,
@@ -373,7 +373,7 @@ function switchToPlayGame() {
   var time_since_last_made = 30;
   game_timer_ids.push(setInterval(() => {
     time_since_last_made++;
-    if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 1 && game_state.tasks.length === 0)) {
+    if (time_since_last_made >= game_state.task_frequency[game_state.difficulty] || (time_since_last_made >= 3 && game_state.tasks.length === 0)) {
       if (game_state.tasks.length < game_state.max_tasks[game_state.difficulty] && canCreateTask()) {
         time_since_last_made = 0;
         var task = createNewTask();
