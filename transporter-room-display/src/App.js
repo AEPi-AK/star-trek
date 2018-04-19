@@ -6,18 +6,14 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: 1,
+      activeIndex: 5,
       images: [
         {
-          filename: './img/1.png',
+          filename: './img/6.png',
           active: false
         },
         {
-          filename: './img/2.png',
-          active: true
-        },
-        {
-          filename: './img/3.png',
+          filename: './img/5.png',
           active: false
         },
         {
@@ -25,8 +21,16 @@ class App extends Component {
           active: false
         },
         {
-          filename: './img/5.png',
+          filename: './img/3.png',
           active: false
+        },
+        {
+          filename: './img/2.png',
+          active: false
+        },
+        {
+          filename: './img/1.png',
+          active: true
         }
       ]
     };
@@ -40,14 +44,15 @@ class App extends Component {
 
   keyPress(e) {
     console.log('key!');
-    if (e.keyCode === 37) {
+    if (
+      e.keyCode === 37 &&
+      this.state.activeIndex !== this.state.images.length - 1
+    ) {
       this.boundSetActiveImage(
         (this.state.activeIndex + 1) % this.state.images.length
       );
-    } else if (e.keyCode === 39) {
-      this.boundSetActiveImage(
-        (this.state.activeIndex - 1) % this.state.images.length
-      );
+    } else if (e.keyCode === 39 && this.state.activeIndex !== 0) {
+      this.boundSetActiveImage(this.state.activeIndex - 1);
     }
   }
 
@@ -76,10 +81,24 @@ class App extends Component {
     );
     return (
       <div className="App">
-        <div id="main-image-container">
-          <img id="main-image" src={activeImage} />
+        <img id="main-image" src="./img/humans.png" />
+        <div id="effect-layer">
+          <div
+            id="beam-layer"
+            style={{
+              opacity:
+                1 - this.state.activeIndex / (this.state.images.length - 1)
+            }}
+          >
+            <img id="beam-back" src="./img/light-beam.png" />
+            <img id="beam-left" src="./img/light-beam.png" />
+            <img id="beam-left-mid" src="./img/light-beam.png" />
+            <img id="beam-right-mid" src="./img/light-beam.png" />
+            <img id="beam-right" src="./img/light-beam.png" />
+          </div>
+          <img id="overlay-layer" src="./img/overlay.png" />
         </div>
-        <img id="arrows" src="./img/arrow-keys.png" />
+        <img id="main-image-container" src="./img/beamup-frame.png" />
         <div id="thumbnail-container">{thumbnailImages}</div>
       </div>
     );
