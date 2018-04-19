@@ -635,11 +635,6 @@ io.on('connect', function(socket: SocketIO.Socket){
     updatedHardwareState();
   });
 
-  socket.on('switch-phase', () => {
-    console.log('switch-phase');
-    next_phase[game_state.phase]();
-  });
-
   socket.on('toggle-hardware', (data: {name: string, enabled: boolean}) => {
     //@ts-ignore
     hardware_state.enabled[data.name] = data.enabled;
