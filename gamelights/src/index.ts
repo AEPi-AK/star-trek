@@ -38,6 +38,7 @@ socket.on('connect', () => {
 });
 
 function setAllLightsToColor(color: number) {
+  console.log("setting lights to %d", color);
   const pixelData = new Uint32Array(NUM_LIGHTS);
   _.times(NUM_LIGHTS, i => {
     pixelData[i] = color;
