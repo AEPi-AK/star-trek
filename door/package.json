@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/index.js \"http://localhost:3000\"",
-    "deploy": "tsc && sudo node dist/button-press/src/index.js \"http://master-server.local:3000\" \"stationA\""
+    "deploy": "tsc && sudo node dist/index.js \"http://master-server.local:3000\" \"door\""
   },
   "author": "",
   "license": "ISC",
