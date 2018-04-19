@@ -184,10 +184,10 @@ var task_templates : TaskTemplate[] = [
   {description: "Enter 3471 on the keypad", name: 'keypad-3471', frequencyType: FrequencyTaskType.ReadCode, exclusionType: ExclusionTaskType.Plugboard,
     start: null, end: null,
     enabled: s => stationOnline('stationA') && s.enabled.stationA.keypad, completed: (s) => s.stationA.keypad.currentString === "3471"},
+  
   {description : "Scan James Kirk's ID card at Security", name: 'ID-name-kirk', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
-    enabled: s => stationOnline('stationA') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
-  
+    enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},
   {description : "Scan the captain's ID", name: 'ID-role-captain', frequencyType : FrequencyTaskType.ScanCard, exclusionType: ExclusionTaskType.ScanCard,
     start: null, end: null,
     enabled: s => stationOnline('stationC') && s.enabled.stationC.touchpad, completed: (s) => s.stationD.rfidScanner.cardID === '15658116'},

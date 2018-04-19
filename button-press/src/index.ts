@@ -52,9 +52,9 @@ class PullUpListener {
             }
         });
 
-        socket.on('request-state',(label : string) =>{
+        socket.on('button-request-state',(label : string) =>{
           if (label === this.label) {
-          socket.emit('state-response', this.old_state)
+          socket.emit('button-state-response', {label: this.label, pressed: this.old_state})
         }
         });
     }
@@ -142,7 +142,7 @@ else if (process.argv[3] === 'stationB') {
     blueButton.init();
     let yellowButton = new PullUpListener(21, "stationB-yellow-button", 29);
     yellowButton.init();
-    let switchboard = new SwitchboardListener([23, 15, 31, 37], [36, 38, 40], "switchboard-1", socket);
+    let switchboard = new SwitchboardListener([23, 27, 15, 37], [36, 38, 40], "switchboard-1", socket);
     switchboard.init();
     socket.on('button-flash', (label: string) => {
         if (label === 'stationB-white-button') {
@@ -230,7 +230,7 @@ else if (process.argv[3] === 'stationD') {
 }
 else if (process.argv[3] === 'captains-chair') {
     console.log('starting captains chair');
-    let redButton = new PullUpListener(5, "big-red-button", 10);
+    let redButton = new PullUpListener(10, "big-red-button", 40);
     redButton.init();
 
     socket.on('button-flash', (label: string) => {

@@ -84,6 +84,13 @@ export interface HardwareState {
     };
     bigRedButton: ButtonState;
     enabled: {
+        stations: {
+            A: boolean;
+            B: boolean;
+            C: boolean;
+            D: boolean;
+            chair: boolean;
+        };
         stationA: {
             redSwitch: boolean;
             blueButton: boolean; 
@@ -191,6 +198,13 @@ export var DEFAULT_HARDWARE_STATE: () => HardwareState = () => ({
     },
     bigRedButton: createButton('big-red-button'),
     enabled: {
+        stations: {
+            A: false,
+            B: false,
+            C: false,
+            D: false,
+            chair: false,
+        },
         stationA: {
             redSwitch: true,
             blueButton: true,
