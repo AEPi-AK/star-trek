@@ -355,6 +355,7 @@ function completedTasks(tasks: Task[]) {
 }
 
 function switchToIntroVideo() {
+  endPhase();
   game_state.phase = GamePhase.IntroVideo;
   updatedGameState();
 
@@ -363,6 +364,7 @@ function switchToIntroVideo() {
 
 var game_timer_ids : NodeJS.Timer[] = [];
 function switchToPlayGame() {
+  endPhase();
   game_state.phase = GamePhase.PlayGame;
   for (let button in button_mapping) {
     io.sockets.emit('button-request-state', button);
@@ -399,7 +401,6 @@ function switchToPlayGame() {
       game_state.failures += new_failures;
       updatedGameState();
       if (game_state.failures > MAX_FAILURES) {
-        endMainPhase();
         switchToGameLost();
       }
     }
@@ -413,7 +414,6 @@ function switchToPlayGame() {
       game_state.difficulty = GameDifficulty.Hard;
     }
     if (game_state.time == 0) {
-      endMainPhase();
       switchToLateGame();
     } else {
       updatedGameState();
@@ -423,7 +423,7 @@ function switchToPlayGame() {
   updatedGameState();
 }
 
-function endMainPhase () {
+function endPhase () {
   for (let timer of game_timer_ids) {
     clearInterval(timer);
   }
@@ -431,6 +431,7 @@ function endMainPhase () {
 }
 
 function switchToLateGame () {
+  endPhase();
   game_state.phase = GamePhase.LateGame;
 
   var buttons = ['stationA-blue-button', 'stationB-blue-button', 'stationD-blue-button',
@@ -450,6 +451,8 @@ function switchToLateGame () {
     }
   }, 100);
 
+  game_timer_ids.push(interval);
+
   setTimeout(() => {
     clearInterval(interval);
     switchToGameWon();
@@ -459,6 +462,7 @@ function switchToLateGame () {
 }
 
 function switchToGameLost () {
+  endPhase();
   game_state.phase = GamePhase.GameLost;
   updatedGameState();
 
@@ -466,6 +470,7 @@ function switchToGameLost () {
 }
 
 function switchToGameWon () {
+  endPhase();
   game_state.phase = GamePhase.GameWon;
   updatedGameState();
 
@@ -479,6 +484,7 @@ function stopFlashingButtons() {
 }
 
 function switchToEnterPlayers() {
+  endPhase();
   resetGameState();
   stopFlashingButtons();
   updatedGameState();
@@ -621,6 +627,10 @@ io.on('connect', function(socket: SocketIO.Socket){
     hardware_state.stationD.rfidScanner= s;
     updatedHardwareState();
   });
+
+  socket.on('switch-phase', () => {
+    next_phase[game_state.phase]();
+  });
 });
 
 var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
@@ -642,4 +652,13 @@ var button_mapping : {[s: string]: (p: HardwareState) => ButtonState} = {
   'stationD-green-button': s => s.stationD.greenButton,
   'stationD-yellow-switch': s => s.stationD.yellowSwitch,
   'big-red-button': s => s.bigRedButton
+}
+
+var next_phase: {[p: number]: (() => void) } = {
+  [GamePhase.IntroVideo]: switchToPlayGame,
+  [GamePhase.PlayGame]: switchToLateGame,
+  [GamePhase.LateGame]: switchToGameWon,
+  [GamePhase.GameWon]: switchToEnterPlayers,
+  [GamePhase.GameLost]: switchToEnterPlayers,
+  [GamePhase.EnterPlayers]: switchToIntroVideo
 }
