@@ -56,6 +56,7 @@ html,
 
 .Above-Info {
   font-size: 45px;
+  height: 60px;
 }
 
 .Below-Info {
@@ -63,6 +64,14 @@ html,
   font-size: 45px;
   display: flex;
   justify-content: space-between;
+}
+
+.Below-Info-big {
+  padding-top: 40px;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  font-size: 70px;
 }
 
 .Below-Info-PlayGame {
@@ -139,9 +148,6 @@ html,
   border-radius: 50px;
   box-shadow: 0 0 15px 10px #4199ff inset;
   width: 1450px;
-  height: 750px;
+  height: 740px;
   padding: 25px;
-}
-
-.EndGameImg {
 }
