@@ -273,13 +273,8 @@ class Screen extends React.Component<{}, GameState> {
 
     this.addPlayers = this.addPlayers.bind(this);
     this.completeTask = this.completeTask.bind(this);
-    this.advanceScreen = this.advanceScreen.bind(this);
     this.completeTasksInstructionPlayed = false;
     (window as any).addPlayers = this.addPlayers;
-  }
-
-  componentDidMount() {
-    window.addEventListener('keydown', () => this.advanceScreen());
   }
 
   addPlayers() {
@@ -288,11 +283,6 @@ class Screen extends React.Component<{}, GameState> {
 
   completeTask(id: number) {
     socket.emit('task-completed', id);
-  }
-
-  advanceScreen() {
-    console.log('advancing phase');
-    socket.emit('switch-phase');
   }
 
   render() {
