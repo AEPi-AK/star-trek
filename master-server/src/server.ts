@@ -355,6 +355,7 @@ function completedTasks(tasks: Task[]) {
 }
 
 function switchToIntroVideo() {
+  io.sockets.emit('close-door');
   endPhase();
   game_state.phase = GamePhase.IntroVideo;
   updatedGameState();
@@ -491,6 +492,7 @@ function stopFlashingButtons() {
 }
 
 function switchToEnterPlayers() {
+  io.sockets.emit('open-door');
   endPhase();
   resetGameState();
   stopFlashingButtons();
