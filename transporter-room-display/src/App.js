@@ -81,7 +81,11 @@ class App extends Component {
     );
     return (
       <div className="App">
-        <img id="main-image" src="./img/humans.png" />
+          <object
+            id="main-image"
+            type="text/html"
+            data="http://localhost:8000/stream/0"
+          />
         <div id="effect-layer">
           <div
             id="beam-layer"
